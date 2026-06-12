@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Fun-first directive + first-run coach (iteration 22)
+- Charter gains "Fun is the first quality bar" (owner directive): juice, decisions, humor,
+  pacing — fun outranks elegance in every pick.
+- First-run coach: four witty one-time hints at the exact moments confusion kills fun —
+  first skim touch, suspicion first biting (20%), first golden envelope, first scheme buy.
+  Once per player ever; no tutorial-speak.
+
 ## 2026-06-13 — Hồ sơ các dự án: run case files (iteration 21)
 - Every finished run is now a permanent case file in Legacy: ending, date, raised, stash,
   meals, days survived, 💌 letters, accomplice flag, 🎲 challenge badge, connections earned.

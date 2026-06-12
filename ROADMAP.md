@@ -2,8 +2,6 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **First-run coach** — one-time contextual tooltips teaching the moral systems (first skim
-   touch, first suspicion 25%, first envelope, first scheme).
 2. **Moral-state music** — the generative ambient shifts scale/timbre as suspicion rises
    (major-pentatonic clean → darker intervals dirty).
 
@@ -13,6 +11,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- First-run coach hints.
 - Day/night cycle with sleep/insomnia.
 - Daily seeded challenge + share results.
 - Đường đời life-lines chart.

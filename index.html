@@ -1086,7 +1086,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [] };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [], coach: {} };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -2254,6 +2254,7 @@
       S.suspicion += 3 * n;
       clampSusp();
       setTicker("🕳️ Một giao dịch lạ vừa chạy qua hệ thống… chắc không ai để ý đâu.");
+      coach("scheme", "<b>Chào mừng đến mặt tối.</b><br>Chiêu trò trả 💰 'lại quả' thẳng vào túi (xem sao kê!), nhưng mỗi lần mua là một cú nhói 🚨 +3% — và nhiệt tích tụ theo giây. Quản lý nhiệt là cả một nghệ thuật.");
     }
 
     if (it.instant && it.instant.susp) {
@@ -2491,6 +2492,7 @@
     envEl.title = "Phong bì vàng! Bấm ngay kẻo mất!";
     envEl.addEventListener("click", openEnvelope);
     zone.appendChild(envEl);
+    coach("env", "<b>Phong bì vàng!</b> 🧧<br>Bấm ngay kẻo bay mất — bên trong là buff, tiền, hoặc một drama showbiz đúng lúc.");
     setTimeout(function () { if (envEl) { removeEnvelope(); scheduleEnvelope(); } }, 12000);
   }
 
@@ -2613,6 +2615,13 @@
     }
     checkAchievements();
     renderStats();
+  }
+
+  // first-run coach: each hint fires exactly once per player, ever
+  function coach(id, html) {
+    if (META.coach[id]) return;
+    META.coach[id] = true;
+    toast("💡 " + html);
   }
 
   function setTicker(text) {
@@ -2852,6 +2861,7 @@
     }
     var status = document.getElementById("suspStatus");
     var vig = document.getElementById("vignette");
+    if (sp >= 20) coach("susp", "<b>Dân mạng bắt đầu xì xào.</b><br>Nghi ngờ tự nguội ▼ theo thời gian — hoặc dập nhanh bằng 📰 PR và ⚖️ luật sư trong tab Mờ ám. Đến 100% là… bạn sẽ biết.");
     if (sp >= 50 && !warned50) { sWarn(); warned50 = true; }
     if (sp < 40) warned50 = false;
     if (sp >= 80) {
@@ -3264,6 +3274,7 @@
           if (typeof META.lastDailyDay !== "string") META.lastDailyDay = "";
           if (typeof META.lastChallengeDay !== "string") META.lastChallengeDay = "";
           if (!Array.isArray(META.runLog)) META.runLog = [];
+          if (typeof META.coach !== "object" || META.coach === null) META.coach = {};
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
             S = d.run;
@@ -3449,6 +3460,7 @@
 
   document.getElementById("skimSlider").addEventListener("input", function (e) {
     S.skim = parseInt(e.target.value, 10);
+    if (S.skim > 0) coach("skim", "<b>Thanh trượt định mệnh.</b><br>Phần trăm này chảy vào 💰 túi riêng — và 🚨 nghi ngờ sẽ tăng theo cấp số nhân. Dưới ~20% gần như vô hình. Trên đó… tuỳ gan bạn.");
     S.maxSkim = Math.max(S.maxSkim, S.skim);
     document.getElementById("skimPct").textContent = S.skim + "%";
     if (S.skim >= 50) setTicker("😈 Bạn chỉnh tỷ lệ rút ruột lên " + S.skim + "%. Lương tâm: 'Alo? Có ai ở nhà không?'");
