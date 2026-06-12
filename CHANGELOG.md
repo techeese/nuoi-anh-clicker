@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 2 (iteration 13)
+- Sweep: 11/12 green (saint-duration hairline only, as ever). Bot 5-min: zero errors, with the
+  bot now also handling letter/away overlays. Mobile audit: apology minigame verified at 390px.
+- Live health: index/manifest/sw/icons all 200; deployed build matches HEAD (soundscape live).
+
 ## 2026-06-13 — Soundscape (iteration 12)
 - Five state-aware cues, all synthesized: a low two-note warning when suspicion crosses 50%
   (re-arms below 40), a music-box phrase when a letter from Mây arrives, a soft kitchen
