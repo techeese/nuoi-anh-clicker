@@ -35,6 +35,14 @@ The game's moral force comes from mechanics, not from naming anyone.
 - **The kitchen is sacred**: meals cook off the top of every donation. The only way to starve
   the children is the player's own greed. That's the satire.
 
+## Fun is the first quality bar (owner directive)
+
+Every change must make the game MORE FUN to play, or protect existing fun. Fun here means:
+moment-to-moment juice (clicks feel good), interesting decisions every minute (temptation with
+teeth), humor that lands (dry, Vietnamese internet register), and pacing that respects the
+player's time. When a mechanically elegant idea and a fun idea compete, fun wins. When in
+doubt, playtest the feeling, not the formula.
+
 ## Hard rules
 
 1. **Single self-contained `index.html`** — no build step, no dependencies beyond Google Fonts.
