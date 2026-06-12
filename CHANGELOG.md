@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-06-13 — Sao kê ledger + mobile root-cause fix + rename (iteration 5)
+- **🧾 Sao kê ledger**: live bank statement in the main panel — donations, kitchen spends and
+  investments appear as transactions; skimmed money and kickbacks show up disguised as
+  "Chi phí vận hành"/"TT hợp đồng — Cty TNHH..." (marked 🕳 only the player understands).
+  "📢 Công khai sao kê" button (120s cooldown): clean books = -8% suspicion weapon; dirty
+  books = a gamble (35% a retired accountant spots the ratios). +1 achievement.
+- **Mobile overflow ROOT-CAUSED**: the TV chyron's nowrap text inflated intrinsic min-content
+  to 451px, blowing the layout to ~490px on real phones. All previous mobile screenshots were
+  silently 500px wide (headless Chrome window minimum) so the bug was invisible. Fixed with
+  the width:0+flex:1 marquee pattern; verified DOC=390 via a new iframe-based true-390 harness.
+- Repo renamed to **nuoi-anh-clicker** (owner request): new URL techeese.github.io/nuoi-anh-clicker,
+  old URLs auto-redirect.
+
 ## 2026-06-13 — Newspaper endings + critical bugfix (autonomous iteration 4)
 - Every run ending is now a satirical morning-paper front page (NHẬT BÁO BUỔI SÁNG) written
   from the player's actual numbers — headline per ending, two-column article, donor quote,

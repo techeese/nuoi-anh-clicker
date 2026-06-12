@@ -2,11 +2,7 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **"Sao kê" live ledger** — a scrolling fake bank-statement panel: real earnings appear as
-   transactions; skimmed money shows up disguised as "chi phí vận hành / phí điều phối" line
-   items. THE word of the scandal. Maybe a "công khai sao kê" button that publishes a doctored
-   version (suspicion relief, but a forensic-accountant event can catch doctored entries).
-2. **Avatar speech bubbles** — clicking the founder triggers state-aware quips (clean: earnest;
+1. **Avatar speech bubbles** — clicking the founder triggers state-aware quips (clean: earnest;
    dirty: nervous deflections; high suspicion: lawyer-approved phrases).
 3. **Bé Mây's letters** — a specific child writes evolving letters across a clean run
    (3-4 stages); letters stop if you turn dirty. Emotional spine of the good path.
@@ -23,5 +19,6 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. **Performance pass** — renderShop DOM churn (rebuilds every 2s), event listener audit.
 
 ## Done (see CHANGELOG.md)
+- Sao kê live ledger + publish button.
 - Newspaper endings, PROVINCES NaN fix, mobile layer, content waves, moral economy redesign,
   docs + screenshot, achievements for dirty arc.

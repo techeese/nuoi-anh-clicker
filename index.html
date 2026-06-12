@@ -304,12 +304,40 @@
     flex-shrink: 0; border-radius: 9px 0 0 9px; z-index: 2;
   }
   .ticker .live-badge .dot { animation: blink 1.2s infinite; margin-right: 5px; }
-  .ticker-viewport { overflow: hidden; flex: 1; display: flex; align-items: center; }
+  /* width:0 + flex:1 — nowrap content must not contribute intrinsic width (mobile blowout) */
+  .ticker-viewport { overflow: hidden; flex: 1 1 0; width: 0; min-width: 0; display: flex; align-items: center; }
   #tickerText {
     display: inline-block; white-space: nowrap; padding-left: 100%;
     animation: tickerScroll 14s linear infinite; will-change: transform;
   }
   @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  /* Sao kê ledger */
+  .ledger { background: rgba(17, 19, 28, 0.8); border: 1px solid var(--border); border-radius: 10px; margin-top: 10px; overflow: hidden; }
+  .lg-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 10px; border-bottom: 1px solid var(--border);
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; color: var(--muted);
+  }
+  #saoKeBtn {
+    background: var(--panel-2); border: 1px solid var(--blue); color: var(--blue);
+    border-radius: 7px; padding: 4px 9px; font-size: 0.68rem; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  #saoKeBtn:disabled { opacity: 0.4; cursor: default; }
+  #lgRows { max-height: 108px; overflow: hidden; padding: 4px 0; }
+  .lg-row {
+    display: flex; justify-content: space-between; gap: 8px; padding: 1.5px 10px;
+    font-size: 0.68rem; font-family: "SF Mono", Menlo, Consolas, monospace;
+    color: var(--muted); white-space: nowrap; animation: lgIn 0.3s ease-out;
+  }
+  .lg-row .lg-txt { overflow: hidden; text-overflow: ellipsis; flex: 1 1 0; width: 0; min-width: 0; }
+  .lg-row .lg-amt { flex-shrink: 0; font-weight: 700; }
+  .lg-in .lg-amt { color: var(--green); }
+  .lg-out .lg-amt { color: #a8aec2; }
+  .lg-shade { font-style: italic; }
+  .lg-shade .lg-txt::after { content: " 🕳"; opacity: 0.5; }
+  @keyframes lgIn { from { opacity: 0; transform: translateY(-6px); } }
 
   .legacy-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   .conn-display { color: var(--purple); font-weight: 800; font-size: 1.05rem; }
@@ -540,6 +568,14 @@
         <div class="ticker-viewport">
           <span id="tickerText">Chào mừng đến với dự án! Hãy bấm nút để kêu gọi quyên góp.</span>
         </div>
+      </div>
+
+      <div class="ledger">
+        <div class="lg-head">
+          <span>🧾 SAO KÊ TÀI KHOẢN QUỸ</span>
+          <button id="saoKeBtn" title="Đăng sao kê lên mạng. Sạch thì là vũ khí — bẩn thì là canh bạc.">📢 Công khai sao kê</button>
+        </div>
+        <div id="lgRows"></div>
       </div>
     </div>
 
@@ -871,7 +907,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, numFmt: "vi" };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, numFmt: "vi" };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -883,7 +919,7 @@
       wasNear95: false, gameOver: false,
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
-      bargains: 0, recentEvents: []
+      bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -1111,6 +1147,8 @@
       check: function () { return S.bargains > 0; } },
     { id: "safes3", name: "Của chìm", desc: "Cất đủ 3 két sắt Thuỵ Sỹ",
       check: function () { return count("safe") >= 3; } },
+    { id: "saoke1", name: "Sao kê đâu? Đây!", desc: "Công khai sao kê lần đầu tiên",
+      check: function () { return META.saoKePub; } },
     { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
       check: function () { return META.goodFound; } },
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
@@ -1878,6 +1916,7 @@
       clampSusp();
       setTicker("📰 " + it.name + " phát huy tác dụng! Dư luận tạm lắng xuống…");
     }
+    if (it.currency === "fund") ledgerAdd("out", "Đầu tư: " + it.name, c);
     if (it.once && it.provMult) {
       toast("🗺️ <b>Mở rộng đến " + it.name + "!</b><br>Hàng nghìn mã nuôi em mới được mở. Thu nhập +15%.");
       confetti();
@@ -2144,6 +2183,72 @@
     "🔥 Luật sư của các nhà hảo tâm tuyên bố sẽ gửi đơn lên cơ quan chức năng",
     "🔥 VTV đưa tin: 'Cần làm rõ dòng tiền của các dự án thiện nguyện tự phát'"
   ];
+  // ================= Sao kê ledger =================
+  var SHELL_NAMES = ["Cty TNHH MTV Ánh Dương", "DV Tổng hợp Tân Phát", "TM-DV Bình Minh Star", "Cty CP Tư vấn Đại Lộc"];
+  var SCHOOL_NAMES = ["Pa Ủ", "Sín Chải", "Mường Lống", "Tà Xùa", "Háng Đồng", "Nậm Càn"];
+  var DISGUISES = ["Chi phí vận hành", "Phí điều phối dự án", "Tư vấn chiến lược", "Chi khác (tạm hạch toán)"];
+
+  function ledgerAdd(kind, txt, amt) {
+    S.ledger.unshift({ kind: kind, txt: txt, amt: amt });
+    if (S.ledger.length > 14) S.ledger.length = 14;
+    renderLedger();
+  }
+
+  function renderLedger() {
+    var box = document.getElementById("lgRows");
+    if (!box) return;
+    box.innerHTML = S.ledger.map(function (e) {
+      var cls = e.kind === "in" ? "lg-in" : e.kind === "shade" ? "lg-out lg-shade" : "lg-out";
+      var sign = e.kind === "in" ? "+" : "−";
+      return '<div class="lg-row ' + cls + '"><span class="lg-txt">' + e.txt + '</span><span class="lg-amt">' + sign + fmt(e.amt) + "</span></div>";
+    }).join("");
+  }
+
+  var lastLgPulse = 0;
+  function ledgerPulse() {
+    if (S.gameOver || paused) return;
+    var now = Date.now();
+    if (now - lastLgPulse < 2200) return;
+    lastLgPulse = now;
+    var inc = incomePerSec();
+    if (inc <= 0 && S.clicks === 0) return;
+    var roll = Math.random();
+    if (roll < 0.45 && inc > 0) {
+      ledgerAdd("in", "Ủng hộ từ bạn " + DONOR_NAMES[Math.floor(Math.random() * DONOR_NAMES.length)],
+        Math.max(1000, inc * (0.5 + Math.random() * 1.6)));
+    } else if (roll < 0.65 && S.skim > 0 && inc > 0) {
+      ledgerAdd("shade", DISGUISES[Math.floor(Math.random() * DISGUISES.length)],
+        Math.max(1000, inc * (S.skim / 100) * (0.8 + Math.random() * 1.4)));
+    } else if (roll < 0.8 && kickbackPerSec() > 0) {
+      ledgerAdd("shade", "TT hợp đồng — " + SHELL_NAMES[Math.floor(Math.random() * SHELL_NAMES.length)],
+        Math.max(1000, kickbackPerSec() * (1 + Math.random() * 3)));
+    } else {
+      ledgerAdd("out", "Bếp ăn điểm trường " + SCHOOL_NAMES[Math.floor(Math.random() * SCHOOL_NAMES.length)],
+        Math.max(MEAL_COST, inc * 0.2 * (0.6 + Math.random() * 0.8)));
+    }
+  }
+
+  function publishSaoKe() {
+    if (S.gameOver) return;
+    var now = Date.now();
+    if (now - S.saoKeAt < 120000) return;
+    S.saoKeAt = now;
+    META.saoKePub = true;
+    sBuy();
+    if (isClean()) {
+      S.suspicion = Math.max(0, S.suspicion - 8);
+      setTicker("📢 Sao kê 200 trang, khớp đến từng đồng. Dân mạng: 'Chuẩn chỉnh thế này mới gọi là từ thiện.'");
+    } else if (Math.random() < 0.35) {
+      S.suspicion = Math.min(100, S.suspicion + 10);
+      setTicker("📢 Toang: một kế toán về hưu soi ra 'Chi phí vận hành' chiếm tỷ lệ lạ. Thớt 20k share trong một giờ.");
+    } else {
+      S.suspicion = Math.max(0, S.suspicion - 6);
+      setTicker("📢 'Nhìn chung là rõ ràng' — đa số lướt qua trang 2. May.");
+    }
+    checkAchievements();
+    renderStats();
+  }
+
   function setTicker(text) {
     var el = document.getElementById("tickerText");
     el.textContent = text;
@@ -2285,6 +2390,11 @@
       else { status.textContent = ""; status.className = ""; }
     }
     renderAvatar();
+
+    var skBtn = document.getElementById("saoKeBtn");
+    var cdLeft = Math.ceil((120000 - (Date.now() - S.saoKeAt)) / 1000);
+    if (cdLeft > 0 && S.saoKeAt > 0) { skBtn.disabled = true; skBtn.textContent = "📢 Sao kê (" + cdLeft + "s)"; }
+    else { skBtn.disabled = false; skBtn.textContent = "📢 Công khai sao kê"; }
   }
 
   function renderBuffs() {
@@ -2428,7 +2538,7 @@
     }
   }
 
-  function renderAll() { renderStats(); renderShop(); renderLegacy(); renderBuffs(); }
+  function renderAll() { renderStats(); renderShop(); renderLegacy(); renderBuffs(); renderLedger(); }
 
   // ================= Save / load =================
   var SAVE_KEY = "nuoi-anh-clicker-v4";
@@ -2445,6 +2555,8 @@
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
     S.buffs = S.buffs.filter(function (b) { return b && !bad(b.mult) && b.mult > 0 && !bad(b.until); });
+    if (!Array.isArray(S.ledger)) S.ledger = [];
+    S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
     S.skim = Math.max(0, Math.min(90, S.skim));
     ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits"]
@@ -2470,7 +2582,7 @@
         if (d && d.meta) {
           META = d.meta;
           ["lifetimeRaised", "totalMeals", "envOpened", "crits"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
-          ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
+          ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
@@ -2481,8 +2593,9 @@
             if (typeof S.autoAcc !== "number") S.autoAcc = 0;
             if (typeof S.apologyUsed !== "boolean") S.apologyUsed = false;
             if (!S.modifier) S.modifier = "normal";
-            ["halo", "haloProgress", "cleanTime", "mealAcc", "bargains"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
+            ["halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
             if (!Array.isArray(S.recentEvents)) S.recentEvents = [];
+            if (!Array.isArray(S.ledger)) S.ledger = [];
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
@@ -2661,6 +2774,8 @@
     if (item && item.dataset.perk) buyPerk(item.dataset.perk);
   });
 
+  document.getElementById("saoKeBtn").addEventListener("click", publishSaoKe);
+
   document.getElementById("restartBtn").addEventListener("click", startNewRun);
 
   document.getElementById("resetRunBtn").addEventListener("click", function () {
@@ -2756,6 +2871,7 @@
     tick(dt);
     maybeFireEvent();
     maybeSpawnEnvelope();
+    ledgerPulse();
     renderStats();
   }, 200);
 

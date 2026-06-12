@@ -1,6 +1,6 @@
 # 🍚 Nuôi Anh — The Charity Tycoon
 
-**▶️ Chơi ngay / Play now: https://techeese.github.io/nuoi-em-clicker/**
+**▶️ Chơi ngay / Play now: https://techeese.github.io/nuoi-anh-clicker/**
 
 A satirical Vietnamese idle/clicker game. You run a charity feeding mountain children —
 and decide, minute by minute, whether to run it honestly… or become exactly the kind of
