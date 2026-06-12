@@ -46,6 +46,9 @@ The game's moral force comes from mechanics, not from naming anyone.
 5. **Test before push**: headless Chrome harness (fresh boot + seeded dirty/poisoned saves,
    simulated clicks, JS-error capture in `<title>`). Push to GitHub after meaningful batches —
    Pages redeploys `main` automatically.
+6. **Mobile parity is a release gate**: every UI change is screenshot-verified at 390px
+   (nothing clipped, touch-sized targets, play→shop→founder→meta order) before it ships.
+   Many players will only ever see the phone version.
 
 ## Toolchain map
 
