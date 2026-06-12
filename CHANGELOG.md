@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Content wave 2 + mobile support (autonomous iterations 2-3)
+- 4 new story events: storm relief (milk it vs. quiet real aid), warehouse "handling fees",
+  golden-hour talkshow (clean deck), the accountant who knows everything resigns (dirty deck).
+- Mobile layout: panels reorder for phones (play → shop → founder → meta), touch-sized
+  controls, no nested scrollboxes, full-width toasts, keyboard hints hidden on touch.
+- Node-based JS syntax gate added to the test harness.
+
 ## 2026-06-13 — Moral economy redesign + autonomous improvement loop begins
 - **Kickback pipeline**: shady schemes pay 25–70% of income straight into the personal stash
   ("lại quả"), displayed live; remainder inflates the charity's books as a front.

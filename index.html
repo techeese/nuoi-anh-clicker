@@ -61,7 +61,39 @@
     display: grid; grid-template-columns: 1fr 350px; gap: 14px;
     max-width: 1120px; margin: 0 auto; padding: 12px;
   }
-  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } .header-btns { position: static; justify-content: center; margin-top: 8px; max-width: none; } }
+  button { touch-action: manipulation; }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: 1fr; gap: 12px; padding: 10px; }
+    /* dissolve the left column so panels become siblings, then order for the phone:
+       play -> buy -> flavor -> meta */
+    .left-col { display: contents !important; }
+    #mainPanel { order: 1; }
+    #shopPanel { order: 2; }
+    .avatar-panel { order: 3; }
+    #legacyPanel { order: 4; }
+    header h1 { font-size: 1.06rem; letter-spacing: 0; padding: 0 6px; }
+    header .subtitle { font-size: 0.72rem; }
+    .header-btns { position: static; justify-content: center; margin-top: 8px; max-width: none; }
+    .header-btns button { padding: 8px 10px; }
+    .stat .value { font-size: 1.05rem; }
+    #donateBtn { width: 172px; height: 172px; }
+    .btn-title { font-size: 0.88rem; }
+    .bowl { width: 64px; height: 48px; }
+    .shop-tabs button { font-size: 0.68rem; padding: 9px 1px; }
+    /* no nested scrollboxes on touch — let the page scroll */
+    .shop-list { max-height: none; overflow-y: visible; }
+    .item { padding: 12px 10px; }
+    .overlay .card { padding: 20px 16px; }
+    .intro-actions { flex-wrap: wrap; }
+    .intro-actions button { padding: 11px 16px; font-size: 0.9rem; }
+    .event-choices button { padding: 13px 12px; }
+    #toasts { left: 14px; right: 14px; max-width: none; }
+    .ach-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+  }
+  /* touch devices: no keyboard hints */
+  @media (hover: none) {
+    .key-hint { display: none; }
+  }
 
   .panel {
     background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px;
@@ -401,8 +433,8 @@
 
 <div class="wrap">
   <!-- LEFT -->
-  <div style="display:flex; flex-direction:column; gap:14px;">
-    <div class="panel">
+  <div class="left-col" style="display:flex; flex-direction:column; gap:14px;">
+    <div class="panel" id="mainPanel">
       <div class="stats">
         <div class="stat fund">
           <div class="label">💚 Quỹ từ thiện / Charity Fund</div>
@@ -678,7 +710,7 @@
     </div>
 
     <!-- Legacy -->
-    <div class="panel">
+    <div class="panel" id="legacyPanel">
       <div class="legacy-head">
         <h2 style="margin:0;">🤝 Di sản &amp; Thành tựu / Legacy</h2>
         <span class="conn-display" id="connVal">🤝 0 quan hệ</span>
@@ -696,7 +728,7 @@
   </div>
 
   <!-- RIGHT: shop -->
-  <div class="panel">
+  <div class="panel" id="shopPanel">
     <div class="shop-head">
       <h2>🛒 Cửa hàng / Shop</h2>
       <button id="buyMultBtn">Mua x1</button>
@@ -1067,6 +1099,47 @@
 
   // ================= Random events =================
   var EVENTS = [
+    { title: "🌧️ Bão lũ miền Trung",
+      when: function () { return S.totalRaised >= 3e7; },
+      desc: "Tin khẩn: lũ quét qua ba huyện miền núi. Mọi ánh mắt đổ về các quỹ từ thiện — trong đó có bạn.",
+      choices: [
+        { label: "Mở chiến dịch khẩn cấp kêu gọi", hint: "Quỹ + rất lớn, nghi ngờ +4% ('tranh thủ truyền thông')",
+          fx: function () { var g = Math.max(5e6, incomePerSec() * 180); S.fund += g; S.suspicion += 4; return "Chiến dịch thu về " + fmt(g) + " trong một đêm. Vài bình luận: 'nhanh nhạy quá nhỉ.'"; } },
+        { label: "Lặng lẽ gửi đội cứu trợ từ quỹ (tốn 10% quỹ)", hint: "Bữa cơm + nhiều, nghi ngờ -6%",
+          fx: function () { var spend = S.fund * 0.1; S.fund -= spend; S.meals += Math.floor(spend / MEAL_COST); S.suspicion -= 6; return "Không livestream, không logo. Chỉ có người dân kể lại. Đó là loại PR không mua được."; } }
+      ] },
+    { title: "📦 Lô hàng cứu trợ tắc ở kho",
+      when: function () { return S.totalRaised >= 1e7; },
+      desc: "Ba tấn gạo và áo ấm nằm trong kho chờ 'hoàn thiện thủ tục'. Thủ kho gãi đầu: 'Cuối tuần anh em nghỉ…'",
+      choices: [
+        { label: "Gửi chút 'phí bốc xếp' (tốn 2% quỹ)", hint: "Hàng đi ngay: thu nhập x1.15 trong 2 phút",
+          fx: function () { S.fund *= 0.98; addBuff("📦 Hàng thông kho x1.15", "income", 1.15, 120); return "Lô hàng rời kho trong 30 phút. Hoá đơn ghi: 'phí dịch vụ tổng hợp'."; } },
+        { label: "Chờ đúng quy trình", hint: "Chậm trễ: thu nhập x0.9 trong 2 phút, nghi ngờ -3%",
+          fx: function () { addBuff("🐢 Đúng quy trình x0.9", "income", 0.9, 120); S.suspicion -= 3; return "Hàng đi sau 4 ngày. Chậm, nhưng sổ sách sạch như nước suối đầu nguồn."; } }
+      ] },
+    { title: "📺 Đài truyền hình mời lên talkshow",
+      when: function () { return isClean() && S.totalRaised >= 5e7; },
+      desc: "Một talkshow giờ vàng muốn nghe 'câu chuyện tử tế giữa thời hoài nghi'. Hàng triệu người sẽ xem.",
+      choices: [
+        { label: "Nhận lời, kể chuyện thật", hint: "Uy tín toả sáng: thu nhập x1.25 trong 3 phút",
+          fx: function () { addBuff("📺 Hiệu ứng talkshow x1.25", "income", 1.25, 180); return "Bạn kể về bát cơm chan nước suối. Cả trường quay lặng đi. Donate đổ về như thác."; } },
+        { label: "Từ chối — ngại máy quay", hint: "Không có gì xảy ra",
+          fx: function () { return "MC tiếc nuối. Mẹ bạn còn tiếc hơn: 'Con người ta lên TV ầm ầm kìa.'"; } }
+      ] },
+    { title: "💼 Kế toán xin nghỉ việc đột ngột",
+      when: function () { return !isClean(); },
+      desc: "Chị kế toán — người duy nhất hiểu toàn bộ 'hệ thống' — đặt lá đơn lên bàn, mắt không nhìn bạn.",
+      choices: [
+        { label: "Tăng lương gấp đôi giữ chân (tốn 15% túi riêng)", hint: "Không có gì xảy ra… tạm thời",
+          fx: function () { S.stash *= 0.85; return "Chị ấy ở lại, nhận lương mới, và bắt đầu gửi email cho chính mình lúc nửa đêm. Để làm gì nhỉ?"; } },
+        { label: "Để chị ấy đi, thuê người 'kín tiếng'", hint: "Nghi ngờ +8%",
+          fx: function () { S.suspicion += 8; return "Người mới hỏi ít, làm nhanh. Còn chị cũ… dạo này hay cà phê với một phóng viên."; } },
+        { label: "Hỏi thẳng: 'Chị muốn gì?'", hint: "50/50: yên ổn hoặc nghi ngờ +14%",
+          fx: function () {
+            if (Math.random() < 0.5) return "'Tôi muốn ngủ ngon.' Hai người nhìn nhau rất lâu. Chị ấy ở lại — với điều kiện không đụng sổ nữa.";
+            S.suspicion += 14; return "Câu hỏi sai. Hoá ra chị ấy chỉ định về quê — GIỜ thì chị ấy thấy có gì đó đáng nói.";
+          } }
+      ] },
     { title: "🤝 Quan chức gợi ý 'cơ chế đặc biệt'",
       when: function () { return isClean() && S.totalRaised >= 1e8; },
       desc: "Một vị 'có ảnh hưởng' mời bạn cà phê: 'Dự án tốt đấy. Trích 10% làm phí-điều-phối qua công ty em rể anh, đổi lại em được bảo trợ đặc biệt. Ai cũng làm vậy cả.'",
