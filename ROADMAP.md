@@ -2,8 +2,8 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-4. **Idle-retention research pass** — WebSearch for idle-game retention mechanics
-   (offline depth, daily hooks, milestone pacing); mine 2-3 ideas that fit the charter.
+4. **Next-milestone forecast** — small "sắp đạt: X (≈Ym)" line under stats (Zeigarnik pull,
+   from the retention research).
 5. **Stats panel** — lifetime + run graphs (canvas sparkline of fund/stash/suspicion over time).
 6. **Day/night cycle** in the avatar scene tied to real clock; founder sleeps at night
    (auto-income visualization).
@@ -15,6 +15,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Retention: welcome-back report + daily morning wave.
 - Bé Mây's letters (4 stages + silence beat + ending tie-ins).
 - Founder speech bubbles.
 - Sao kê live ledger + publish button.

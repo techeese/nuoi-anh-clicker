@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Retention hooks: the return moment + morning wave (iteration 9)
+- Research-grounded (idle-genre retention literature): the return moment and a daily hook are
+  the two highest-leverage levers for a parody idle game without dark patterns.
+- "🌅 Trong lúc bạn vắng mặt" report card replaces the old offline toast: earnings, meals the
+  kitchen cooked, suspicion that cooled while away (new mechanic: -0.1%/min offline, cap 30),
+  and a 💌 teaser when a Mây letter is waiting. Returning feels like reuniting with a living project.
+- Morning donation wave: first visit each calendar day grants income x2 for 90s and sends a
+  golden envelope riding the wave. No streaks, no guilt — just a warm reason to come back.
+
 ## 2026-06-13 — Bé Mây's letters (iteration 8)
 - A recurring character: bé Mây, 8, from Điện Biên. Handwritten letters arrive at meal
   milestones (1k/8k/25k/60k) while your hands stay clean — school-notebook paper, blue

@@ -893,6 +893,16 @@
   </div>
 </div>
 
+<!-- Welcome back report -->
+<div class="overlay" id="awayOverlay">
+  <div class="card win-card">
+    <h2>🌅 TRONG LÚC BẠN VẮNG MẶT</h2>
+    <p id="awayDesc"></p>
+    <div class="final-stats" id="awayStats"></div>
+    <button id="awayBtn">Bắt đầu ngày mới</button>
+  </div>
+</div>
+
 <!-- Letter from bé Mây -->
 <div class="overlay" id="letterOverlay">
   <div class="letter-wrap">
@@ -979,7 +989,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi" };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "" };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -2574,6 +2584,11 @@
     document.getElementById("letterOverlay").classList.add("show");
     sEnv();
   }
+  document.getElementById("awayBtn").addEventListener("click", function () {
+    document.getElementById("awayOverlay").classList.remove("show");
+    paused = eventOpen || apologyOpen;
+  });
+
   document.getElementById("letterBtn").addEventListener("click", function () {
     document.getElementById("letterOverlay").classList.remove("show");
     paused = eventOpen || apologyOpen;
@@ -2815,6 +2830,7 @@
           ["lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
           ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
+          if (typeof META.lastDailyDay !== "string") META.lastDailyDay = "";
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
             S = d.run;
@@ -2845,9 +2861,28 @@
     if (elapsed < 120) return;
     var gain = baseDps() * repMult() * globalMult() * provMult() * elapsed * 0.5;
     if (gain < 1000) return;
+    var suspBefore = S.suspicion;
     earn(gain);
+    // public attention cools while you are away
+    S.suspicion = Math.max(0, S.suspicion - Math.min(30, 0.1 * elapsed / 60));
     META.gotOffline = true;
-    toast("😴 <b>Trong lúc bạn vắng mặt (" + (elapsed / 3600).toFixed(1) + "h)</b><br>Bộ máy vẫn chạy đều: +" + fmt(gain) + " (hiệu suất 50%). Tiền không ngủ.");
+
+    var hrs = elapsed >= 3600 ? (elapsed / 3600).toFixed(1) + " giờ" : Math.round(elapsed / 60) + " phút";
+    var mealsAway = Math.floor(gain * (1 - S.skim / 100) * 0.2 / MEAL_COST);
+    var cooled = Math.round(suspBefore - S.suspicion);
+    var nextL = S.letters.length < 4 ? LETTERS[S.letters.length] : null;
+    var letterWaiting = nextL && isClean() && (S.meals + mealsAway >= nextL.meals);
+
+    document.getElementById("awayDesc").textContent =
+      "Bạn rời đi " + hrs + ". Bộ máy vẫn chạy đều (hiệu suất 50%) — và thế giới vẫn xoay.";
+    document.getElementById("awayStats").innerHTML =
+      "💚 Quyên góp đổ về: <b>+" + fmt(gain) + "</b><br>" +
+      "🍱 Bếp đã nấu thêm: <b>~" + mealsAway.toLocaleString("vi-VN") + " bữa cơm</b><br>" +
+      (cooled > 0 ? "🧊 Dư luận nguội bớt: <b>-" + cooled + "% nghi ngờ</b><br>" : "") +
+      (letterWaiting ? "💌 <b>Có một lá thư đang chờ bạn.</b><br>" : "") +
+      "📰 " + (S.suspicion >= 50 ? "Mạng xã hội vẫn chưa quên bạn." : "Một ngày yên ắng trên mạng xã hội.");
+    paused = true;
+    document.getElementById("awayOverlay").classList.add("show");
   }
 
   // ================= Combo & clicking =================
@@ -3094,6 +3129,23 @@
   document.getElementById("numFmtBtn").textContent = numFmtLabel();
   scheduleEvent();
   scheduleEnvelope();
+
+  // morning donation wave: first visit of each calendar day
+  (function () {
+    var d = new Date();
+    var today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    if (META.lastDailyDay !== today) {
+      var firstEver = META.lastDailyDay === "";
+      META.lastDailyDay = today;
+      if (!firstEver && !S.gameOver) {
+        addBuff("🌅 Quyên góp sáng sớm x2", "income", 2, 90);
+        nextEnvAt = Date.now() + 4000; // a golden envelope rides the morning wave
+        setTimeout(function () {
+          toast("🌅 <b>Chuyến quyên góp sáng sớm!</b><br>Ngày mới, lòng tốt mới: thu nhập x2 trong 90 giây — và hình như có gì lấp lánh sắp bay qua…");
+        }, 1200);
+      }
+    }
+  })();
 
   if (!META.introSeen) playIntro();
 
