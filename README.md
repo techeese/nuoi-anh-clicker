@@ -23,14 +23,23 @@ The only way to starve the kitchen is your own greed.
 ## Features
 
 - Single self-contained `index.html` — no build, no dependencies. Open it and play.
-- Prestige meta (connections 🤝 + permanent perks), 4 collectible endings, 25+ achievements.
-- State-aware story events — consequences only for crimes you actually committed, plus
-  devil's-bargain offers if you stay clean.
-- Hand-drawn SVG founder avatar (his face, car, villa, and sweat reflect your choices) and a
-  geo-accurate Vietnam influence map.
-- Synthesized WebAudio SFX + generative ambient music. Golden envelopes, crits, combos,
-  offline earnings, run modifiers, an apology-livestream minigame.
-- Balance tuned by an automated simulator: `node sim.js`, `node sweep.js`.
+  Installable as a PWA, works offline.
+- **Money you can see**: every skimmed click visibly splits (+net rises, −cut sinks with a
+  🤫), the slider shows where each 100k goes, and scheme kickbacks drip into the stash on
+  screen. Even the SFX follow your conscience — clean clicks ring bright, dirty ones dull.
+- **Bé Mây's letters**: stay clean and a child from Điện Biên writes you real letters — and
+  you choose how to write back. Handwritten replies are remembered. Go dirty and the
+  mailbox quietly goes silent.
+- **Chị phóng viên**: a 3-stage investigative arc where bribes get photographed, lawsuits
+  backfire, and genuinely reforming earns you the redemption piece 'Người quay đầu'.
+- **Newspaper endings**: every run ends as a front page written from your own numbers,
+  archived in your case files forever and mintable as a shareable image card.
+- Prestige meta (connections 🤝 + permanent perks), 4 endings, 30+ achievements, lifetime
+  records, daily seeded challenge, day/night cycle, 11 run modifiers, an apology-livestream
+  minigame, state-aware events with consequences only for crimes you actually committed.
+- Hand-drawn SVG founder avatar (his face, car, villa and sweat reflect your choices) and a
+  geo-accurate Vietnam influence map. Synthesized WebAudio everything — no asset files.
+- Balance tuned by an automated simulator against 12 design targets: `node sweep.js`.
 
 ## ⚠️ Disclaimer
 

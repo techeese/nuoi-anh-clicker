@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — README + repo presentation refresh (iteration 46)
+- Features section rewritten around what actually defines the game now: the visible-money
+  language, bé Mây's letters & replies, the chị phóng viên arc, newspaper endings →
+  archive → shareable cards, conscience audio. New hero screenshot (1400px 3-column,
+  founder + Mercedes at night, skim mid-temptation).
+- GitHub repo description + topics set (clicker-game, incremental-game, satire, vietnamese).
+
 ## 2026-06-13 — Maintenance sprint 8 + flow reflection (iteration 45)
 - Sweep: 10/12, the two eternal hairlines, optimizer suggestions rejected (sixth time).
 - Bot 5-min: 59 purchases, zero errors, no soft-locks. (letters=0 is correct — a greedy

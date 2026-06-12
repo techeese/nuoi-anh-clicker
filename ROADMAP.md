@@ -3,10 +3,6 @@
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 
-1. **README + screenshot refresh** — the features list predates letters/replies, the
-   journalist arc, end cards, conscience audio, and the archive (~15 iterations stale);
-   retake screenshot.png (flagged by the it.45 flow reflection).
-
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 7, full-page + achievements
     grid verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
@@ -14,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- README + repo presentation refresh (features, screenshot, description, topics).
 - End cards from the archive (retroactive 🖼️ for any stored case file).
 - Mây's fifth letter (em Suối, 150k meals, reaction pair, school drawing).
 - Shareable end card (canvas image per ending, share/download).
