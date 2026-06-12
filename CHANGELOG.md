@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Next-milestone forecast (iteration 11)
+- "🎯 Sắp đạt: …" line under the stats: picks the nearest goal by ETA at current income —
+  next growth purchase, next province, the next letter from Mây (clean hands), the dissolve/
+  saint thresholds, or the 33-tỷ escape countdown (dirty). The goal line literally changes
+  with your morality.
+
 ## 2026-06-13 — PWA: install the charity (iteration 10)
 - The game is now installable: web manifest, drawn app icon (the steaming rice bowl in a gold
   ring), theme color, apple-touch-icon.
