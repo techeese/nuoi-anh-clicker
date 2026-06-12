@@ -1,5 +1,8 @@
 # Roadmap — creative queue for the improvement loop
 
+> Loop paused by owner 2026-06-13 after iteration 64 (healthy stop, nothing broken).
+> Re-arm: `touch /Users/Admin/Desktop/coding/.improve-loop-on` — the Stop hook does the rest.
+
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 

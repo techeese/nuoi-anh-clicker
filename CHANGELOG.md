@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-06-13 — Autonomous session wrap (iteration 64 = final round)
+- The improvement loop ran 64 iterations: ~28 shipped features, 12 maintenance sprints
+  (all green), 1 production incident (caught and immunized via gate.sh), 0 reverts in the
+  final 30 iterations. Everything live at https://techeese.github.io/nuoi-anh-clicker/.
+- Highlights of the journey: the two-path moral economy, bé Mây's five letters and replies,
+  the journalist/kế toán arcs and their crossover, visible-money language (cuts, splits,
+  drips), conscience audio, newspaper endings → archive → shareable cards, promises,
+  the run journal, three deed-gated relics, rebirth lines, accessibility pass.
+- Handoff state: balance 10/12 (two accepted hairlines), playbook at
+  .claude/skills/improve-game/SKILL.md with 20+ landmines, ROADMAP holds localization
+  (parked) and the recurring mobile audit. The loop can be re-armed any time with:
+  touch /Users/Admin/Desktop/coding/.improve-loop-on
+
 ## 2026-06-13 — The journal at judgment (iteration 64)
 - Every ending screen gains 📔 "Đọc lại nhật ký": review your run's full decision history —
   the promise you made, the schemes you launched, the choices you clicked, the day the
