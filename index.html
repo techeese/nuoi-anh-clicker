@@ -2569,7 +2569,15 @@
     if (S.modifier === "viral") addBuff("🚀 Khởi đầu viral x5", "income", 5, 120);
     if (META.runs > 0) {
       toast(m.emoji + " <b>Thời cuộc: " + m.name + "</b><br>" + m.desc);
-      setTicker("Dự án thứ " + (META.runs + 1) + " ra đời dưới một cái tên mới tinh. 'Lần này em làm thật, các bác ạ.' 🙂");
+      // the rebirth remembers how the last project died
+      var REBIRTH = {
+        caught: "Dự án thứ %N ra đời. Founder 'ra trại sớm nhờ cải tạo tốt' — tên mới, áo mới, nụ cười cũ. 🙂",
+        escaped: "Dự án thứ %N ra đời, dẫn dắt bởi một người 'vừa về nước sau chuyến công tác dài'. Không ai hỏi thêm.",
+        dissolved: "Dự án thứ %N ra đời, tự nhận 'kế thừa di sản' của một dự án đã hoàn thành sứ mệnh. Logo hơi giống. Chắc trùng hợp.",
+        saint: "Dự án thứ %N ra đời. Người tử tế năm ấy quay lại — và lần này, cả nước đang nhìn."
+      };
+      var lastEnd = META.runLog && META.runLog[0] ? META.runLog[0].o : null;
+      setTicker((REBIRTH[lastEnd] || "Dự án thứ %N ra đời dưới một cái tên mới tinh. 'Lần này em làm thật, các bác ạ.' 🙂").replace("%N", META.runs + 1));
     } else {
       setTicker("Một dự án mới ra đời. Hãy bấm nút để kêu gọi quyên góp!");
     }

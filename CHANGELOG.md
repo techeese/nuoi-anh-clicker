@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Tái xuất: the rebirth remembers (iteration 62)
+- Each new project's birth announcement now knows how the last one died: caught → "ra trại
+  sớm nhờ cải tạo tốt — tên mới, áo mới, nụ cười cũ"; escaped → "vừa về nước sau chuyến
+  công tác dài. Không ai hỏi thêm."; dissolved → "kế thừa di sản… Logo hơi giống. Chắc
+  trùng hợp."; saint → "lần này, cả nước đang nhìn." First-ever runs keep the classic line.
+- Run-to-run narrative continuity at the game's most-repeated moment, zero balance impact.
+- Verified: gates ×2, full live walk (bust → trial → restart) shows the caught-flavored
+  line with correct run numbering.
+
 ## 2026-06-13 — Accessibility & comfort pass (iteration 61)
 - aria-labels on all icon-only header buttons; role="dialog" + aria-modal + Vietnamese
   aria-labels on all 10 overlays; gold focus-visible outlines for keyboard players.
