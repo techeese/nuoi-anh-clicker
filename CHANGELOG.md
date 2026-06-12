@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 7 (iteration 40)
+- Sweep: same 10/12 with the two eternal hairlines; optimizer suggestions rejected as ever.
+- Bot 5-minute playthrough with the CORRECTED buy selector: 60 purchases (first sprint bot
+  to actually exercise the shop + shady kickback economy), zero JS errors, no soft-locks.
+- Full-page 390px audit: panel order intact, all 5 new achievement cells present and
+  rendering (DOM-asserted 5/5 + 17 unlocked cells highlighted on a rich seed).
+- Perf: 905 DOM nodes on a fully-populated page, interval count unchanged. Healthy.
+
 ## 2026-06-13 — Achievements for the new systems (iteration 39)
 - Five achievements wire recent features into the reward loop: 💌 Hồi âm bằng tay (3 warm
   letter replies in one run), 🧧 Hai chiếc phong bì (bribe the journalist twice — "Ảnh chụp
