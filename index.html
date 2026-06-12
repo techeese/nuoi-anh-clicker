@@ -580,6 +580,21 @@
     border: 1px solid var(--gold); color: var(--gold); border-radius: 999px;
     padding: 4px 12px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: inherit;
   }
+  .letter-replies { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 16px; }
+  .letter-replies .rep-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); text-align: center; letter-spacing: 0.04em; }
+  .reply-btn {
+    padding: 11px 16px; border-radius: 10px; cursor: pointer; font-family: inherit;
+    font-size: 0.86rem; font-weight: 700; text-align: left; width: 100%;
+  }
+  .reply-btn.warm {
+    background: #fdf9ee; color: #3a4a8c; border: 2px solid rgba(245, 197, 66, 0.75);
+    font-family: "Chalkboard SE", "Comic Sans MS", "Segoe Print", cursive;
+    transform: rotate(-0.6deg);
+  }
+  .reply-btn.formal {
+    background: rgba(255, 255, 255, 0.05); color: #aeb6c8; border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .reply-btn:hover { filter: brightness(1.08); }
 
   /* Founder avatar scene */
   .avatar-panel { position: relative; }
@@ -1045,6 +1060,11 @@
       <svg class="letter-draw" id="letterDraw" width="120" height="64" viewBox="0 0 120 64"></svg>
       <div class="letter-sig" id="letterSig"></div>
     </div>
+    <div class="letter-replies" id="letterReplies">
+      <div class="rep-label">Trả lời thế nào đây?</div>
+      <button class="reply-btn warm" id="replyWarm">✍️ Viết tay vài dòng kể chuyện thật</button>
+      <button class="reply-btn formal" id="replyFormal">🎁 Nhờ trợ lý gửi quà kèm thiệp in sẵn</button>
+    </div>
     <button id="letterBtn">Cất vào ví 💌</button>
   </div>
 </div>
@@ -1165,7 +1185,7 @@
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
-      letters: [], maySilenced: false, hist: [],
+      letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
       challenge: "", rngState: 0
     };
@@ -2031,8 +2051,14 @@
       body += " Theo nguồn tin riêng, lời khai then chốt đến từ một kế toán cũ của dự án.";
     }
     if (S.letters.length >= 2) {
-      if (outcome === "saint") body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
-      else if (outcome === "caught") body += " Trong số tang vật có một xấp thư viết tay của một học sinh tên Mây — vẫn còn trong ví.";
+      var warmReplies = (S.mayReplies || []).filter(function (r) { return r === "w"; }).length;
+      if (outcome === "saint") {
+        body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
+        if (warmReplies >= 2) body += " Em mang theo một xấp thư — cả thư em gửi đi lẫn thư được viết tay trả lời, từng lá một.";
+      } else if (outcome === "caught") {
+        body += " Trong số tang vật có một xấp thư viết tay của một học sinh tên Mây — vẫn còn trong ví.";
+        if (warmReplies >= 2) body += " Kèm theo đó là những lá thư trả lời viết tay — dấu vết của một người từng rất khác.";
+      }
     }
 
     return '<div class="newspaper">' +
@@ -3109,18 +3135,50 @@
       body: "Chú ơi, trường con có giá sách mới,\ncả bản góp gỗ làm đấy.\nThầy hiệu trưởng bảo: có người gieo thì có người gặt.\nCảm ơn chú đã không quên tụi con.", sig: "— Mây, lớp 3" }
   ];
 
+  // Reaction openers: letter N starts with Mây reacting to how you answered letter N-1.
+  // Index i = reaction shown in letter i+1, about the reply to letter i.
+  var REACT_WARM = [
+    "Chú viết thư cho con thật hả?! Mẹ con đọc cho cả nhà nghe, ai cũng cười.",
+    "Thư chú con để trong hộp bút. Cô bảo chữ chú xấu hơn chữ con đó.",
+    "Con đọc lại thư chú mỗi lần sắp thi. Đỡ run lắm chú ạ."
+  ];
+  var REACT_FORMAL = [
+    "Con cảm ơn món quà chú gửi ạ. Cái thiệp in đẹp lắm.",
+    "Quà chú gửi con vẫn để dành. Chắc chú bận lắm.",
+    "Con cảm ơn quà của chú. Mà chú ơi, chú có đọc thư con không?"
+  ];
+
   var letterReadIdx = -1;
   function showLetter(idx) {
     paused = true;
     var L = LETTERS[idx];
     letterReadIdx = idx;
+    var body = L.body;
+    if (idx > 0 && Array.isArray(S.mayReplies) && S.mayReplies[idx - 1]) {
+      body = (S.mayReplies[idx - 1] === "w" ? REACT_WARM[idx - 1] : REACT_FORMAL[idx - 1]) + "\n" + body;
+    }
     document.getElementById("letterDate").textContent = L.date;
-    document.getElementById("letterBody").textContent = L.body.replace(/\\n/g, "\n");
+    document.getElementById("letterBody").textContent = body.replace(/\\n/g, "\n");
     document.getElementById("letterDraw").innerHTML = L.draw;
     document.getElementById("letterSig").textContent = L.sig;
+    var replied = Array.isArray(S.mayReplies) && S.mayReplies[idx];
+    document.getElementById("letterReplies").style.display = replied ? "none" : "flex";
     document.getElementById("letterOverlay").classList.add("show");
     sLetter();
   }
+
+  function replyToLetter(kind) {
+    if (letterReadIdx < 0) return;
+    if (!Array.isArray(S.mayReplies)) S.mayReplies = [];
+    if (S.mayReplies[letterReadIdx]) return;
+    S.mayReplies[letterReadIdx] = kind;
+    document.getElementById("letterReplies").style.display = "none";
+    if (kind === "w") toast("✍️ <b>Bạn viết tay vài dòng.</b><br>Hơi xấu chữ. Nhưng là chữ của bạn.");
+    else toast("🎁 <b>Trợ lý đã gửi quà kèm thiệp in sẵn.</b><br>Nhanh. Gọn. Chuyên nghiệp. Xong.");
+    save();
+  }
+  document.getElementById("replyWarm").addEventListener("click", function () { replyToLetter("w"); });
+  document.getElementById("replyFormal").addEventListener("click", function () { replyToLetter("f"); });
   document.getElementById("awayBtn").addEventListener("click", function () {
     document.getElementById("awayOverlay").classList.remove("show");
     paused = eventOpen || apologyOpen;
@@ -3340,6 +3398,9 @@
     S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
     if (!Array.isArray(S.letters)) S.letters = [];
     S.letters = S.letters.filter(function (i) { return Number.isInteger(i) && i >= 0 && i < 4; });
+    if (!Array.isArray(S.mayReplies)) S.mayReplies = [];
+    // map, NOT filter: this array is index-aligned with letters; JSON turns sparse slots into null
+    S.mayReplies = S.mayReplies.slice(0, 4).map(function (r) { return r === "w" || r === "f" ? r : null; });
     if (!Array.isArray(S.hist)) S.hist = [];
     S.hist = S.hist.filter(function (h) { return h && Number.isFinite(h.f) && Number.isFinite(h.s) && Number.isFinite(h.p); }).slice(-240);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
@@ -3393,6 +3454,7 @@
             if (!Array.isArray(S.recentEvents)) S.recentEvents = [];
             if (!Array.isArray(S.ledger)) S.ledger = [];
             if (!Array.isArray(S.letters)) S.letters = [];
+            if (!Array.isArray(S.mayReplies)) S.mayReplies = [];
             if (typeof S.maySilenced !== "boolean") S.maySilenced = false;
             if (!Array.isArray(S.hist)) S.hist = [];
             if (typeof S.ktStage !== "number") S.ktStage = 0;

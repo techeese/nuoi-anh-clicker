@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Writing back to Mây (iteration 31)
+- Each letter now offers a reply choice: ✍️ handwrite a few honest lines (paper-toned button,
+  Mây's world) or 🎁 have the assistant send a gift + printed card (dark corporate button,
+  the founder's world). "Cất vào ví 💌" remains the silent third option.
+- The next letter opens with Mây reacting to how you answered — warm replies get warmth back
+  ("cô bảo chữ chú xấu hơn chữ con"), printed cards get polite distance ending in "chú có đọc
+  thư con không?".
+- Ending tie-ins: saint with ≥2 handwritten replies adds the stack of letters "cả thư đi lẫn
+  thư trả lời" to the newspaper; caught with ≥2 adds "dấu vết của một người từng rất khác".
+- New save field `mayReplies` (index-aligned with letters; sanitize maps invalid→null, never
+  filters). Verified: gates green, 5-assert chip→reply headless walk, 390px + 1240px shots.
+
 ## 2026-06-13 — Maintenance sprint 5 + flow reflection (iteration 30)
 - Sweep 21 greens (the two eternal hairlines only). Bot 5-min: zero errors, organically hit
   FEVER at 9 clicks/s. Single file at 208KB. Live deploy at parity. Legacy mobile audit pass.
