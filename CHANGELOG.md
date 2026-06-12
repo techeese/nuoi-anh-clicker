@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Ending stingers (iteration 53)
+- Each fate now has a musical signature: 😇 saint — pentatonic ascent resolving into a warm
+  three-note chord; 🏝️ escape — a quick rising arpeggio and one long high note fading (the
+  jet shrinking to a dot); 📦 dissolve — a two-note downward shrug; 🚔 caught — four
+  descending sawtooth steps and a 98Hz door-close, timed to land as the trial yields to the
+  front page.
+- All synthesized through the existing beep() helper, no assets. Verified: gates ×2,
+  unmuted escape and trial→caught walks error-free. No UI change.
+
 ## 2026-06-13 — The wall of letters (iteration 52)
 - Mây's letters now hang on a string in the founder scene — one small cream paper per
   letter received, pinned in the top-left sky. The clean path finally has visual parity

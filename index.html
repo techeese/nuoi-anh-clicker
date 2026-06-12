@@ -1276,6 +1276,23 @@
   function sMorning() { [523, 659, 784, 1047].forEach(function (f, i) { beep(f, 0.18, "triangle", 0.06, i * 0.08); }); }
   function sGavel() { beep(150, 0.18, "square", 0.09); beep(120, 0.26, "square", 0.09, 0.28); }
   function sHalo() { [392, 494, 587, 784].forEach(function (f, i) { beep(f, 1.4, "sine", 0.05, i * 0.05); }); }
+  // ending stingers: each fate gets a musical signature (it.53)
+  function sStingSaint() {
+    [392, 440, 523, 587, 784].forEach(function (f, i) { beep(f, 0.5, "sine", 0.05, i * 0.16); });
+    [392, 494, 587].forEach(function (f) { beep(f, 1.8, "sine", 0.035, 0.95); });
+  }
+  function sStingEscape() {
+    [262, 294, 330, 370, 415].forEach(function (f, i) { beep(f, 0.12, "sine", 0.05, i * 0.07); });
+    beep(880, 1.4, "sine", 0.028, 0.45); // the jet shrinks to a dot in the sky
+  }
+  function sStingDissolve() {
+    beep(330, 0.4, "triangle", 0.055);
+    beep(262, 0.7, "triangle", 0.05, 0.35); // a shrug, resolved downward
+  }
+  function sStingCaught() {
+    [392, 370, 311, 262].forEach(function (f, i) { beep(f, 0.5, "sawtooth", 0.04, i * 0.22); });
+    beep(98, 0.9, "square", 0.07, 1.0); // the door closes
+  }
 
   // Ambient generative music — the soundtrack follows your conscience
   var MUSIC_CALM = [220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33];   // bright pentatonic
@@ -2209,14 +2226,16 @@
       title.textContent = "🏝️ TẨU THOÁT THÀNH CÔNG!";
       desc.innerHTML = "Bạn đã kịp 'nghỉ hưu non' ở một hòn đảo không có hiệp định dẫn độ, trước khi mọi chuyện vỡ lở. Nhưng làm giàu nhanh quen rồi, nghỉ sao nổi…";
       confetti();
+      sStingEscape();
     } else if (outcome === "dissolved") {
       card.classList.add("win-card");
       title.textContent = "📦 GIẢI THỂ ÊM ĐẸP";
       desc.innerHTML = "Dự án 'hoàn thành sứ mệnh lịch sử' và đóng cửa trong yên bình. Không ai hỏi gì. Lần sau, với từng này quan hệ, mọi thứ sẽ dễ hơn nhiều.";
+      sStingDissolve();
     } else if (outcome === "saint") {
       card.classList.add("win-card");
       title.textContent = "😇 NGƯỜI TỬ TẾ CÓ THẬT";
-      sHalo();
+      sStingSaint();
       desc.innerHTML = "Bạn chuyển giao toàn bộ dự án cho một tổ chức minh bạch, công khai mọi sổ sách. Báo chí viết về bạn như một phép màu giữa thời đại hoài nghi. Hoá ra… làm người tốt cũng được nhận quan hệ. Gấp đôi.";
       confetti(); confetti();
     } else {
@@ -2481,6 +2500,7 @@
   document.getElementById("trialBtn").addEventListener("click", function () {
     document.getElementById("trialOverlay").classList.remove("show");
     document.getElementById("gameOverOverlay").classList.add("show");
+    sStingCaught(); // the verdict's coda lands as the front page appears
   });
 
   function startNewRun() {
