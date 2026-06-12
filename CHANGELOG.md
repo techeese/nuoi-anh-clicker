@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-06-13 — Nhà báo điều tra arc (iteration 36)
+- The one-shot journalist event became a 3-stage chained arc: chị phóng viên of the
+  (obviously fictional) weekly 'Soi Kỹ Cuối Tuần' contacts you → 'Kỳ 2: Đồng tiền rẽ ngang'
+  drops with a 24-hour ultimatum → the finale 'Người đếm bữa cơm' prints the meal-math of
+  your skim percentage.
+- Bribes work — and compound: every envelope gets photographed; bribing twice (bribed2)
+  adds the envelope-photo box to the finale AND to the caught-ending newspaper ("kèm phụ
+  lục: ảnh hai chiếc phong bì"). Suing has 35/65 odds. The darkest option raises your own
+  skim slider by 10 on screen.
+- Honest-events rule held: stages 2–3 gate on !isClean() — clean up and she finds nothing.
+  All effects discrete (one-time deltas), no engine mirror needed. Snapshot carries nbS/nbM
+  so archived papers reprint the citation.
+- Verified: gates ×2, 3-stage chain walk (4s-scheduler test copy, pool-filtered) landed
+  stage=3/bribed2, bust harness shows the newspaper citation + envelope appendix, stage-2
+  card clean at 390px.
+
 ## 2026-06-13 — Maintenance sprint 6 (iteration 35)
 - Sweep: 10/12 green, only the two known eternal hairlines (saint 879s vs 900 floor — sim
   bots play optimally; click ratio 1.29 vs 1.30). Optimizer suggestions rejected again (they

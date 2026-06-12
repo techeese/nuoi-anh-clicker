@@ -1227,6 +1227,7 @@
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
+      nbStage: 0, nbMode: "",
       challenge: "", rngState: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
@@ -1600,17 +1601,66 @@
           fx: function () { S.ktStage = 3; S.ktMode = "left"; S.suspicion += 25; return "Bạn lục hộp của chị ấy trước mặt chị ấy. Bản sao kê không có ở đó. Nó chưa bao giờ ở đó."; } }
       ] },
     { title: "🕵️ Nhà báo điều tra liên hệ",
-      when: function () { return !isClean() || S.suspicion >= 25; },
-      desc: "Một phóng viên nhắn tin: 'Em có vài câu hỏi về dòng tiền của dự án, anh sắp xếp trả lời giúp em nhé.'",
+      when: function () { return S.nbStage === 0 && (!isClean() || S.suspicion >= 25); },
+      desc: "Chị phóng viên của tuần báo 'Soi Kỹ Cuối Tuần' nhắn tin: 'Em có vài câu hỏi về dòng tiền của dự án. Anh trả lời, hoặc em tự tìm — kiểu gì em cũng viết.'",
       choices: [
-        { label: "Mời đi 'cà phê' (tốn 15% túi riêng)", hint: "Nghi ngờ -15%",
-          fx: function () { S.stash *= 0.85; S.suspicion -= 15; return "Bài báo không bao giờ được đăng. 'Anh em cả mà.'"; } },
+        { label: "Mời đi 'cà phê' (tốn 15% túi riêng)", hint: "Nghi ngờ -15%… và một tấm ảnh bạn không biết",
+          fx: function () { S.stash *= 0.85; S.suspicion -= 15; S.nbStage = 1; S.nbMode = "bribed"; return "Kỳ 1 không bao giờ lên trang. 'Anh em cả mà.' Nhưng trong điện thoại chị ấy, có một tấm ảnh chụp chiếc phong bì."; } },
         { label: "Phớt lờ tin nhắn", hint: "Nghi ngờ +10%",
-          fx: function () { S.suspicion += 10; return "Bài điều tra lên trang nhất: 'Dự án X im lặng bất thường'."; } },
+          fx: function () { S.suspicion += 10; S.nbStage = 1; S.nbMode = "ignored"; return "Kỳ 1 lên trang nhất: 'Dự án X im lặng bất thường'. Cuối bài có một dòng nhỏ: 'Còn tiếp.'"; } },
         { label: "Trả lời phỏng vấn, kể chuyện cảm động", hint: "50/50: nghi ngờ -10% hoặc +15%",
           fx: function () {
-            if (rnd() < 0.5) { S.suspicion -= 10; return "Bạn khóc đúng đoạn cao trào. Dư luận cảm động, tạm tin."; }
-            S.suspicion += 15; return "Nhà báo hỏi đúng chỗ hiểm. Bạn ấp úng. Clip viral với caption 'sao mắt anh láo liên thế?'";
+            S.nbStage = 1; S.nbMode = "interviewed";
+            if (rnd() < 0.5) { S.suspicion -= 10; return "Bạn khóc đúng đoạn cao trào. Dư luận cảm động, tạm tin. Chị phóng viên thì ghi chú gì đó vào sổ."; }
+            S.suspicion += 15; return "Chị ấy hỏi đúng chỗ hiểm. Bạn ấp úng. Clip viral với caption 'sao mắt anh láo liên thế?'";
+          } }
+      ] },
+    { title: "📰 'Kỳ 2: Đồng tiền rẽ ngang'",
+      when: function () { return S.nbStage === 1 && S.suspicion >= 50 && !isClean(); },
+      desc: "Kỳ 2 sắp lên khuôn: sơ đồ dòng tiền, tên công ty sân sau, cả ảnh chụp một chiếc két. Chị phóng viên gửi bạn bản nháp kèm một dòng: 'Cho anh 24 giờ phản hồi.'",
+      choices: [
+        { label: "Phong bì dày gấp đôi (tốn 25% túi riêng)", hint: "Nghi ngờ -8%… mua thêm thời gian, không mua được im lặng",
+          fx: function () {
+            S.stash *= 0.75; S.nbStage = 2;
+            if (S.nbMode === "bribed") { S.suspicion -= 8; S.nbMode = "bribed2"; return "Chị ấy nhận. Lần này không đếm. Đó là dấu hiệu xấu nhất — và bạn không nhận ra."; }
+            S.suspicion -= 8; S.nbMode = "bribed";
+            return "Bản nháp 'tạm hoãn vì lý do biên tập'. Trên bàn chị ấy giờ có một chiếc phong bì chưa mở.";
+          } },
+        { label: "Thuê 'dư luận viên' phản bác trước (tốn 20% túi riêng)", hint: "50/50: nghi ngờ -12% hoặc +12%",
+          fx: function () {
+            S.stash *= 0.8; S.nbStage = 2; S.nbMode = "seeded";
+            if (rnd() < 0.5) { S.suspicion -= 12; return "Sóng đánh sóng. Kỳ 2 chìm giữa ba drama showbiz nở đúng lúc một cách kỳ lạ."; }
+            S.suspicion += 12; return "Ai đó bóc luôn hoá đơn thuê seeding. Giờ có HAI bài điều tra, và bài mới có ảnh chụp hợp đồng.";
+          } },
+        { label: "Để bài lên — sự thật nhanh chìm thôi", hint: "Nghi ngờ +12%",
+          fx: function () { S.suspicion += 12; S.nbStage = 2; S.nbMode = "silent"; return "Bài lên. 18.000 lượt chia sẻ. Một bình luận được ghim trên đỉnh: 'Sao kê đâu?'"; } }
+      ] },
+    { title: "⚖️ Kỳ cuối: 'Người đếm bữa cơm'",
+      when: function () { return S.nbStage === 2 && (S.suspicion >= 70 || S.totalRaised >= 3e9) && !isClean(); },
+      desc: "Kỳ cuối không nói về tiền. Nó đăng ảnh những bữa cơm thiếu thịt — và một bảng tính: mỗi phần trăm 'rút ruột' bằng bao nhiêu bữa cơm. Chị phóng viên nhắn đúng một câu: 'Lần này em không cần anh phản hồi.'",
+      choices: [
+        { label: "Họp báo, nhận 'sai sót quy trình' (trả lại 10% túi riêng)", hint: "Nghi ngờ -10%",
+          fx: function () {
+            S.stash *= 0.9; S.nbStage = 3; var extra = "";
+            if (S.nbMode === "bribed2") { S.suspicion += 10; extra = " Nhưng kỳ cuối có một box nhỏ: ảnh hai chiếc phong bì, chụp từ trên xuống."; }
+            S.suspicion -= 10;
+            return "Bạn cúi đầu đúng 5 giây — vừa đủ để chụp ảnh. Vài tỷ 'tự nguyện khắc phục'. Sóng tạm yên." + extra;
+          } },
+        { label: "Kiện tờ báo tội vu khống", hint: "35/65: nghi ngờ -15% hoặc +18%",
+          fx: function () {
+            S.nbStage = 3; var extra = "";
+            if (S.nbMode === "bribed2") { S.suspicion += 10; extra = " Trong hồ sơ toà còn có ảnh hai chiếc phong bì. Luật sư của bạn xin ra về sớm."; }
+            if (rnd() < 0.35) { S.suspicion -= 15; return "Đơn kiện làm vài toà soạn khác chùn tay. Tạm thời, sự im lặng có lợi cho bạn." + extra; }
+            S.suspicion += 18; return "Phiên toà thành sự kiện truyền thông. Mọi chứng cứ giờ nằm công khai trong hồ sơ toà." + extra;
+          } },
+        { label: "Im lặng — và kéo thanh trượt thêm một nấc", hint: "Skim +10%, nghi ngờ +8%",
+          fx: function () {
+            S.nbStage = 3; S.skim = Math.min(90, S.skim + 10); S.maxSkim = Math.max(S.maxSkim, S.skim);
+            document.getElementById("skimSlider").value = S.skim;
+            document.getElementById("skimPct").textContent = S.skim + "%";
+            var extra = S.nbMode === "bribed2" ? " Kỳ cuối đăng kèm ảnh hai chiếc phong bì. Bạn không đọc nữa." : "";
+            S.suspicion += 8;
+            return "Bạn không trả lời. Thanh trượt nhích thêm một nấc. Ở đâu đó, một cuốn sổ tay lại dày thêm một dòng." + extra;
           } }
       ] },
     { title: "💰 Đại gia muốn tài trợ 'khủng'",
@@ -1981,7 +2031,8 @@
       m: S.meals, days: days(), L: S.letters.length, kt: S.ktMode, ch: S.challenge ? 1 : 0, c: conns,
       cl: S.clicks, fu: S.fund, mc: S.maxCombo, sf: count("safe"),
       pv: PROVINCES.filter(function (i) { return count(i.id) > 0; }).length,
-      W: (S.mayReplies || []).filter(function (x) { return x === "w"; }).length
+      W: (S.mayReplies || []).filter(function (x) { return x === "w"; }).length,
+      nbS: S.nbStage, nbM: S.nbMode
     };
     META.runLog.unshift(snap);
     if (META.runLog.length > 20) META.runLog.length = 20;
@@ -2095,6 +2146,10 @@
       body += " Kế toán trưởng của dự án bị khởi tố trong cùng vụ án; cuốn sổ tay của bà được cho là chứng cứ quan trọng nhất.";
     } else if (outcome === "caught" && D.kt === "left") {
       body += " Theo nguồn tin riêng, lời khai then chốt đến từ một kế toán cũ của dự án.";
+    }
+    if (outcome === "caught" && D.nbS >= 2) {
+      body += " Loạt bài điều tra của tuần báo 'Soi Kỹ Cuối Tuần' được trích dẫn trong kết luận" +
+        (D.nbM === "bribed2" ? " — kèm phụ lục: ảnh hai chiếc phong bì." : ".");
     }
     if (D.L >= 2) {
       if (outcome === "saint") {
@@ -3487,7 +3542,7 @@
     // and a NaN that was JSON-serialized to null would slip straight through
     var bad = function (v) { return !Number.isFinite(v); };
     ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
-     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage", "rngState"]
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage", "nbStage", "rngState"]
       .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
@@ -3557,6 +3612,8 @@
             if (!Array.isArray(S.hist)) S.hist = [];
             if (typeof S.ktStage !== "number") S.ktStage = 0;
             if (typeof S.ktMode !== "string") S.ktMode = "";
+            if (typeof S.nbStage !== "number") S.nbStage = 0;
+            if (typeof S.nbMode !== "string") S.nbMode = "";
             if (typeof S.challenge !== "string") S.challenge = "";
             if (typeof S.rngState !== "number") S.rngState = 0;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
