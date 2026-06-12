@@ -351,7 +351,30 @@
   .overlay .card.event-card h2 { color: var(--blue); font-size: 1.12rem; }
   .overlay .card.apology-card h2 { color: #ff9d42; }
   .overlay p { color: var(--muted); font-size: 0.9rem; line-height: 1.55; margin-bottom: 8px; }
-  .overlay .final-stats { margin: 16px 0; text-align: left; background: var(--panel-2); border-radius: 10px; padding: 14px; font-size: 0.87rem; line-height: 1.9; }
+  .overlay .final-stats { margin: 16px 0; text-align: left; }
+  .newspaper {
+    background: linear-gradient(180deg, #f6efdd, #efe5cc);
+    color: #211b12; border-radius: 4px; padding: 16px 18px 14px;
+    font-family: Georgia, "Times New Roman", serif;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 60px rgba(120,90,30,0.08);
+    transform: rotate(-0.6deg);
+  }
+  .np-masthead {
+    text-align: center; font-weight: 700; letter-spacing: 3px; font-size: 1.05rem;
+    border-bottom: 2.5px solid #211b12; padding-bottom: 5px;
+  }
+  .np-date {
+    display: flex; justify-content: space-between; font-size: 0.62rem;
+    border-bottom: 1px solid #211b12; padding: 3px 0; margin-bottom: 8px;
+  }
+  .np-headline { font-size: 1.18rem; font-weight: 800; line-height: 1.2; margin-bottom: 4px; }
+  .np-sub { font-size: 0.74rem; font-style: italic; color: #4a3f2c; margin-bottom: 8px; }
+  .np-cols { column-count: 2; column-gap: 12px; column-rule: 1px solid #c9b98e; font-size: 0.69rem; line-height: 1.5; text-align: justify; }
+  .np-quote {
+    margin-top: 8px; border-top: 1px solid #211b12; padding-top: 6px;
+    font-size: 0.7rem; font-style: italic; text-align: center; color: #3a3022;
+  }
+  .np-conn { text-align: center; margin-top: 10px; font-size: 0.85rem; color: var(--purple); font-weight: 700; }
   .overlay .card > button, .intro-actions button {
     margin-top: 8px; padding: 12px 28px; font-size: 1rem; font-weight: 800;
     background: var(--gold); color: #1b1500; border: none; border-radius: 10px; cursor: pointer; font-family: inherit;
@@ -1001,7 +1024,7 @@
   ];
   var itemById = {};
   ITEMS.forEach(function (it) { itemById[it.id] = it; });
-  var PROVINCES = ITEMS.filter(function (i) { return i.once; });
+  var PROVINCES = ITEMS.filter(function (i) { return i.provMult; });
 
   // ================= Perks =================
   var PERKS = [
@@ -1580,15 +1603,65 @@
       sAlarm();
     }
 
-    document.getElementById("finalStats").innerHTML =
-      "💰 Tổng tiền kêu gọi: <b>" + fmt(S.totalRaised) + "</b><br>" +
-      "🤫 Tiền vào túi riêng: <b style='color:var(--gold)'>" + fmt(S.stash) + "</b><br>" +
-      "🍱 Bữa cơm đến tay các em: <b style='color:var(--green)'>" + S.meals.toLocaleString("vi-VN") + "</b><br>" +
-      "📅 Tồn tại: <b>" + days() + " ngày</b> &nbsp;|&nbsp; 🖱️ " + S.clicks.toLocaleString("vi-VN") + " lần kêu gọi<br>" +
-      "🤝 Quan hệ nhận được: <b style='color:var(--purple)'>+" + conns + "</b> (tổng: " + META.connections + ")";
+    document.getElementById("finalStats").innerHTML = frontPage(outcome, conns);
 
     document.getElementById("gameOverOverlay").classList.add("show");
     save();
+  }
+
+  // every ending deserves journalism: a front page written from the player's own numbers
+  function frontPage(outcome, conns) {
+    var paper = {
+      caught: {
+        head: "SỤP ĐỔ MỘT 'TƯỢNG ĐÀI THIỆN NGUYỆN'",
+        sub: "Cơ quan điều tra khởi tố vụ án, phong toả tài khoản — hàng nghìn nhà hảo tâm bàng hoàng",
+        quote: "“Tôi đã nuôi 3 em suốt 2 năm. Hoá ra tôi nuôi cái biệt thự.” — một nhà hảo tâm"
+      },
+      escaped: {
+        head: "FOUNDER BIẾN MẤT BÍ ẨN TRƯỚC GIỜ THANH TRA",
+        sub: "Một chuyến bay riêng rời đi lúc rạng sáng; văn phòng dự án chỉ còn lại những thùng hồ sơ rỗng",
+        quote: "“Anh ấy nói đi 'công tác nước ngoài'. Đã ba tuần.” — nhân viên giấu tên"
+      },
+      dissolved: {
+        head: "DỰ ÁN TUYÊN BỐ 'HOÀN THÀNH SỨ MỆNH LỊCH SỬ'",
+        sub: "Buổi lễ giải thể diễn ra trang trọng, nhanh gọn, và không nhận câu hỏi từ báo chí",
+        quote: "“Kết thúc đẹp. Hơi vội, nhưng đẹp.” — một quan sát viên"
+      },
+      saint: {
+        head: "NGƯỜI TỬ TẾ CÓ THẬT: TOÀN BỘ SỔ SÁCH ĐƯỢC CÔNG KHAI",
+        sub: "Toàn bộ dự án được chuyển giao minh bạch; giới thiện nguyện gọi đây là 'phép màu giữa thời hoài nghi'",
+        quote: "“Hoá ra vẫn còn người như vậy.” — bình luận 50.000 lượt thích"
+      }
+    }[outcome];
+
+    var body = "Theo số liệu chúng tôi có được, dự án đã kêu gọi tổng cộng <b>" + fmt(S.totalRaised) +
+      "</b> từ cộng đồng, nấu <b>" + S.meals.toLocaleString("vi-VN") + "</b> bữa cơm cho trẻ em vùng cao" +
+      " trong suốt " + days() + " ngày hoạt động với " + S.clicks.toLocaleString("vi-VN") + " lượt kêu gọi. ";
+    if (outcome === "caught") {
+      body += "Cơ quan chức năng xác định khoảng <b>" + fmt(S.stash) + "</b> đã 'đi lạc' vào tài khoản cá nhân" +
+        (count("safe") > 0 ? ", trong đó một phần đáng kể đã 'bốc hơi' qua các két sắt nước ngoài một cách khó hiểu." : " và đã bị thu giữ toàn bộ.");
+      if (S.maxCombo >= 30) body += " Đáng chú ý, đối tượng từng kêu gọi " + S.maxCombo + " lần liên tiếp không nghỉ.";
+    } else if (outcome === "escaped") {
+      body += "Ước tính <b>" + fmt(S.stash) + "</b> đã rời khỏi hệ thống ngân hàng trong nước từ trước đó nhiều tuần. " +
+        "Interpol cho biết 'đang phối hợp xác minh'.";
+    } else if (outcome === "saint") {
+      body += "Kiểm toán độc lập xác nhận chênh lệch sổ sách: <b>0₫</b>. Tài sản cá nhân của founder — toàn bộ từ nhuận bút, " +
+        "diễn thuyết và hợp đồng đại sứ — là <b>" + fmt(S.stash) + "</b>, hợp pháp đến từng đồng.";
+    } else {
+      body += "Số dư quỹ tại thời điểm giải thể là <b>" + fmt(S.fund) + "</b>. Khoản này, theo thông cáo, 'sẽ được xử lý đúng quy định'.";
+    }
+    var provinces = PROVINCES.filter(function (i) { return count(i.id) > 0; }).length;
+    if (provinces > 0) body += " Dự án từng phủ sóng " + provinces + " tỉnh thành.";
+
+    return '<div class="newspaper">' +
+      '<div class="np-masthead">📰 NHẬT BÁO BUỔI SÁNG</div>' +
+      '<div class="np-date"><span>Số đặc biệt</span><span>Ngày thứ ' + days() + ' của dự án</span><span>2.000₫</span></div>' +
+      '<div class="np-headline">' + paper.head + '</div>' +
+      '<div class="np-sub">' + paper.sub + '</div>' +
+      '<div class="np-cols">' + body + '</div>' +
+      '<div class="np-quote">' + paper.quote + '</div>' +
+      '</div>' +
+      '<div class="np-conn">🤝 Quan hệ nhận được: +' + conns + ' (tổng: ' + META.connections + ')</div>';
   }
 
   function startNewRun() {

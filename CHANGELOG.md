@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Newspaper endings + critical bugfix (autonomous iteration 4)
+- Every run ending is now a satirical morning-paper front page (NHẬT BÁO BUỔI SÁNG) written
+  from the player's actual numbers — headline per ending, two-column article, donor quote,
+  details react to Swiss safes, combo records, provinces conquered.
+- CRITICAL FIX: PROVINCES was filtered by `once` instead of `provMult`, so owning any laundering
+  front (or good-path honor) made provMult NaN and the boot self-test wiped the run.
+
 ## 2026-06-13 — Content wave 2 + mobile support (autonomous iterations 2-3)
 - 4 new story events: storm relief (milk it vs. quiet real aid), warehouse "handling fees",
   golden-hour talkshow (clean deck), the accountant who knows everything resigns (dirty deck).
