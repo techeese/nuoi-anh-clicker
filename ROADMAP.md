@@ -3,6 +3,10 @@
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 
+1. **Relic: Hộ chiếu thứ hai** (dirty twin to Mây's notebook) — earned by escape ending +
+   'Hai chiếc phong bì'; candidate effects need engine mirroring (scheme cost -10% touches
+   costScale; safes-at-start touches confiscation math) + sweep before shipping.
+
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 9, promise line + twin chips
     verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
@@ -10,6 +14,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Kỷ vật: Vở tập viết của Mây (first deed-gated relic; letters 20% earlier).
 - Con đường chưa đi (road-not-taken teases on first endings).
 - Phong bì đỏ viền đen (dark envelope variant: telegraphed risk, choice card).
 - Ending stingers (a musical signature per fate).

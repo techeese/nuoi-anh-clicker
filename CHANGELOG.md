@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — Kỷ vật: Vở tập viết của Mây (iteration 57)
+- First relic: a meta-perk earned by DEEDS, never bought — requires the 😇 saint ending AND
+  the 'Người quay đầu' redemption piece across your career. Effect: Mây's letters arrive
+  20% earlier (by meals) in every future run — the friendship doesn't start from zero.
+- Shown as a dashed locked card under the perk list until earned (with its unlock
+  condition stated plainly), turning gold when held. Derived entirely from existing META —
+  zero new state, zero engine impact (letters aren't simulated).
+- Founds the relic system; the dirty twin ("Hộ chiếu thứ hai") banked with engine notes.
+- Verified: gates ×2, relic-on fires letter 1 at 850 meals / relic-off doesn't, row renders
+  locked vs unlocked, 390px legacy crop clean.
+
 ## 2026-06-13 — Con đường chưa đi (iteration 56)
 - First-time endings now whisper about the road not taken, at the exact moment churn is
   highest. A first dirty ending (good path never found): "Người ta đồn: ai giữ tay sạch đủ
