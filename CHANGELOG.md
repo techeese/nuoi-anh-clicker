@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Bưu thiếp từ hòn đảo: the escape epilogue (iteration 51)
+- The escape "win" finally has a cost you can read: if Mây ever wrote to you (≥2 letters),
+  the ending now appends a postcard — one year later, a thrice-forwarded envelope reaches
+  the island. Her letter came back 'không rõ địa chỉ'; the school still cooks, less meat
+  now; and if you handwrote replies: "Con vẫn giữ mấy lá thư chú viết. Chữ xấu mà con
+  không nỡ bỏ." Closing line: she still hasn't erased your name from her notebook.
+- Renders from the snapshot inside frontPage, so archived escapes and their end cards keep
+  the postcard. No mechanics changed — escape stays optimal for stash; it just tastes
+  different now.
+- Verified: gates ×2, escape walk with letters shows all three beats / control without
+  letters shows none, 390px capture clean (newspaper + lined-paper postcard + buttons).
+
 ## 2026-06-13 — Maintenance sprint 9 (iteration 50)
 - Sweep: 10/12 (the two eternal hairlines), promise-era balance holding: runsToMax 9.2,
   saint/greedy 1.30.

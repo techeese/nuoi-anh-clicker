@@ -10,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Bưu thiếp từ hòn đảo (escape epilogue: Mây's forwarded letter).
 - Nhật ký dự án (run journal: events + choices + story beats, 40-entry cap).
 - Lời hứa đầu dự án (opening promise: 3 vows + decline, +25% kept, paper remembers).
 - Cà phê của hai người phụ nữ (kế toán × phóng viên crossover event).

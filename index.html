@@ -423,6 +423,20 @@
   .rl-np { margin-left: auto; }
   .arch-wrap { display: flex; flex-direction: column; align-items: center; max-width: 540px; width: 94%; max-height: 92vh; }
   #archivePaper { width: 100%; overflow-y: auto; }
+  .epilogue {
+    margin-top: 14px; padding: 16px 18px 14px;
+    background:
+      repeating-linear-gradient(#fdf9ee 0, #fdf9ee 23px, #c4d9e6 24px),
+      #fdf9ee;
+    border-radius: 4px; transform: rotate(0.8deg);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+    font-family: "Chalkboard SE", "Comic Sans MS", "Segoe Print", cursive;
+    color: #3a4a8c; font-size: 0.86rem; line-height: 24px; white-space: pre-line;
+  }
+  .epilogue .ep-head {
+    font-family: Georgia, "Times New Roman", serif; font-style: italic;
+    color: #6b5d40; font-size: 0.72rem; margin-bottom: 8px; line-height: 1.4;
+  }
   .arch-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
   #archiveClose, #journalClose {
     padding: 11px 26px; font-size: 0.9rem; font-weight: 800;
@@ -2285,6 +2299,20 @@
       if (D.prK) body += " Lời hứa ngày ra mắt — '" + prLabel + "' — đã được giữ trọn vẹn, một chi tiết hiếm gặp trong mảng tin này.";
       else body += " Lời hứa ngày ra mắt ('" + prLabel + "') không được nhắc đến trong thông cáo cuối cùng.";
     }
+
+    // the escape "win" gets a postcard one year later — if anyone ever wrote to you
+    var epilogue = "";
+    if (outcome === "escaped" && D.L >= 2) {
+      epilogue = '<div class="epilogue">' +
+        '<div class="ep-head">MỘT NĂM SAU — một phong bì qua ba lần chuyển tiếp đến một hòn đảo không có hiệp định dẫn độ.</div>' +
+        "Chú ơi, con là Mây.\n" +
+        "Cô bảo thư trước của con bị trả về, đề 'không rõ địa chỉ'. Con gửi lại, nhờ cô tìm địa chỉ mới.\n" +
+        "Trường con vẫn nấu cơm, chú ạ. Ít thịt hơn. Nhưng vẫn nấu.\n" +
+        (D.W >= 2 ? "Con vẫn giữ mấy lá thư chú viết. Chữ xấu mà con không nỡ bỏ.\n" : "") +
+        "Nếu chú đọc được thư này… con vẫn chưa xoá tên chú khỏi vở tập viết của con.\n" +
+        "— Mây" +
+        '</div>';
+    }
     if (D.L >= 2) {
       if (outcome === "saint") {
         body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
@@ -2303,6 +2331,7 @@
       '<div class="np-cols">' + body + '</div>' +
       '<div class="np-quote">' + paper.quote + '</div>' +
       '</div>' +
+      epilogue +
       '<div class="np-conn">🤝 Quan hệ nhận được: +' + D.c + (atEnd ? ' (tổng: ' + META.connections + ')' : '') + '</div>' +
       (atEnd ?
         '<div style="text-align:center; margin-top:10px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">' +
