@@ -1221,7 +1221,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [], coach: {},
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, archRead: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [], coach: {},
              records: { bestRaised: 0, bestStash: 0, fastestSaint: 0, longestDays: 0, bestConns: 0 } };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
@@ -1485,7 +1485,17 @@
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
       check: function () { return isClean() && S.stash >= 1e9; } },
     { id: "idol", name: "Thần tượng quốc dân", desc: "Nhận đủ Giải thưởng, Huân chương và Bảo trợ chính thức",
-      check: function () { return ["award", "medal", "gov"].every(function (id) { return count(id) > 0; }); } }
+      check: function () { return ["award", "medal", "gov"].every(function (id) { return count(id) > 0; }); } },
+    { id: "warmletters", name: "Hồi âm bằng tay", desc: "Tự tay viết thư trả lời bé Mây 3 lần trong một dự án",
+      check: function () { return (S.mayReplies || []).filter(function (r) { return r === "w"; }).length >= 3; } },
+    { id: "twoenvelopes", name: "Hai chiếc phong bì", desc: "Hối lộ nhà báo hai lần. Ảnh chụp đẹp lắm.",
+      check: function () { return S.nbMode === "bribed2"; } },
+    { id: "fullseries", name: "Đủ ba kỳ báo", desc: "Để 'Soi Kỹ Cuối Tuần' đăng trọn loạt điều tra mà vẫn còn đứng đây",
+      check: function () { return S.nbStage >= 3 && S.nbMode !== "redeemed"; } },
+    { id: "redeemed", name: "Người quay đầu", desc: "Được chính nhà báo từng điều tra mình viết bài khen",
+      check: function () { return S.nbMode === "redeemed"; } },
+    { id: "archivist", name: "Người giữ hồ sơ", desc: "Đọc lại một trang nhất cũ trong két hồ sơ",
+      check: function () { return META.archRead === true; } }
   ];
   function achCount() { return Object.keys(META.achievements).length; }
 
@@ -3381,6 +3391,7 @@
     document.getElementById("archivePaper").innerHTML = frontPage(r, false);
     document.getElementById("archiveOverlay").classList.add("show");
     paused = true;
+    META.archRead = true;
     sLetter();
   });
   document.getElementById("archiveClose").addEventListener("click", function () {
@@ -3622,7 +3633,7 @@
         if (d && d.meta) {
           META = d.meta;
           ["lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
-          ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
+          ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub", "archRead"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
           if (typeof META.lastDailyDay !== "string") META.lastDailyDay = "";
           if (typeof META.lastChallengeDay !== "string") META.lastChallengeDay = "";

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Achievements for the new systems (iteration 39)
+- Five achievements wire recent features into the reward loop: 💌 Hồi âm bằng tay (3 warm
+  letter replies in one run), 🧧 Hai chiếc phong bì (bribe the journalist twice — "Ảnh chụp
+  đẹp lắm."), 📰 Đủ ba kỳ báo (survive her full series, redemption excluded — that path has
+  its own badge), 🙇 Người quay đầu (earn her redemption piece), 🗂️ Người giữ hồ sơ (re-read
+  an archived front page; new META.archRead flag with migration).
+- Both moral paths now have completionist pull into the new content.
+- Verified: gates ×2, two seeded unlock harnesses (3 earned + 2 correctly locked, then the
+  inverse set; archivist unlocks on closing the archive — checker is paused-gated by design).
+
 ## 2026-06-13 — The sound of conscience (iteration 38)
 - Clicks now sound like what you are: clean hands ring a bright 650–1000Hz sine; as the skim
   slider rises the same coin lowers, dulls and loses its sparkle (330–390Hz triangle past

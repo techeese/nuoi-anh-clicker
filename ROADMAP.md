@@ -12,6 +12,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Achievements for letters/journalist/archive (5 new, both moral paths).
 - The sound of conscience (moral click tone + pocket thud + descending scheme chime).
 - 'Người quay đầu' redemption beat (reformTime streak + her fourth visit).
 - Nhà báo điều tra 3-stage arc (bribes photographed, finale prints the meal-math).
