@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint (iteration 7)
+- Balance sweep: 11/12 targets green (saint 14.7m / escape 37.7m / evil competitive at 1.30x);
+  only hairline miss is the click-ratio at 1.29 vs 1.30 floor. No changes needed.
+- 5-minute virtual-time bot playthrough (8 clicks/s, auto-buy, auto-answer events/apology/
+  envelopes, tab rotation): ZERO JS errors, no soft-locks.
+- Mobile audit: bust-ending newspaper verified at true 390px — renders perfectly.
+- Perf review: 7 intervals, all light; renderShop 2s rebuild ~10 nodes — no action warranted.
+
 ## 2026-06-13 — Founder speaks (iteration 6)
 - Click the founder: state-aware speech bubbles track his moral arc — earnest when clean,
   smug deflections when dirty, possessions-themed bragging when rich, nervous at suspicion 50+,
