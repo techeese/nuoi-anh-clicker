@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Accessibility & comfort pass (iteration 61)
+- aria-labels on all icon-only header buttons; role="dialog" + aria-modal + Vietnamese
+  aria-labels on all 10 overlays; gold focus-visible outlines for keyboard players.
+- prefers-reduced-motion respected: confetti and particle sprays skip entirely (JS guards),
+  floaties/drips appear without motion (they carry numbers), the ticker crawl is exempt
+  because the crawl is how its content displays.
+- Verified: gates ×2, --force-prefers-reduced-motion harness shows 0 decoration particles
+  vs 54 in the control while informative floaties and earnings stay identical.
+
 ## 2026-06-13 — Maintenance sprint 11 (iteration 60)
 - Sweep: stable (same two eternal hairlines), relic-era balance as designed.
 - Bot 5-min: 63 buys, 4 envelopes, zero errors, no soft-locks; 668 DOM nodes after the

@@ -10,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Accessibility & comfort pass (aria, dialog roles, focus rings, reduced motion).
 - The ticker knows your story (8 arc-conditional news lines).
 - Kỷ vật: Hộ chiếu thứ hai (dirty relic twin; escape threshold -10%).
 - Kỷ vật: Vở tập viết của Mây (first deed-gated relic; letters 20% earlier).

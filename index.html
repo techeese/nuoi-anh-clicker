@@ -656,6 +656,18 @@
   .relic-name { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; color: var(--muted); }
   .relic.unlocked .relic-name { color: var(--gold); }
   .relic-desc { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
+
+  button:focus-visible, input:focus-visible, .item:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* decoration stops; informative elements (floaties carry numbers) appear without motion;
+       the ticker crawl is exempt — the crawl IS how its content displays */
+    .pcl, .confetti, #feverGlow, .envelope { animation: none !important; }
+    .float-num, .float-num.skim, .stash-drip { animation: none !important; opacity: 1; }
+    .paper, .card, .toast { animation: none !important; }
+    #av-halo { animation: none !important; }
+  }
   .letter-replies { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 16px; }
   .letter-replies .rep-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); text-align: center; letter-spacing: 0.04em; }
   .reply-btn {
@@ -718,12 +730,12 @@
   <h1>🍚 NUÔI ANH — The Charity Tycoon</h1>
   <div class="subtitle">Trò chơi châm biếm / A satirical parody game. Mọi nhân vật đều là hư cấu.</div>
   <div class="header-btns">
-    <button id="muteBtn" title="Bật/tắt hiệu ứng âm thanh">🔊</button>
-    <button id="musicBtn" title="Bật/tắt nhạc nền">🎵 Off</button>
-    <button id="numFmtBtn" title="Đổi cách hiển thị số: tỷ/tr → 1.23e9 → K-M-B">🔢 tỷ</button>
-    <button id="exportBtn" title="Sao chép mã save vào clipboard">💾</button>
-    <button id="importBtn" title="Dán mã save để khôi phục">📥</button>
-    <button id="resetRunBtn" title="Bắt đầu lại dự án hiện tại (giữ Quan hệ & Thành tựu)">🔄</button>
+    <button id="muteBtn" title="Bật/tắt hiệu ứng âm thanh" aria-label="Bật hoặc tắt hiệu ứng âm thanh">🔊</button>
+    <button id="musicBtn" title="Bật/tắt nhạc nền" aria-label="Bật hoặc tắt nhạc nền">🎵 Off</button>
+    <button id="numFmtBtn" title="Đổi cách hiển thị số: tỷ/tr → 1.23e9 → K-M-B" aria-label="Đổi cách hiển thị số">🔢 tỷ</button>
+    <button id="exportBtn" title="Sao chép mã save vào clipboard" aria-label="Sao chép mã save vào clipboard">💾</button>
+    <button id="importBtn" title="Dán mã save để khôi phục" aria-label="Dán mã save để khôi phục">📥</button>
+    <button id="resetRunBtn" title="Bắt đầu lại dự án hiện tại (giữ Quan hệ & Thành tựu)" aria-label="Bắt đầu lại dự án hiện tại">🔄</button>
     <button id="hardResetBtn" title="Xoá toàn bộ dữ liệu và chơi lại từ đầu (kể cả intro)">🗑️ Chơi lại từ đầu</button>
   </div>
 </header>
@@ -1094,7 +1106,7 @@
 </div>
 
 <!-- Intro -->
-<div class="overlay" id="introOverlay">
+<div class="overlay" id="introOverlay" role="dialog" aria-modal="true" aria-label="Giới thiệu trò chơi">
   <div class="card intro-card">
     <h2>🍚 NUÔI ANH</h2>
     <div id="introText"></div>
@@ -1106,7 +1118,7 @@
 </div>
 
 <!-- Phiên toà -->
-<div class="overlay" id="trialOverlay">
+<div class="overlay" id="trialOverlay" role="dialog" aria-modal="true" aria-label="Phiên toà">
   <div class="card trial-card">
     <div class="trial-head">⚖️ PHIÊN TOÀ</div>
     <div class="trial-sub">— TRÒ CHƠI HƯ CẤU · MỌI TÌNH TIẾT ĐỀU LÀ CHÂM BIẾM —</div>
@@ -1119,7 +1131,7 @@
 </div>
 
 <!-- Game over -->
-<div class="overlay" id="gameOverOverlay">
+<div class="overlay" id="gameOverOverlay" role="dialog" aria-modal="true" aria-label="Kết thúc dự án">
   <div class="card" id="overlayCard">
     <h2 id="overTitle"></h2>
     <p id="overDesc"></p>
@@ -1129,7 +1141,7 @@
 </div>
 
 <!-- Random event -->
-<div class="overlay" id="eventOverlay">
+<div class="overlay" id="eventOverlay" role="dialog" aria-modal="true" aria-label="Sự kiện">
   <div class="card event-card">
     <h2 id="eventTitle"></h2>
     <p id="eventDesc"></p>
@@ -1138,7 +1150,7 @@
 </div>
 
 <!-- Welcome back report -->
-<div class="overlay" id="awayOverlay">
+<div class="overlay" id="awayOverlay" role="dialog" aria-modal="true" aria-label="Báo cáo vắng mặt">
   <div class="card win-card">
     <h2>🌅 TRONG LÚC BẠN VẮNG MẶT</h2>
     <p id="awayDesc"></p>
@@ -1148,7 +1160,7 @@
 </div>
 
 <!-- Letter from bé Mây -->
-<div class="overlay" id="letterOverlay">
+<div class="overlay" id="letterOverlay" role="dialog" aria-modal="true" aria-label="Thư của Mây">
   <div class="letter-wrap">
     <div class="paper">
       <div class="letter-date" id="letterDate"></div>
@@ -1166,7 +1178,7 @@
 </div>
 
 <!-- Run journal: what happened, and what you chose -->
-<div class="overlay" id="journalOverlay">
+<div class="overlay" id="journalOverlay" role="dialog" aria-modal="true" aria-label="Nhật ký dự án">
   <div class="arch-wrap">
     <div class="card intro-card" style="width:100%; max-height:80vh; overflow-y:auto;">
       <h2>📔 Nhật ký dự án</h2>
@@ -1179,7 +1191,7 @@
 </div>
 
 <!-- Opening promise: the press asks what you'll swear to -->
-<div class="overlay" id="promiseOverlay">
+<div class="overlay" id="promiseOverlay" role="dialog" aria-modal="true" aria-label="Lời hứa đầu dự án">
   <div class="card intro-card">
     <h2>🤙 Lời hứa đầu dự án</h2>
     <p>Họp báo ra mắt. Một phóng viên trẻ giơ tay: 'Anh hứa gì với các nhà hảo tâm?'
@@ -1195,7 +1207,7 @@
 </div>
 
 <!-- Newspaper archive: re-read any ending's front page from the case files -->
-<div class="overlay" id="archiveOverlay">
+<div class="overlay" id="archiveOverlay" role="dialog" aria-modal="true" aria-label="Hồ sơ lưu trữ">
   <div class="arch-wrap">
     <div id="archivePaper"></div>
     <div class="arch-btns">
@@ -1206,7 +1218,7 @@
 </div>
 
 <!-- Apology livestream minigame -->
-<div class="overlay" id="apologyOverlay">
+<div class="overlay" id="apologyOverlay" role="dialog" aria-modal="true" aria-label="Livestream xin lỗi">
   <div class="card apology-card">
     <h2>📵 LIVESTREAM XIN LỖI — CƠ HỘI CUỐI!</h2>
     <p>Nghi ngờ chạm đỉnh! Chỉ còn một cách: lên livestream khóc xin lỗi.
@@ -3229,7 +3241,9 @@
   }
 
   var CONF_COLORS = ["#f5c542", "#4cd97b", "#5ab0ff", "#ff5c6c", "#b88cff", "#fff"];
+  var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   function confetti() {
+    if (REDUCED_MOTION) return; // pure decoration
     for (var i = 0; i < 26; i++) {
       var p = document.createElement("div");
       p.className = "confetti";
@@ -3245,6 +3259,7 @@
   var PCL_EMOJI = ["💸", "🪙", "💰"];
   var PCL_SHADY = ["💸", "🪙", "🤫", "🕶️"]; // heavy skim shows in the spray itself
   function moneyBurst(x, y, n) {
+    if (REDUCED_MOTION) return; // pure decoration
     var zone = document.getElementById("clickZone");
     var pool = S.skim >= 40 ? PCL_SHADY : PCL_EMOJI;
     for (var i = 0; i < n; i++) {
