@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — The journal at judgment (iteration 64)
+- Every ending screen gains 📔 "Đọc lại nhật ký": review your run's full decision history —
+  the promise you made, the schemes you launched, the choices you clicked, the day the
+  letters stopped — right at the moment of moral accounting, before letting the run go.
+- Refactored the chip handler into a shared openJournal(); the journal overlay stacks over
+  the ending and returns to it cleanly.
+- Verified: gates ×2, bust → read → close walk (3 entries, ending restored), 390px overlay
+  stack clean.
+
 ## 2026-06-13 — Kỷ vật: Cuốn sổ nâu (iteration 63)
 - The third relic completes the recurring-cast trilogy: earned by making chị kế toán an
   accomplice AND dissolving quietly (you closed the books together). Effect: she keeps in

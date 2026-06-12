@@ -2300,6 +2300,8 @@
     document.getElementById("finalStats").innerHTML = frontPage(snap, true);
     var cbtn = document.getElementById("cardBtn");
     if (cbtn) cbtn.addEventListener("click", function () { saveEndCard(snap); });
+    var jbtn = document.getElementById("endJournalBtn");
+    if (jbtn) jbtn.addEventListener("click", openJournal);
 
     renderLegacy();
     if (outcome === "caught") showTrial();
@@ -2419,6 +2421,7 @@
       (atEnd ?
         '<div style="text-align:center; margin-top:10px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">' +
         '<button id="cardBtn" style="background:rgba(245,197,66,0.1); border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">🖼️ Lưu ảnh kết cục</button>' +
+        '<button id="endJournalBtn" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📔 Đọc lại nhật ký</button>' +
         (D.ch ? '<button id="shareBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📋 Sao chép kết quả thử thách</button>' : '') +
         '</div>' : '');
   }
@@ -3747,7 +3750,7 @@
     if (S.journal.length > 40) S.journal.shift();
     document.getElementById("journalChip").style.display = "inline-block";
   }
-  document.getElementById("journalChip").addEventListener("click", function () {
+  function openJournal() {
     if (!S.journal.length) return;
     var list = document.getElementById("journalList");
     list.innerHTML = S.journal.slice().reverse().map(function (j) {
@@ -3755,7 +3758,8 @@
     }).join("");
     document.getElementById("journalOverlay").classList.add("show");
     paused = true;
-  });
+  }
+  document.getElementById("journalChip").addEventListener("click", openJournal);
   document.getElementById("journalClose").addEventListener("click", function () {
     document.getElementById("journalOverlay").classList.remove("show");
     paused = eventOpen || apologyOpen;
