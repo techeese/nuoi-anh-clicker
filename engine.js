@@ -246,7 +246,9 @@ class Game {
     const factor = { escaped: 1.5, saint: 2.0, dissolved: 1.0, caught: 0.6 }[outcome];
     let stashBonus = S.stash > 2e8 ? Math.floor(4 * Math.log10(S.stash / 2e8)) : 0;
     if (outcome === "caught") stashBonus = Math.floor(stashBonus * this.count("safe") / 3);
-    S.conns = Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor) + stashBonus);
+    // opening promise (it.48): all three promises are keepable by competent play on either
+    // moral path, so optimal play earns the +25% regardless of strategy — model as flat
+    S.conns = Math.max(outcome === "caught" ? 0 : 1, Math.round((Math.floor(base * factor) + stashBonus) * 1.25));
     return outcome;
   }
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-06-13 — Lời hứa đầu dự án (iteration 48)
+- Every run opens with a press conference: swear to one of three promises (🍚 30.000 bữa /
+  🤲 never skim past 20% / 🗓️ survive 20 days) or decline. Kept promises pay +25%
+  connections at run end; either way the ending newspaper remembers — kept gets "một chi
+  tiết hiếm gặp trong mảng tin này", forgotten gets the silence treatment.
+- Live progress line under the forecast (cached render, no frame churn). Old mid-run saves
+  are never prompted (totalRaised ≥ 1tr gate); the prompt re-fires on every new run.
+- Balance: all three promises are keepable by competent play on either moral path → engine
+  models the bonus as flat ×1.25 under optimal play. Sweep: runsToMax 11.4 → 9.2 (in band),
+  saint/greedy ratio unchanged at 1.30, same two eternal hairlines.
+- gate.sh fresh harness updated in the same commit — the canonical first session now
+  includes answering the press (landmine logged: gates must follow the real flow).
+- Verified: gates green through the new flow, selection persists + line renders, kept vs
+  broken pair shows the exact ×1.25 (6 vs 5 conns) and both paper lines, 390px overlay +
+  progress line clean.
+
 ## 2026-06-13 — Cà phê của hai người phụ nữ (iteration 47)
 - The two arcs finally meet: if you let chị kế toán walk AND the journalist is on your
   trail, a leaked photo shows them sharing coffee — with the brown notebook on the table.

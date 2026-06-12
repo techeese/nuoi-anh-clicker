@@ -720,6 +720,7 @@
       </div>
 
       <div class="forecast" id="forecast"></div>
+      <div class="forecast" id="promiseLine"></div>
 
       <div class="click-zone" id="clickZone">
         <div id="comboDisp"></div>
@@ -1115,6 +1116,22 @@
   </div>
 </div>
 
+<!-- Opening promise: the press asks what you'll swear to -->
+<div class="overlay" id="promiseOverlay">
+  <div class="card intro-card">
+    <h2>🤙 Lời hứa đầu dự án</h2>
+    <p>Họp báo ra mắt. Một phóng viên trẻ giơ tay: 'Anh hứa gì với các nhà hảo tâm?'
+    Cả phòng chờ. Lời hứa giữ trọn = <b>+25% quan hệ 🤝</b> khi dự án khép lại.
+    Lời hứa bị quên… cũng sẽ lên báo.</p>
+    <div class="event-choices" id="promiseChoices">
+      <button data-pr="meals">🍚 'Chúng tôi sẽ nấu 30.000 bữa cơm.'<small>Giữ lời: kết thúc với ≥ 30.000 bữa</small></button>
+      <button data-pr="hands">🤲 'Từng đồng sẽ đến đúng nơi.'<small>Giữ lời: cả dự án không bao giờ rút quá 20%</small></button>
+      <button data-pr="days">🗓️ 'Đây không phải phong trào sớm nở tối tàn.'<small>Giữ lời: dự án sống ≥ 20 ngày</small></button>
+      <button data-pr="none">😶 'Xin phép không hứa trước điều gì.'<small>An toàn. Hơi nhạt. Không ai viết về bạn.</small></button>
+    </div>
+  </div>
+</div>
+
 <!-- Newspaper archive: re-read any ending's front page from the case files -->
 <div class="overlay" id="archiveOverlay">
   <div class="arch-wrap">
@@ -1254,7 +1271,7 @@
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
-      nbStage: 0, nbMode: "", crossDone: false,
+      nbStage: 0, nbMode: "", crossDone: false, promise: "",
       challenge: "", rngState: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
@@ -2102,6 +2119,11 @@
     hideApology();
     removeEnvelope();
     var conns = connectionsEarned(outcome);
+    var prKept = 0;
+    if (S.promise && S.promise !== "none" && PROMISES[S.promise] && PROMISES[S.promise].check()) {
+      prKept = 1;
+      conns = Math.round(conns * 1.25);
+    }
     META.connections += conns;
     META.runs += 1;
     META.endings[outcome] = true;
@@ -2112,7 +2134,7 @@
       cl: S.clicks, fu: S.fund, mc: S.maxCombo, sf: count("safe"),
       pv: PROVINCES.filter(function (i) { return count(i.id) > 0; }).length,
       W: (S.mayReplies || []).filter(function (x) { return x === "w"; }).length,
-      nbS: S.nbStage, nbM: S.nbMode
+      nbS: S.nbStage, nbM: S.nbMode, pr: S.promise, prK: prKept
     };
     META.runLog.unshift(snap);
     if (META.runLog.length > 20) META.runLog.length = 20;
@@ -2235,6 +2257,11 @@
       if (D.nbM === "redeemed") body += " Bài 'Người quay đầu' năm nào được gỡ xuống trong im lặng.";
     } else if (outcome === "saint" && D.nbM === "redeemed") {
       body += " Tác giả loạt bài điều tra năm nào cũng có mặt tại lễ chuyển giao — lần này với một bài viết mang tên 'Người quay đầu', kỳ cuối.";
+    }
+    if (D.pr && D.pr !== "none") {
+      var prLabel = { meals: "nấu 30.000 bữa cơm", hands: "không rút quá 20%", days: "sống 20 ngày" }[D.pr] || "";
+      if (D.prK) body += " Lời hứa ngày ra mắt — '" + prLabel + "' — đã được giữ trọn vẹn, một chi tiết hiếm gặp trong mảng tin này.";
+      else body += " Lời hứa ngày ra mắt ('" + prLabel + "') không được nhắc đến trong thông cáo cuối cùng.";
     }
     if (D.L >= 2) {
       if (outcome === "saint") {
@@ -2414,6 +2441,7 @@
     } else {
       setTicker("Một dự án mới ra đời. Hãy bấm nút để kêu gọi quyên góp!");
     }
+    maybePromise();
     scheduleEvent();
     scheduleEnvelope();
     renderAll();
@@ -3216,8 +3244,24 @@
       (pocket > 0 ? " · <b style='color:#9fa2b8'>🤫 túi " + money(pocket) + "</b>" : "");
   }
 
+  var lastPromiseTxt = null;
+  function renderPromiseLine() {
+    var txt = "";
+    if (S.promise && S.promise !== "none" && !S.gameOver && PROMISES[S.promise]) {
+      var P = PROMISES[S.promise];
+      var ok = P.check();
+      if (S.promise === "hands") txt = "🤙 Lời hứa: <b>" + P.label + "</b> — " + (ok ? "đang giữ ✓" : "ĐÃ VỠ ✗");
+      else txt = "🤙 Lời hứa: <b>" + P.label + "</b> — " + (ok ? "ĐÃ GIỮ ✓" : Math.min(99, Math.floor(P.prog() * 100)) + "%");
+    }
+    if (txt !== lastPromiseTxt) {
+      document.getElementById("promiseLine").innerHTML = txt;
+      lastPromiseTxt = txt;
+    }
+  }
+
   function renderStats() {
     renderSkimSplit();
+    renderPromiseLine();
     document.getElementById("fundVal").textContent = fmt(S.fund);
     document.getElementById("stashVal").textContent = fmt(S.stash);
     document.getElementById("mealsVal").textContent = S.meals.toLocaleString("vi-VN");
@@ -3771,6 +3815,7 @@
             if (typeof S.nbStage !== "number") S.nbStage = 0;
             if (typeof S.nbMode !== "string") S.nbMode = "";
             if (typeof S.crossDone !== "boolean") S.crossDone = false;
+            if (typeof S.promise !== "string") S.promise = "";
             if (typeof S.challenge !== "string") S.challenge = "";
             if (typeof S.rngState !== "number") S.rngState = 0;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
@@ -3909,7 +3954,37 @@
     paused = eventOpen || apologyOpen;
     document.getElementById("introOverlay").classList.remove("show");
     save();
+    maybePromise();
   }
+
+  // ================= Opening promise =================
+  var PROMISES = {
+    meals: { label: "nấu 30.000 bữa cơm", check: function () { return S.meals >= 30000; }, prog: function () { return S.meals / 30000; } },
+    hands: { label: "không rút quá 20%", check: function () { return S.maxSkim <= 20; }, prog: null },
+    days: { label: "sống 20 ngày", check: function () { return days() >= 20; }, prog: function () { return days() / 20; } }
+  };
+  // only fresh-ish runs get asked — old mid-run saves migrate to "" and silently skip
+  function maybePromise() {
+    if (S.gameOver || S.promise !== "" || S.totalRaised >= 1e6) return;
+    paused = true;
+    document.getElementById("promiseOverlay").classList.add("show");
+  }
+  document.getElementById("promiseChoices").addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button[data-pr]") : null;
+    if (!b) return;
+    S.promise = b.getAttribute("data-pr");
+    document.getElementById("promiseOverlay").classList.remove("show");
+    paused = eventOpen || apologyOpen;
+    if (S.promise !== "none") {
+      var P = PROMISES[S.promise];
+      toast("🤙 <b>Bạn đã hứa: " + P.label + ".</b><br>Cả phòng họp báo đã ghi hình. Giữ lời: +25% quan hệ.");
+      setTicker("🤙 Founder tuyên bố: sẽ " + P.label + ". Dân mạng: 'Để xem.'");
+    } else {
+      toast("😶 <b>Không hứa gì.</b><br>Một tờ báo giật tít: 'Dự án mới úp mở khó hiểu'. Rồi thôi.");
+    }
+    save();
+    renderStats();
+  });
   document.getElementById("introStartBtn").addEventListener("click", closeIntro);
   document.getElementById("introSkipBtn").addEventListener("click", closeIntro);
 
@@ -4126,7 +4201,7 @@
     }
   })();
 
-  if (!META.introSeen) playIntro();
+  if (!META.introSeen) playIntro(); else maybePromise();
 
   var last = Date.now();
   setInterval(function () {

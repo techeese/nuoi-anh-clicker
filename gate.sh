@@ -28,8 +28,13 @@ fresh_test = """
 window.onerror = function(m,s,l){ document.title = "JSERR: " + m + " @" + l; };
 setTimeout(function(){
   var ib = document.getElementById("introStartBtn"); if (ib) ib.click();
+  // the canonical fresh flow now includes the opening-promise press conference (it.48)
+  setTimeout(function(){
+    var pb = document.querySelector("#promiseChoices button[data-pr='none']");
+    if (pb) pb.click();
+  }, 250);
   var d = document.getElementById("donateBtn"); var n = 0;
-  var iv = setInterval(function(){ d.dispatchEvent(new MouseEvent("click",{clientX:300,clientY:300,bubbles:true})); if(++n>=15) clearInterval(iv); }, 80);
+  var iv = setInterval(function(){ d.dispatchEvent(new MouseEvent("click",{clientX:300,clientY:300,bubbles:true})); if(++n>=25) clearInterval(iv); }, 80);
   setTimeout(function(){
     if (document.title.indexOf("JSERR") !== 0)
       document.title = "GATE_FRESH FUND=" + document.getElementById("fundVal").textContent;
