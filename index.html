@@ -249,6 +249,14 @@
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   }
   @keyframes skimDown { 0% { opacity: 0.95; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(56px) scale(0.9); } }
+  .stat.stash { position: relative; }
+  .stash-drip {
+    position: absolute; right: 8px; bottom: 4px; pointer-events: none;
+    font-size: 0.68rem; font-weight: 800; color: #b9a44c;
+    animation: dripUp 1.5s ease-out forwards; z-index: 5;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  }
+  @keyframes dripUp { 0% { opacity: 0; transform: translateY(8px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
 
   .pcl { position: absolute; pointer-events: none; font-size: 1rem; z-index: 4; animation: pclFly 0.7s ease-out forwards; }
   @keyframes pclFly { to { transform: translate(var(--dx), var(--dy)) rotate(140deg); opacity: 0; } }
@@ -3752,6 +3760,20 @@
       document.getElementById("feverGlow").classList.remove("on");
     }
   }, 300);
+
+  // stash drip: passive kickbacks arrive on screen every few seconds — crime pays, visibly
+  setInterval(function () {
+    if (S.gameOver || paused || document.hidden) return;
+    var kbps = kickbackPerSec();
+    if (kbps <= 0) return;
+    var box = document.querySelector(".stat.stash");
+    if (!box) return;
+    var el = document.createElement("div");
+    el.className = "stash-drip";
+    el.textContent = "+" + fmt(kbps * 4) + " 🤫";
+    box.appendChild(el);
+    setTimeout(function () { el.remove(); }, 1500);
+  }, 4000);
 
   // ================= Intro =================
   var INTRO_LINES = [

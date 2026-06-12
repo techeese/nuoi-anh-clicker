@@ -2,8 +2,9 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **Stash drip** — passive kickback income (schemes) is still invisible moment-to-moment;
-   a periodic grey drip toward the túi riêng readout would extend the visible-cut language.
+1. **Shareable end card** — canvas-rendered run summary image (ending, headline, key stats)
+   the player can save/share; extends the challenge share-text into something visual
+   (banked from it.41 ideation).
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 7, full-page + achievements
@@ -12,6 +13,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Stash drip (passive kickbacks rise visibly out of the túi riêng box).
 - Achievements for letters/journalist/archive (5 new, both moral paths).
 - The sound of conscience (moral click tone + pocket thud + descending scheme chime).
 - 'Người quay đầu' redemption beat (reformTime streak + her fourth visit).

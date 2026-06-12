@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Stash drip (iteration 41)
+- Passive kickback income is now visible moment-to-moment: every 4 seconds a small dirty-gold
+  "+X₫ 🤫" rises out of the túi riêng stat box while schemes pay. Completes the visible-money
+  language (it.33 click cuts, it.34 slider split) — charter line "crime pays, visibly" now
+  holds for all three income paths. Clean players see nothing new.
+- Verified: gates ×2, scheme-save watcher saw drips (+120,4k₫ 🤫) / clean save saw zero,
+  390px capture confirms placement in the stat box corner.
+
 ## 2026-06-13 — Maintenance sprint 7 (iteration 40)
 - Sweep: same 10/12 with the two eternal hairlines; optimizer suggestions rejected as ever.
 - Bot 5-minute playthrough with the CORRECTED buy selector: 60 purchases (first sprint bot
