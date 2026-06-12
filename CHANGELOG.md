@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Nhật ký dự án: the run journal (iteration 49)
+- A 📔 chip beside Mây's letters opens the run's own diary: every event answered (with the
+  choice you made in italics), letters arrived/replied, the silence beat, promises sworn,
+  first launch of each scheme, sao kê publications, finding the hidden path — newest first,
+  capped at 40 entries, persisted in the save.
+- Reading back your own decision history is the satire turned inward: "Ngày 5 — 😈 Khởi
+  động 'Mã nuôi em trùng lặp'" sits right under "Ngày 2 — bạn hứa từng đồng sẽ đến đúng
+  nơi."
+- Verified: gates ×2, accumulation harness (event + scheme + seeded entries, persisted 5,
+  overlay open/close), 390px clean after fixing an unstyled close button caught on the
+  first capture.
+
 ## 2026-06-13 — Lời hứa đầu dự án (iteration 48)
 - Every run opens with a press conference: swear to one of three promises (🍚 30.000 bữa /
   🤲 never skim past 20% / 🗓️ survive 20 days) or decline. Kept promises pay +25%

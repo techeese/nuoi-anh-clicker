@@ -424,7 +424,7 @@
   .arch-wrap { display: flex; flex-direction: column; align-items: center; max-width: 540px; width: 94%; max-height: 92vh; }
   #archivePaper { width: 100%; overflow-y: auto; }
   .arch-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
-  #archiveClose {
+  #archiveClose, #journalClose {
     padding: 11px 26px; font-size: 0.9rem; font-weight: 800;
     background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
     border-radius: 10px; cursor: pointer; font-family: inherit;
@@ -620,6 +620,13 @@
     border: 1px solid var(--gold); color: var(--gold); border-radius: 999px;
     padding: 4px 12px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: inherit;
   }
+  #journalChip {
+    display: none; margin: 8px auto 0 8px; background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border); color: var(--muted); border-radius: 999px;
+    padding: 4px 12px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .jr-entry { font-size: 0.78rem; color: var(--muted); padding: 5px 0; border-bottom: 1px dashed var(--border); line-height: 1.45; }
+  .jr-entry b { color: var(--text); font-weight: 700; }
   .letter-replies { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 16px; }
   .letter-replies .rep-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); text-align: center; letter-spacing: 0.04em; }
   .reply-btn {
@@ -998,6 +1005,7 @@
       </svg>
       <div id="avCaption"></div>
       <button id="letterChip">💌 Thư của Mây (0)</button>
+      <button id="journalChip">📔 Nhật ký dự án</button>
     </div>
 
     <!-- Legacy -->
@@ -1113,6 +1121,19 @@
       <button class="reply-btn formal" id="replyFormal">🎁 Nhờ trợ lý gửi quà kèm thiệp in sẵn</button>
     </div>
     <button id="letterBtn">Cất vào ví 💌</button>
+  </div>
+</div>
+
+<!-- Run journal: what happened, and what you chose -->
+<div class="overlay" id="journalOverlay">
+  <div class="arch-wrap">
+    <div class="card intro-card" style="width:100%; max-height:80vh; overflow-y:auto;">
+      <h2>📔 Nhật ký dự án</h2>
+      <div id="journalList"></div>
+    </div>
+    <div class="arch-btns">
+      <button id="journalClose">Gập sổ lại 📔</button>
+    </div>
   </div>
 </div>
 
@@ -1271,7 +1292,7 @@
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
-      nbStage: 0, nbMode: "", crossDone: false, promise: "",
+      nbStage: 0, nbMode: "", crossDone: false, promise: "", journal: [],
       challenge: "", rngState: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
@@ -2074,6 +2095,7 @@
     confetti();
     toast("💌 <b>Một lá thư viết tay từ vùng cao…</b><br>'Cảm ơn chú đã cho con ăn cơm có thịt. Mai mốt lớn con cũng muốn làm người tốt giống chú.'<br>Một lối đi mới đã hiện ra: <b>😇 Chính đạo</b>.");
     setTicker("💌 Bạn đọc lá thư ba lần. Hôm đó, bạn không kiểm tra số dư lần nào.");
+    jot("✨ Bạn tìm thấy con đường ẩn: 😇 Chính đạo.");
     checkAchievements();
     save();
   }
@@ -2626,6 +2648,7 @@
 
     // setting up a scheme is the risky moment: one-time heat spike per purchase
     if (it.kick) {
+      if (count(id) === n) jot("😈 Khởi động '" + it.name + "'."); // first of its kind this run
       S.suspicion += 3 * n;
       clampSusp();
       setTicker("🕳️ Một giao dịch lạ vừa chạy qua hệ thống… chắc không ai để ý đâu.");
@@ -2775,6 +2798,7 @@
       b.innerHTML = ch.label + "<small>" + ch.hint + "</small>";
       b.addEventListener("click", function () {
         var result = ch.fx();
+        jot(ev.title + " → <i>" + ch.label + "</i>");
         clampSusp();
         hideEvent();
         setTicker("📌 " + result);
@@ -2990,6 +3014,7 @@
     S.saoKeAt = now;
     META.saoKePub = true;
     sBuy();
+    jot("📢 Bạn công bố sao kê trước cộng đồng.");
     if (isClean()) {
       S.suspicion = Math.max(0, S.suspicion - 8);
       setTicker("📢 Sao kê 200 trang, khớp đến từng đồng. Dân mạng: 'Chuẩn chỉnh thế này mới gọi là từ thiện.'");
@@ -3506,6 +3531,7 @@
     document.getElementById("letterReplies").style.display = "none";
     if (kind === "w") toast("✍️ <b>Bạn viết tay vài dòng.</b><br>Hơi xấu chữ. Nhưng là chữ của bạn.");
     else toast("🎁 <b>Trợ lý đã gửi quà kèm thiệp in sẵn.</b><br>Nhanh. Gọn. Chuyên nghiệp. Xong.");
+    jot(kind === "w" ? "✍️ Bạn viết tay trả lời thư của Mây." : "🎁 Trợ lý gửi quà kèm thiệp in sẵn thay bạn.");
     save();
   }
   document.getElementById("replyWarm").addEventListener("click", function () { replyToLetter("w"); });
@@ -3527,9 +3553,30 @@
   });
   function renderLetterChip() {
     var chip = document.getElementById("letterChip");
-    chip.style.display = S.letters.length ? "block" : "none";
+    chip.style.display = S.letters.length ? "inline-block" : "none";
     chip.textContent = "💌 Thư của Mây (" + S.letters.length + ")";
   }
+
+  // ================= Run journal: what happened, and what you chose =================
+  function jot(txt) {
+    if (S.gameOver) return;
+    S.journal.push({ d: days(), txt: txt });
+    if (S.journal.length > 40) S.journal.shift();
+    document.getElementById("journalChip").style.display = "inline-block";
+  }
+  document.getElementById("journalChip").addEventListener("click", function () {
+    if (!S.journal.length) return;
+    var list = document.getElementById("journalList");
+    list.innerHTML = S.journal.slice().reverse().map(function (j) {
+      return '<div class="jr-entry"><b>Ngày ' + j.d + '</b> — ' + j.txt + '</div>';
+    }).join("");
+    document.getElementById("journalOverlay").classList.add("show");
+    paused = true;
+  });
+  document.getElementById("journalClose").addEventListener("click", function () {
+    document.getElementById("journalOverlay").classList.remove("show");
+    paused = eventOpen || apologyOpen;
+  });
 
   // case files reprint their front page (delegated: renderLegacy rebuilds the cards)
   var archOpenSnap = null;
@@ -3562,11 +3609,13 @@
       S.letters.push(nextIdx);
       showLetter(nextIdx);
       setTicker("💌 Một lá thư viết tay vừa đến từ Điện Biên.");
+      jot("💌 Thư thứ " + (nextIdx + 1) + " của Mây đến.");
     } else if (S.letters.length > 0 && !S.maySilenced) {
       // the letters stop — once, quietly
       S.maySilenced = true;
       toast("📪 <b>Hộp thư trống.</b><br>Đã lâu không có thư từ Điện Biên. Chắc là bưu điện chậm thôi. Chắc vậy.");
       setTicker("📪 Không còn thư từ Điện Biên nữa.");
+      jot("📪 Hộp thư bắt đầu trống.");
     }
   }
 
@@ -3754,6 +3803,8 @@
     if (!Array.isArray(S.mayReplies)) S.mayReplies = [];
     // map, NOT filter: this array is index-aligned with letters; JSON turns sparse slots into null
     S.mayReplies = S.mayReplies.slice(0, 5).map(function (r) { return r === "w" || r === "f" ? r : null; });
+    if (!Array.isArray(S.journal)) S.journal = [];
+    S.journal = S.journal.filter(function (j) { return j && Number.isFinite(j.d) && typeof j.txt === "string"; }).slice(-40);
     if (!Array.isArray(S.hist)) S.hist = [];
     S.hist = S.hist.filter(function (h) { return h && Number.isFinite(h.f) && Number.isFinite(h.s) && Number.isFinite(h.p); }).slice(-240);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
@@ -3816,6 +3867,7 @@
             if (typeof S.nbMode !== "string") S.nbMode = "";
             if (typeof S.crossDone !== "boolean") S.crossDone = false;
             if (typeof S.promise !== "string") S.promise = "";
+            if (!Array.isArray(S.journal)) S.journal = [];
             if (typeof S.challenge !== "string") S.challenge = "";
             if (typeof S.rngState !== "number") S.rngState = 0;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
@@ -3979,8 +4031,10 @@
       var P = PROMISES[S.promise];
       toast("🤙 <b>Bạn đã hứa: " + P.label + ".</b><br>Cả phòng họp báo đã ghi hình. Giữ lời: +25% quan hệ.");
       setTicker("🤙 Founder tuyên bố: sẽ " + P.label + ". Dân mạng: 'Để xem.'");
+      jot("🤙 Họp báo ra mắt: bạn hứa sẽ " + P.label + ".");
     } else {
       toast("😶 <b>Không hứa gì.</b><br>Một tờ báo giật tít: 'Dự án mới úp mở khó hiểu'. Rồi thôi.");
+      jot("😶 Họp báo ra mắt: bạn không hứa gì.");
     }
     save();
     renderStats();
@@ -4202,6 +4256,7 @@
   })();
 
   if (!META.introSeen) playIntro(); else maybePromise();
+  if (S.journal.length) document.getElementById("journalChip").style.display = "inline-block";
 
   var last = Date.now();
   setInterval(function () {
