@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-13 — Day/night cycle (iteration 18)
+- The avatar scene follows the player's real clock: night/dawn/day/dusk skies, sun & moon &
+  stars. At night a clean founder sleeps (Zzz) — but past 50% suspicion he's awake at 3 AM,
+  lit by his phone. Insomnia is now a visible moral symptom.
+
 ## 2026-06-13 — gate.sh: mechanical release gates (iteration 17)
 - One exit-code-enforced script runs all release gates: syntax across every script block,
   fresh player must EARN non-zero money, rich-seed migration must SHOW its wealth (defeats

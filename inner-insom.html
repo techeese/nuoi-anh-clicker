@@ -535,6 +535,20 @@
 </style>
 </head>
 <body>
+<script>
+window.__forceHour = 2;
+localStorage.setItem("nuoi-anh-clicker-v4", JSON.stringify({
+  meta: { connections: 5, runs: 1, perks: {}, achievements: {}, endings: {}, lifetimeRaised: 1e9, totalMeals: 10000, envOpened: 3, crits: 2,
+          gotOffline: true, muted: true, music: false, introSeen: true, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "" },
+  run: { fund: 5e7, stash: 1e8, totalRaised: 5e8, meals: 9000, suspicion: 60, skim: 50,
+         clicks: 100, startTime: Date.now() - 600000, owned: {volunteer: 10, gala: 4, dupcode: 3}, buffs: [],
+         wasNear95: false, gameOver: false, maxSkim: 50, maxCombo: 10, apologyUsed: false, autoAcc: 0, modifier: "normal",
+         halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0, bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
+         letters: [], maySilenced: false, hist: [], ktStage: 0, ktMode: "", challenge: "", rngState: 0 },
+  lastSeen: Date.now() - 5000
+}));
+</script>
+
 
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <div id="vignette"></div>
@@ -3494,6 +3508,16 @@ if ("serviceWorker" in navigator && location.protocol === "https:") {
     navigator.serviceWorker.register("sw.js").catch(function () {});
   });
 }
+</script>
+
+<script>
+setTimeout(function(){
+  var p = document.querySelector(".avatar-panel");
+  var b = document.createElement("div");
+  b.style.cssText = "position:fixed;top:2px;left:2px;z-index:9999;background:#000;color:#0f0;font:bold 12px monospace;padding:2px;";
+  b.textContent = "AVATAR_Y=" + Math.round(p.getBoundingClientRect().top + window.scrollY);
+  document.body.appendChild(b);
+}, 2500);
 </script>
 </body>
 </html>
