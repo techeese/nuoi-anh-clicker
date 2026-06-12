@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Daily challenge (iteration 16)
+- 🎲 Thử thách hôm nay: one seeded scenario per day for the whole world — deterministic
+  modifier, event order, and envelope luck (mulberry32 with state in the save; cosmetic
+  randomness excluded so toggling music can't desync). Once per day.
+- Wordle-style shareable result on the ending newspaper (outcome emoji · connections · days
+  survived · link).
+
 ## 2026-06-13 — The accountant arc (iteration 15)
 - Chị Hạnh — the accountant who knows everything — is now a three-stage chained arc on the
   dirty path (the mirror of Mây on the clean one): her resignation letter, the reverse coffee

@@ -847,7 +847,10 @@
     <div class="panel" id="legacyPanel">
       <div class="legacy-head">
         <h2 style="margin:0;">🤝 Di sản &amp; Thành tựu / Legacy</h2>
-        <span class="conn-display" id="connVal">🤝 0 quan hệ</span>
+        <span style="display:flex; gap:8px; align-items:center;">
+          <button id="dailyBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:4px 10px; font-size:0.7rem; font-weight:700; cursor:pointer; font-family:inherit;">🎲 Thử thách hôm nay</button>
+          <span class="conn-display" id="connVal">🤝 0 quan hệ</span>
+        </span>
       </div>
       <div class="lifetime" id="lifetimeVal"></div>
       <div class="life-chart-box">
@@ -965,6 +968,21 @@
   "use strict";
 
   var MEAL_COST = 8500;
+
+  // Challenge mode: deterministic gameplay RNG (mulberry32, state lives in the save).
+  // Cosmetic randomness stays on Math.random so music/particles can't desync the seed.
+  function rnd() {
+    if (!S || !S.challenge) return rnd();
+    S.rngState = (S.rngState + 0x6D2B79F5) | 0;
+    var t = Math.imul(S.rngState ^ (S.rngState >>> 15), 1 | S.rngState);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  function dateSeed(s) {
+    var n = 0;
+    for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) | 0;
+    return n;
+  }
   var ESCAPE_AT = 33e9;
   var DISSOLVE_AT = 5e8;
   var SAINT_AT = 2e9;
@@ -1014,7 +1032,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "" };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "" };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -1028,7 +1046,8 @@
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], maySilenced: false, hist: [],
-      ktStage: 0, ktMode: ""
+      ktStage: 0, ktMode: "",
+      challenge: "", rngState: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -1313,7 +1332,7 @@
         { label: "Hỏi thẳng: 'Chị muốn gì?'", hint: "50/50: yên ổn hoặc nghi ngờ +14%",
           fx: function () {
             S.ktStage = 1; S.ktMode = "scared";
-            if (Math.random() < 0.5) return "'Tôi muốn ngủ ngon.' Hai người nhìn nhau rất lâu. Chị ấy ở lại — với điều kiện không đụng sổ nữa.";
+            if (rnd() < 0.5) return "'Tôi muốn ngủ ngon.' Hai người nhìn nhau rất lâu. Chị ấy ở lại — với điều kiện không đụng sổ nữa.";
             S.suspicion += 14; return "Câu hỏi sai. Hoá ra chị ấy chỉ định về quê — GIỜ thì chị ấy thấy có gì đó đáng nói.";
           } }
       ] },
@@ -1360,7 +1379,7 @@
           fx: function () { S.stash *= 0.9; S.suspicion -= 10; return "Tiền lặng lẽ đổi địa chỉ. Email được trả lời bằng một bộ hồ sơ dày 200 trang không ai đọc nổi."; } },
         { label: "Giải trình vòng vo", hint: "50/50: cho qua hoặc nghi ngờ +15%",
           fx: function () {
-            if (Math.random() < 0.5) return "Nhân viên ngân hàng gật gù trước sơ đồ 14 mũi tên của bạn. Cho qua.";
+            if (rnd() < 0.5) return "Nhân viên ngân hàng gật gù trước sơ đồ 14 mũi tên của bạn. Cho qua.";
             S.suspicion += 15; return "Họ chuyển hồ sơ lên 'cấp có thẩm quyền'. Cụm từ đáng sợ nhất tiếng Việt.";
           } }
       ] },
@@ -1375,7 +1394,7 @@
         { label: "Doạ ngược: 'Chị cũng ký nhiều giấy tờ lắm đấy'", hint: "50/50: chị ấy chùn — hoặc nghi ngờ +18%",
           fx: function () {
             S.ktStage = 2;
-            if (Math.random() < 0.5) return "Tay chị ấy run nhẹ khi cầm ly. Cả hai đều hiểu: giờ là cùng một con thuyền.";
+            if (rnd() < 0.5) return "Tay chị ấy run nhẹ khi cầm ly. Cả hai đều hiểu: giờ là cùng một con thuyền.";
             S.suspicion += 18; return "Chị ấy đứng dậy, để lại tiền cà phê của MÌNH. Cử chỉ đó đáng sợ hơn mọi lời nói.";
           } }
       ] },
@@ -1388,7 +1407,7 @@
         { label: "'Ở lại. Tôi cần chị.' (thành thật)", hint: "Tuỳ vào cách bạn đã đối xử với chị ấy",
           fx: function () {
             S.ktStage = 3;
-            if (S.ktMode === "accomplice" || Math.random() < 0.5) { S.suspicion -= 8; return "Chị ấy nhìn cái hộp rất lâu… rồi lấy khung ảnh ra đặt lại lên bàn. 'Lần cuối.'"; }
+            if (S.ktMode === "accomplice" || rnd() < 0.5) { S.suspicion -= 8; return "Chị ấy nhìn cái hộp rất lâu… rồi lấy khung ảnh ra đặt lại lên bàn. 'Lần cuối.'"; }
             S.ktMode = "left"; S.suspicion += 20; return "'Anh từng cần tôi im lặng. Khác nhau đấy.' Chiếc hộp đóng nắp.";
           } },
         { label: "Giữ hộp lại 'kiểm tra tài sản công ty'", hint: "Nghi ngờ +25%, và bạn biết mình vừa trở thành ai",
@@ -1404,7 +1423,7 @@
           fx: function () { S.suspicion += 10; return "Bài điều tra lên trang nhất: 'Dự án X im lặng bất thường'."; } },
         { label: "Trả lời phỏng vấn, kể chuyện cảm động", hint: "50/50: nghi ngờ -10% hoặc +15%",
           fx: function () {
-            if (Math.random() < 0.5) { S.suspicion -= 10; return "Bạn khóc đúng đoạn cao trào. Dư luận cảm động, tạm tin."; }
+            if (rnd() < 0.5) { S.suspicion -= 10; return "Bạn khóc đúng đoạn cao trào. Dư luận cảm động, tạm tin."; }
             S.suspicion += 15; return "Nhà báo hỏi đúng chỗ hiểm. Bạn ấp úng. Clip viral với caption 'sao mắt anh láo liên thế?'";
           } }
       ] },
@@ -1426,7 +1445,7 @@
           fx: function () { S.suspicion += 18; return "Cậu ấy đăng tâm thư 3.000 chữ lúc nửa đêm. 50k share."; } },
         { label: "Giải thích đó là 'sổ nháp'", hint: "50/50: yên ổn hoặc nghi ngờ +25%",
           fx: function () {
-            if (Math.random() < 0.5) return "'À ra thế!' — cậu ấy tin. Sinh viên thật trong sáng.";
+            if (rnd() < 0.5) return "'À ra thế!' — cậu ấy tin. Sinh viên thật trong sáng.";
             S.suspicion += 25; return "Cậu ấy chụp lại cả hai cuốn sổ trước khi hỏi. Toang.";
           } }
       ] },
@@ -1442,7 +1461,7 @@
           fx: function () { S.suspicion -= 15; addBuff("📋 Biên bản đẹp như giấy khen", "income", 1.2, 120); return "Đoàn ra về với biên bản sạch bong và ba hộp trà. Tiếng lành đồn xa."; } },
         { label: "Kệ, chắc tin vịt", hint: "Hên xui — tuỳ bạn sạch đến đâu",
           fx: function () {
-            if (Math.random() < (isClean() ? 0.9 : 0.7)) return "Đúng là tin vịt. Hú hồn.";
+            if (rnd() < (isClean() ? 0.9 : 0.7)) return "Đúng là tin vịt. Hú hồn.";
             S.suspicion += isClean() ? 5 : 20; return "Không phải tin vịt. Đoàn kiểm tra ghé thăm đột xuất.";
           } }
       ] },
@@ -1461,7 +1480,7 @@
         { label: "Tất tay 30% túi riêng", hint: "50/50: x2 hoặc mất sạch khoản đó",
           fx: function () {
             var bet = S.stash * 0.3;
-            if (Math.random() < 0.5) { S.stash += bet; return "CharityMoon x2 thật! +" + fmt(bet) + ". Lùa gà gặp gà may."; }
+            if (rnd() < 0.5) { S.stash += bet; return "CharityMoon x2 thật! +" + fmt(bet) + ". Lùa gà gặp gà may."; }
             S.stash -= bet; return "Sàn sập sau 2 ngày. -" + fmt(bet) + ". 'Chuyên gia' đã chặn bạn.";
           } },
         { label: "Từ chối khéo", hint: "Không có gì xảy ra",
@@ -1492,7 +1511,7 @@
           fx: function () { S.fund *= 0.9; return "Một em bé khác đóng vai. Diễn sâu. Chị ấy khóc, bạn cũng khóc (vì lý do khác)."; } },
         { label: "Báo 'em ấy vừa chuyển trường'", hint: "50/50: yên ổn hoặc nghi ngờ +20%",
           fx: function () {
-            if (Math.random() < 0.5) return "Chị ấy tiếc nuối nhưng tin. Chuyển sang nuôi 'em' khác.";
+            if (rnd() < 0.5) return "Chị ấy tiếc nuối nhưng tin. Chuyển sang nuôi 'em' khác.";
             S.suspicion += 20; return "Chị ấy gọi thẳng lên trường: 'Không có học sinh nào tên vậy.' Toang.";
           } },
         { label: "Tổ chức chuyến thăm thật (tốn 5% quỹ)", hint: "Nghi ngờ -12%",
@@ -1800,6 +1819,19 @@
     document.getElementById("finalStats").innerHTML = frontPage(outcome, conns);
 
     document.getElementById("gameOverOverlay").classList.add("show");
+    var sb = document.getElementById("shareBtn");
+    if (sb) {
+      var emo = { caught: "🚔", escaped: "🏝️", dissolved: "📦", saint: "😇" }[outcome];
+      var names = { caught: "Vào lò", escaped: "Tẩu thoát", dissolved: "Giải thể êm", saint: "Người tử tế" };
+      var shareTxt = "🍚 Nuôi Anh — Thử thách " + S.challenge + "\n" +
+        emo + " " + names[outcome] + " · 🤝 " + conns + " · " + days() + " ngày\n" +
+        "https://techeese.github.io/nuoi-anh-clicker/";
+      sb.addEventListener("click", function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareTxt).then(function () { sb.textContent = "✓ Đã sao chép — thách bạn bè đi!"; });
+        } else { prompt("Sao chép kết quả:", shareTxt); }
+      });
+    }
     save();
   }
 
@@ -1864,7 +1896,36 @@
       '<div class="np-cols">' + body + '</div>' +
       '<div class="np-quote">' + paper.quote + '</div>' +
       '</div>' +
-      '<div class="np-conn">🤝 Quan hệ nhận được: +' + conns + ' (tổng: ' + META.connections + ')</div>';
+      '<div class="np-conn">🤝 Quan hệ nhận được: +' + conns + ' (tổng: ' + META.connections + ')</div>' +
+      (S.challenge ?
+        '<div style="text-align:center; margin-top:10px;"><button id="shareBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📋 Sao chép kết quả thử thách</button></div>' : '');
+  }
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+
+  function startChallenge() {
+    var today = todayStr();
+    if (META.lastChallengeDay === today) return;
+    if (!confirm("🎲 Thử thách " + today + ": run hiện tại sẽ kết thúc (không nhận quan hệ), và cả thế giới chơi cùng một kịch bản — cùng thời cuộc, cùng vận may. Bắt đầu?")) return;
+    META.lastChallengeDay = today;
+    S = freshState();
+    S.challenge = today;
+    S.rngState = dateSeed(today);
+    S.modifier = MODS[Math.floor(rnd() * MODS.length)].id;
+    document.getElementById("gameOverOverlay").classList.remove("show");
+    document.getElementById("skimSlider").value = 0;
+    document.getElementById("skimPct").textContent = "0%";
+    var m = curMod();
+    if (S.modifier === "viral") addBuff("🚀 Khởi đầu viral x5", "income", 5, 120);
+    toast("🎲 <b>Thử thách " + today + "</b><br>" + m.emoji + " " + m.name + " — kịch bản hôm nay của cả thế giới. Chúc may mắn.");
+    setTicker("🎲 Chế độ thử thách: mọi người chơi hôm nay đều nhận đúng kịch bản này.");
+    scheduleEvent();
+    scheduleEnvelope();
+    renderAll();
+    save();
   }
 
   function startNewRun() {
@@ -1874,7 +1935,7 @@
     updateGoodTab();
     // roll a modifier (first run is always normal)
     if (META.runs > 0) {
-      S.modifier = MODS[Math.floor(Math.random() * MODS.length)].id;
+      S.modifier = MODS[Math.floor(rnd() * MODS.length)].id;
     }
     document.getElementById("gameOverOverlay").classList.remove("show");
     document.getElementById("skimSlider").value = 0;
@@ -2156,7 +2217,7 @@
   // ================= Random events =================
   var nextEventAt = 0, eventOpen = false;
 
-  function scheduleEvent() { nextEventAt = Date.now() + (50 + Math.random() * 60) * 1000; }
+  function scheduleEvent() { nextEventAt = Date.now() + (50 + rnd() * 60) * 1000; }
 
   function maybeFireEvent() {
     if (S.gameOver || paused) return;
@@ -2168,7 +2229,7 @@
     });
     if (!pool.length) pool = EVENTS.filter(function (ev) { return !ev.when || ev.when(); });
     if (!pool.length) { nextEventAt = Date.now() + 30000; return; }
-    var pick = pool[Math.floor(Math.random() * pool.length)];
+    var pick = pool[Math.floor(rnd() * pool.length)];
     S.recentEvents.push(pick.title);
     if (S.recentEvents.length > 2) S.recentEvents.shift();
     showEvent(pick);
@@ -2214,7 +2275,7 @@
     sAlarm();
     // randomize green zone; speed scales with how many runs you've done
     var gw = 0.16 - Math.min(0.06, META.runs * 0.01);
-    var gc = 0.25 + Math.random() * 0.5;
+    var gc = 0.25 + rnd() * 0.5;
     apGreen = [gc - gw / 2, gc + gw / 2];
     apSpeed = 0.011 + Math.min(0.008, META.runs * 0.0015);
     apPos = 0; apDir = 1;
@@ -2273,7 +2334,7 @@
   var nextEnvAt = 0, envEl = null;
 
   function scheduleEnvelope() {
-    var base = (40 + Math.random() * 50) * (curMod().env || 1);
+    var base = (40 + rnd() * 50) * (curMod().env || 1);
     base *= (1 - 0.2 * perkLvl("lucky_env"));
     nextEnvAt = Date.now() + base * 1000;
   }
@@ -2285,8 +2346,8 @@
     envEl = document.createElement("div");
     envEl.className = "envelope";
     envEl.textContent = "🧧";
-    envEl.style.left = (10 + Math.random() * 75) + "%";
-    envEl.style.top = (5 + Math.random() * 60) + "%";
+    envEl.style.left = (10 + rnd() * 75) + "%";
+    envEl.style.top = (5 + rnd() * 60) + "%";
     envEl.title = "Phong bì vàng! Bấm ngay kẻo mất!";
     envEl.addEventListener("click", openEnvelope);
     zone.appendChild(envEl);
@@ -2299,7 +2360,7 @@
     scheduleEnvelope();
     META.envOpened++;
     sEnv();
-    var roll = Math.random();
+    var roll = rnd();
     if (roll < 0.3) {
       addBuff("🌪️ Bão donate x7", "income", 7, 30);
       toast("🧧 <b>Bão donate!</b><br>Một bài đăng viral! Thu nhập x7 trong 30 giây!");
@@ -2403,7 +2464,7 @@
     if (isClean()) {
       S.suspicion = Math.max(0, S.suspicion - 8);
       setTicker("📢 Sao kê 200 trang, khớp đến từng đồng. Dân mạng: 'Chuẩn chỉnh thế này mới gọi là từ thiện.'");
-    } else if (Math.random() < 0.35) {
+    } else if (rnd() < 0.35) {
       S.suspicion = Math.min(100, S.suspicion + 10);
       setTicker("📢 Toang: một kế toán về hưu soi ra 'Chi phí vận hành' chiếm tỷ lệ lạ. Thớt 20k share trong một giờ.");
     } else {
@@ -2665,6 +2726,9 @@
     }
     renderAvatar();
 
+    var dBtn = document.getElementById("dailyBtn");
+    if (META.lastChallengeDay === todayStr()) { dBtn.disabled = true; dBtn.textContent = "✓ Đã nhận thử thách"; dBtn.style.opacity = 0.45; }
+
     var skBtn = document.getElementById("saoKeBtn");
     var cdLeft = Math.ceil((120000 - (Date.now() - S.saoKeAt)) / 1000);
     if (cdLeft > 0 && S.saoKeAt > 0) { skBtn.disabled = true; skBtn.textContent = "📢 Sao kê (" + cdLeft + "s)"; }
@@ -2674,6 +2738,12 @@
   function renderBuffs() {
     var bar = document.getElementById("buffBar");
     bar.innerHTML = "";
+    if (S.challenge) {
+      var cc = document.createElement("span");
+      cc.className = "buff mod";
+      cc.textContent = "🎲 Thử thách " + S.challenge;
+      bar.appendChild(cc);
+    }
     var m = curMod();
     if (m.id !== "normal") {
       var chip = document.createElement("span");
@@ -2975,7 +3045,7 @@
     // and a NaN that was JSON-serialized to null would slip straight through
     var bad = function (v) { return !Number.isFinite(v); };
     ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
-     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage"]
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage", "rngState"]
       .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
@@ -3014,6 +3084,7 @@
           ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
           if (typeof META.lastDailyDay !== "string") META.lastDailyDay = "";
+          if (typeof META.lastChallengeDay !== "string") META.lastChallengeDay = "";
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
             S = d.run;
@@ -3031,6 +3102,8 @@
             if (!Array.isArray(S.hist)) S.hist = [];
             if (typeof S.ktStage !== "number") S.ktStage = 0;
             if (typeof S.ktMode !== "string") S.ktMode = "";
+            if (typeof S.challenge !== "string") S.challenge = "";
+            if (typeof S.rngState !== "number") S.rngState = 0;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
@@ -3082,7 +3155,7 @@
     S.maxCombo = Math.max(S.maxCombo, combo);
     var comboMult = 1 + Math.min(combo, 50) * 0.02;
 
-    var crit = Math.random() < 0.05;
+    var crit = rnd() < 0.05;
     var amount = clickPower() * comboMult * (crit ? 10 : 1);
     // self-healing: if some corrupt state zeroes the click, repair and never give 0
     if (!(amount > 0)) {
@@ -3096,9 +3169,9 @@
 
     var zone = document.getElementById("clickZone");
     var rect = zone.getBoundingClientRect();
-    var x = clientX != null ? clientX - rect.left : rect.width / 2 + (Math.random() * 80 - 40);
+    var x = clientX != null ? clientX - rect.left : rect.width / 2 + (rnd() * 80 - 40);
     var y = clientY != null ? clientY - rect.top - 20 : rect.height / 2 - 30;
-    spawnFloat(x + (Math.random() * 40 - 20), y, fmt(amount), crit);
+    spawnFloat(x + (rnd() * 40 - 20), y, fmt(amount), crit);
     moneyBurst(x, y + 16, crit ? 7 : 3);
 
     var cd = document.getElementById("comboDisp");
@@ -3230,6 +3303,8 @@
 
   document.getElementById("saoKeBtn").addEventListener("click", publishSaoKe);
   document.getElementById("avatarScene").addEventListener("click", avatarQuip);
+
+  document.getElementById("dailyBtn").addEventListener("click", startChallenge);
 
   document.getElementById("restartBtn").addEventListener("click", startNewRun);
 
