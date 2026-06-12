@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Clearing save…</title>
+<style>body{font-family:system-ui;background:#14161f;color:#e8e9f0;display:flex;align-items:center;justify-content:center;height:100vh;}</style>
+</head>
+<body>
+<div id="msg">🗑️ Đang xoá save…</div>
+<script>
+["nuoi-anh-clicker-v4", "nuoi-anh-clicker-v3", "nuoi-anh-clicker-v2"].forEach(function (k) {
+  localStorage.removeItem(k);
+});
+document.getElementById("msg").textContent = "✅ Save đã xoá sạch. Đang mở game mới…";
+setTimeout(function () { location.href = "index.html"; }, 800);
+</script>
+</body>
+</html>

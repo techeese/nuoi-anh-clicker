@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuôi Anh - The Charity Tycoon (Parody)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #101321;
+    --panel: rgba(30, 34, 48, 0.72);
+    --panel-2: rgba(38, 43, 61, 0.85);
+    --text: #e8e9f0;
+    --muted: #9aa0b5;
+    --green: #4cd97b;
+    --gold: #f5c542;
+    --red: #ff5c6c;
+    --blue: #5ab0ff;
+    --purple: #b88cff;
+    --border: #3a4060;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden;
+  }
+
+  .blob { position: fixed; border-radius: 50%; filter: blur(100px); opacity: 0.22; z-index: -1; }
+  .b1 { width: 440px; height: 440px; background: #f5c542; top: -140px; left: -140px; animation: drift1 18s ease-in-out infinite alternate; }
+  .b2 { width: 560px; height: 560px; background: #5a4bff; bottom: -200px; right: -160px; animation: drift2 24s ease-in-out infinite alternate; }
+  .b3 { width: 340px; height: 340px; background: #ff5c6c; top: 40%; left: 55%; animation: drift1 28s ease-in-out infinite alternate-reverse; opacity: 0.12; }
+  @keyframes drift1 { to { transform: translate(90px, 70px) scale(1.18); } }
+  @keyframes drift2 { to { transform: translate(-70px, -90px) scale(1.12); } }
+
+  #vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    opacity: 0; transition: opacity 0.6s;
+    box-shadow: inset 0 0 160px 50px rgba(255, 40, 60, 0.5);
+  }
+  #vignette.on { opacity: 1; animation: vigPulse 1.2s infinite; }
+  @keyframes vigPulse { 50% { opacity: 0.4; } }
+
+  header { text-align: center; padding: 20px 12px 8px; position: relative; }
+  header h1 {
+    font-size: 1.7rem; font-weight: 800; letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #fff, var(--gold) 45%, #ffdf8e);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  header .subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+  .header-btns { position: absolute; right: 14px; top: 14px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 320px; }
+  .header-btns button {
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 8px; padding: 6px 9px; font-size: 0.72rem; cursor: pointer; transition: all 0.15s;
+    font-family: inherit;
+  }
+  .header-btns button:hover { color: var(--text); border-color: var(--gold); transform: translateY(-1px); }
+
+  .wrap {
+    display: grid; grid-template-columns: 1fr 350px; gap: 14px;
+    max-width: 1120px; margin: 0 auto; padding: 12px;
+  }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } .header-btns { position: static; justify-content: center; margin-top: 8px; max-width: none; } }
+
+  .panel {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  .panel h2 { font-size: 0.92rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; }
+
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .stat { background: var(--panel-2); border-radius: 10px; padding: 10px 12px; }
+  .stat .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat .value { font-size: 1.25rem; font-weight: 800; margin-top: 2px; }
+  .stat .sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  .fund .value { color: var(--green); }
+  .stash .value { color: var(--gold); }
+
+  .click-zone { text-align: center; padding: 12px 0 18px; position: relative; }
+  #donateBtn {
+    width: 205px; height: 205px; border-radius: 50%;
+    border: none; background: transparent; padding: 0;
+    position: relative; cursor: pointer; font-family: inherit;
+    user-select: none; -webkit-user-select: none;
+    transition: transform 0.08s ease;
+    filter: drop-shadow(0 0 26px rgba(245, 197, 66, 0.35));
+    animation: btnGlow 2.8s ease-in-out infinite;
+  }
+  @keyframes btnGlow {
+    50% { filter: drop-shadow(0 0 44px rgba(245, 197, 66, 0.6)); }
+  }
+  #donateBtn:hover { transform: scale(1.04); }
+  #donateBtn:active { transform: scale(0.94); }
+
+  /* rotating gold ring */
+  .btn-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(#d9a521, #ffe9a8, #f5c542, #fff6d8, #b8860b, #ffe9a8, #d9a521);
+    animation: ringSpin 7s linear infinite;
+  }
+  @keyframes ringSpin { to { transform: rotate(360deg); } }
+
+  /* glassy face */
+  .btn-face {
+    position: absolute; inset: 7px; border-radius: 50%;
+    background: radial-gradient(circle at 33% 26%, #3e4a70, #252c49 52%, #151a2e);
+    box-shadow: inset 0 10px 22px rgba(255, 255, 255, 0.08), inset 0 -14px 26px rgba(0, 0, 0, 0.5);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; overflow: hidden;
+  }
+  .btn-face::before {  /* gloss highlight */
+    content: ""; position: absolute; top: 7%; left: 16%;
+    width: 68%; height: 32%; border-radius: 50%;
+    background: linear-gradient(rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0));
+    pointer-events: none;
+  }
+  .btn-face::after {  /* sheen sweep */
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.16) 50%, transparent 58%);
+    background-size: 260% 100%;
+    animation: sheen 4.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sheen { 0%, 55% { background-position: 130% 0; } 90%, 100% { background-position: -130% 0; } }
+
+  .btn-title {
+    font-size: 0.98rem; font-weight: 800; letter-spacing: 0.6px; line-height: 1.25;
+    background: linear-gradient(180deg, #fff6d8, var(--gold) 70%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    text-align: center;
+  }
+  .btn-sub { font-size: 0.62rem; color: var(--muted); font-weight: 400; }
+
+  /* steaming rice bowl */
+  .bowl { width: 76px; height: 57px; margin-bottom: 2px; }
+  .steam {
+    fill: none; stroke: #d8e2ff; stroke-width: 2.6; stroke-linecap: round;
+    opacity: 0; animation: steamUp 2.6s ease-in-out infinite;
+  }
+  .steam.s2 { animation-delay: 0.9s; }
+  .steam.s3 { animation-delay: 1.7s; }
+  @keyframes steamUp {
+    0% { opacity: 0; transform: translateY(5px); }
+    35% { opacity: 0.85; }
+    100% { opacity: 0; transform: translateY(-7px); }
+  }
+
+  /* orbiting sparkles */
+  .orbiter {
+    position: absolute; inset: -12px; pointer-events: none;
+    animation: ringSpin 9s linear infinite;
+  }
+  .orbiter.rev { animation-direction: reverse; animation-duration: 13s; }
+  .orbiter span { position: absolute; top: 0; left: 50%; font-size: 0.85rem; filter: drop-shadow(0 0 6px rgba(245,197,66,0.9)); }
+  .orbiter.rev span { font-size: 0.7rem; }
+
+  /* click ripple */
+  .ripple {
+    position: absolute; border-radius: 50%; width: 70px; height: 70px;
+    background: radial-gradient(rgba(245, 197, 66, 0.5), rgba(245, 197, 66, 0));
+    transform: scale(0); animation: rip 0.55s ease-out forwards; pointer-events: none;
+  }
+  @keyframes rip { to { transform: scale(3.2); opacity: 0; } }
+  .key-hint { font-size: 0.68rem; color: var(--muted); margin-top: 8px; }
+  .key-hint kbd { background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 0.66rem; }
+
+  #comboDisp {
+    position: absolute; top: 4px; right: 10px;
+    font-weight: 800; font-size: 1.05rem; color: #ff9d42;
+    text-shadow: 0 0 12px rgba(255, 157, 66, 0.6);
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  #comboDisp.on { opacity: 1; animation: comboPop 0.18s ease-out; }
+  @keyframes comboPop { from { transform: scale(1.4); } }
+
+  .float-num {
+    position: absolute; font-weight: 800; pointer-events: none;
+    animation: floatUp 0.9s ease-out forwards; z-index: 5;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+  .float-num.crit { font-size: 1.5rem; animation-duration: 1.3s; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-70px) scale(1.1); } }
+
+  .pcl { position: absolute; pointer-events: none; font-size: 1rem; z-index: 4; animation: pclFly 0.7s ease-out forwards; }
+  @keyframes pclFly { to { transform: translate(var(--dx), var(--dy)) rotate(140deg); opacity: 0; } }
+
+  .bubble {
+    position: absolute; pointer-events: none; z-index: 3;
+    background: rgba(38, 43, 61, 0.92); border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 2px; padding: 5px 10px;
+    font-size: 0.68rem; color: var(--muted); max-width: 190px; text-align: left;
+    animation: bubbleRise 3.4s ease-out forwards;
+  }
+  @keyframes bubbleRise { 0% { opacity: 0; transform: translateY(8px); } 12% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-46px); } }
+
+  .envelope {
+    position: absolute; font-size: 2.6rem; cursor: pointer; z-index: 6;
+    animation: envBob 1.1s ease-in-out infinite alternate, envIn 0.4s ease-out;
+    filter: drop-shadow(0 0 14px rgba(245, 197, 66, 0.9));
+    user-select: none; -webkit-user-select: none;
+  }
+  @keyframes envBob { to { transform: translateY(-10px) rotate(6deg); } }
+  @keyframes envIn { from { opacity: 0; transform: scale(0.3); } }
+
+  .buff-bar { display: flex; gap: 6px; flex-wrap: wrap; min-height: 4px; margin-top: 4px; }
+  .buff {
+    background: rgba(90, 176, 255, 0.12); border: 1px solid var(--blue); color: var(--blue);
+    border-radius: 999px; padding: 3px 10px; font-size: 0.7rem; font-weight: 700;
+    animation: envIn 0.3s ease-out;
+  }
+  .buff.mod { background: rgba(184, 140, 255, 0.1); border-color: var(--purple); color: var(--purple); }
+
+  .skim-box { margin-top: 8px; }
+  .skim-box .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .skim-box .pct { color: var(--red); font-weight: 800; font-size: 1.1rem; }
+  input[type=range] { width: 100%; accent-color: var(--red); cursor: pointer; }
+  .skim-hint { font-size: 0.73rem; color: var(--muted); margin-top: 4px; }
+
+  .meter { height: 18px; background: #11131c; border-radius: 9px; overflow: hidden; border: 1px solid var(--border); margin-top: 6px; }
+  .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #4cd97b, #f5c542 55%, #ff5c6c); transition: width 0.3s ease; }
+  .meter-label { display: flex; justify-content: space-between; font-size: 0.73rem; color: var(--muted); margin-top: 4px; }
+  .suspicion-warning { color: var(--red); font-weight: 800; animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: 0.35; } }
+
+  .shop-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .shop-head h2 { margin: 0; }
+  #buyMultBtn {
+    background: var(--panel-2); border: 1px solid var(--blue); color: var(--blue);
+    border-radius: 8px; padding: 5px 12px; font-size: 0.75rem; font-weight: 800; cursor: pointer; font-family: inherit;
+  }
+  .shop-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+  .shop-tabs button {
+    flex: 1; padding: 7px 2px; background: var(--panel-2); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 8px; cursor: pointer; font-size: 0.72rem; font-weight: 700;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .shop-tabs button.active { color: var(--text); border-color: var(--gold); background: rgba(245, 197, 66, 0.08); }
+  .shop-list { display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto; padding-right: 2px; }
+  .shop-list::-webkit-scrollbar { width: 6px; }
+  .shop-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .map-progress { font-size: 0.74rem; color: var(--muted); padding: 4px 2px 8px; }
+  .map-progress .meter { height: 10px; margin-top: 4px; }
+  .item {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px; cursor: pointer; transition: border-color 0.15s, transform 0.1s;
+  }
+  .item:hover { border-color: var(--gold); transform: translateX(2px); }
+  .item.disabled { opacity: 0.45; cursor: not-allowed; }
+  .item.disabled:hover { transform: none; }
+  .item .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .item .name { font-weight: 700; font-size: 0.86rem; }
+  .item .count { color: var(--blue); font-size: 0.8rem; font-weight: 800; }
+  .item .desc { font-size: 0.73rem; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+  .item .cost { font-size: 0.8rem; margin-top: 5px; font-weight: 800; }
+  .cost.fund-cost { color: var(--green); }
+  .cost.stash-cost { color: var(--gold); }
+  .cost.conn-cost { color: var(--purple); }
+  .risk-tag { font-size: 0.66rem; color: var(--red); font-weight: 800; }
+  .safe-tag { font-size: 0.66rem; color: var(--green); font-weight: 800; }
+  .perk-tag { font-size: 0.66rem; color: var(--purple); font-weight: 800; }
+
+  .ticker {
+    background: rgba(17, 19, 28, 0.8); border: 1px solid var(--border); border-radius: 10px;
+    font-size: 0.79rem; color: var(--muted); margin-top: 12px;
+    min-height: 38px; display: flex; align-items: stretch; overflow: hidden;
+  }
+  .ticker .live-badge {
+    background: var(--red); color: #fff; font-weight: 800; font-size: 0.66rem;
+    letter-spacing: 1px; padding: 0 10px; display: flex; align-items: center;
+    flex-shrink: 0; border-radius: 9px 0 0 9px; z-index: 2;
+  }
+  .ticker .live-badge .dot { animation: blink 1.2s infinite; margin-right: 5px; }
+  .ticker-viewport { overflow: hidden; flex: 1; display: flex; align-items: center; }
+  #tickerText {
+    display: inline-block; white-space: nowrap; padding-left: 100%;
+    animation: tickerScroll 14s linear infinite; will-change: transform;
+  }
+  @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  .legacy-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .conn-display { color: var(--purple); font-weight: 800; font-size: 1.05rem; }
+  .lifetime { font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
+  .endings-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .ending-badge {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 6px 10px; font-size: 0.7rem; color: var(--muted); text-align: center; flex: 1; min-width: 90px;
+  }
+  .ending-badge.unlocked { border-color: var(--gold); color: var(--text); box-shadow: 0 0 10px rgba(245, 197, 66, 0.15); }
+  .ending-badge .e-emoji { font-size: 1.3rem; display: block; filter: grayscale(1) opacity(0.4); }
+  .ending-badge.unlocked .e-emoji { filter: none; }
+  .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 10px; }
+  .ach {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 9px; font-size: 0.68rem; color: var(--muted); line-height: 1.35;
+  }
+  .ach.unlocked { border-color: var(--gold); color: var(--text); box-shadow: 0 0 10px rgba(245, 197, 66, 0.12); }
+  .ach .ach-name { font-weight: 800; font-size: 0.72rem; }
+  .ach.unlocked .ach-name { color: var(--gold); }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(8, 9, 14, 0.93);
+    display: none; align-items: center; justify-content: center; z-index: 100;
+  }
+  .overlay.show { display: flex; }
+  .overlay .card {
+    background: #1e2230; border: 2px solid var(--red); border-radius: 16px;
+    padding: 32px; max-width: 500px; width: 92%; text-align: center;
+    animation: cardIn 0.3s ease-out;
+  }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } }
+  .overlay .card.win-card { border-color: var(--gold); }
+  .overlay .card.event-card { border-color: var(--blue); text-align: left; padding: 24px; }
+  .overlay .card.intro-card { border-color: var(--gold); text-align: left; padding: 30px; }
+  .overlay .card.apology-card { border-color: #ff9d42; }
+  .overlay h2 { font-size: 1.4rem; color: var(--red); margin-bottom: 12px; }
+  .overlay .card.win-card h2, .overlay .card.intro-card h2 { color: var(--gold); }
+  .overlay .card.event-card h2 { color: var(--blue); font-size: 1.12rem; }
+  .overlay .card.apology-card h2 { color: #ff9d42; }
+  .overlay p { color: var(--muted); font-size: 0.9rem; line-height: 1.55; margin-bottom: 8px; }
+  .overlay .final-stats { margin: 16px 0; text-align: left; background: var(--panel-2); border-radius: 10px; padding: 14px; font-size: 0.87rem; line-height: 1.9; }
+  .overlay .card > button, .intro-actions button {
+    margin-top: 8px; padding: 12px 28px; font-size: 1rem; font-weight: 800;
+    background: var(--gold); color: #1b1500; border: none; border-radius: 10px; cursor: pointer; font-family: inherit;
+  }
+  .intro-actions { display: flex; gap: 10px; align-items: center; }
+  .intro-actions .ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); font-size: 0.85rem; }
+  #introText { min-height: 170px; font-size: 0.95rem; line-height: 1.8; color: var(--text); white-space: pre-line; }
+  #introText .cursor { animation: blink 0.8s infinite; color: var(--gold); }
+
+  .event-choices { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .event-choices button {
+    padding: 11px 14px; font-size: 0.84rem; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px; text-align: left; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.12s;
+  }
+  .event-choices button:hover { border-color: var(--blue); transform: translateX(3px); }
+  .event-choices button small { display: block; color: var(--muted); font-weight: 400; margin-top: 2px; }
+
+  /* Apology minigame */
+  .ap-bar {
+    position: relative; height: 34px; border-radius: 8px; overflow: hidden;
+    background: #3a2530; border: 1px solid var(--border); margin: 18px 0 6px;
+  }
+  .ap-zone { position: absolute; top: 0; bottom: 0; }
+  .ap-zone.yellow { background: rgba(245, 197, 66, 0.35); }
+  .ap-zone.green { background: rgba(76, 217, 123, 0.55); }
+  .ap-needle {
+    position: absolute; top: -3px; bottom: -3px; width: 4px;
+    background: #fff; box-shadow: 0 0 10px #fff; border-radius: 2px;
+  }
+  .ap-hint { font-size: 0.75rem; color: var(--muted); }
+
+  #toasts { position: fixed; top: 14px; right: 14px; z-index: 400; display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
+  .toast {
+    background: rgba(30, 34, 48, 0.95); border: 1px solid var(--gold); border-radius: 10px;
+    padding: 10px 14px; font-size: 0.78rem; line-height: 1.4;
+    animation: toastIn 0.3s ease-out;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+  .toast.fade { animation: toastOut 0.4s forwards; }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateX(40px); } }
+
+  .confetti { position: fixed; width: 9px; height: 9px; z-index: 300; pointer-events: none; top: -12px; animation: confFall linear forwards; }
+  @keyframes confFall { to { transform: translateY(110vh) rotate(900deg); opacity: 0.7; } }
+
+  /* Founder avatar scene */
+  .avatar-panel svg { width: 100%; height: auto; display: block; }
+  #avCaption { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 6px; font-style: italic; }
+  #av-halo { animation: haloGlow 2.4s ease-in-out infinite; }
+  @keyframes haloGlow { 50% { opacity: 0.4; } }
+
+  /* Influence map */
+  .map-influence { animation: mapPulse 2.2s infinite; }
+  @keyframes mapPulse { 50% { opacity: 0.4; } }
+
+  footer { text-align: center; font-size: 0.7rem; color: #5a5f75; padding: 16px; max-width: 700px; margin: 0 auto; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div id="vignette"></div>
+<div id="toasts"></div>
+
+<header>
+  <h1>🍚 NUÔI ANH — The Charity Tycoon</h1>
+  <div class="subtitle">Trò chơi châm biếm / A satirical parody game. Mọi nhân vật đều là hư cấu.</div>
+  <div class="header-btns">
+    <button id="muteBtn" title="Bật/tắt hiệu ứng âm thanh">🔊</button>
+    <button id="musicBtn" title="Bật/tắt nhạc nền">🎵 Off</button>
+    <button id="numFmtBtn" title="Đổi cách hiển thị số: tỷ/tr → 1.23e9 → K-M-B">🔢 tỷ</button>
+    <button id="exportBtn" title="Sao chép mã save vào clipboard">💾</button>
+    <button id="importBtn" title="Dán mã save để khôi phục">📥</button>
+    <button id="resetRunBtn" title="Bắt đầu lại dự án hiện tại (giữ Quan hệ & Thành tựu)">🔄</button>
+    <button id="hardResetBtn" title="Xoá toàn bộ dữ liệu và chơi lại từ đầu (kể cả intro)">🗑️ Chơi lại từ đầu</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <div class="panel">
+      <div class="stats">
+        <div class="stat fund">
+          <div class="label">💚 Quỹ từ thiện / Charity Fund</div>
+          <div class="value" id="fundVal">0₫</div>
+          <div class="sub" id="incomeVal">+0₫/giây</div>
+        </div>
+        <div class="stat stash">
+          <div class="label">🤫 Túi riêng / Personal Stash</div>
+          <div class="value" id="stashVal">0₫</div>
+          <div class="sub" id="skimIncomeVal">đang rút: +0₫/giây</div>
+        </div>
+        <div class="stat">
+          <div class="label">🍱 Bữa cơm đã nấu / Meals</div>
+          <div class="value" id="mealsVal">0</div>
+          <div class="sub" id="dayVal">ngày 0 — mỗi bữa 8.500₫</div>
+        </div>
+        <div class="stat">
+          <div class="label">⭐ Uy tín / Reputation</div>
+          <div class="value" id="repVal">x1.0</div>
+          <div class="sub" id="globalMultVal">hệ số chung x1.0</div>
+        </div>
+      </div>
+
+      <div class="click-zone" id="clickZone">
+        <div id="comboDisp"></div>
+        <button id="donateBtn" aria-label="Kêu gọi quyên góp">
+          <span class="btn-ring"></span>
+          <span class="btn-face">
+            <svg class="bowl" viewBox="0 0 80 60" aria-hidden="true">
+              <defs>
+                <linearGradient id="bowlBody" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#fdfdfd"/><stop offset="1" stop-color="#c2c8da"/>
+                </linearGradient>
+              </defs>
+              <path class="steam s1" d="M30 24 C27 19 32 15 29 9"/>
+              <path class="steam s2" d="M40 22 C37 17 43 13 40 6"/>
+              <path class="steam s3" d="M50 24 C47 19 53 15 50 9"/>
+              <ellipse cx="40" cy="31" rx="21" ry="6.5" fill="#fff7e8"/>
+              <circle cx="32" cy="28.5" r="3.4" fill="#fffdf6"/>
+              <circle cx="41" cy="27.5" r="3.8" fill="#fffdf6"/>
+              <circle cx="49" cy="29" r="3.2" fill="#fffdf6"/>
+              <path d="M17 32 q0 18 23 18 q23 0 23 -18 z" fill="url(#bowlBody)"/>
+              <path d="M19 36 h42" stroke="#f5c542" stroke-width="2.2"/>
+              <rect x="31" y="49" width="18" height="4" rx="2" fill="#aab1c6"/>
+            </svg>
+            <span class="btn-title">KÊU GỌI<br>QUYÊN GÓP</span>
+            <span class="btn-sub">Call for Donations</span>
+          </span>
+          <span class="orbiter"><span>✨</span></span>
+          <span class="orbiter rev"><span>🪙</span></span>
+        </button>
+        <div class="key-hint">mẹo: phím <kbd>Space</kbd> cũng được — click liên tục để tạo <b style="color:#ff9d42">COMBO 🔥</b></div>
+      </div>
+
+      <div class="buff-bar" id="buffBar"></div>
+
+      <div class="skim-box">
+        <div class="row">
+          <strong>🕳️ Tỷ lệ "rút ruột" / Skim Rate</strong>
+          <span class="pct" id="skimPct">0%</span>
+        </div>
+        <input type="range" id="skimSlider" min="0" max="90" value="0" step="5">
+        <div class="skim-hint">Phần trăm tiền quyên góp âm thầm chảy vào túi riêng. Rút nhẹ tay thì gần như vô hình — rút đậm thì nghi ngờ bùng nổ theo cấp số. Nghe nói người giữ tay sạch đủ lâu sẽ thấy những điều người khác không thấy.</div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <div class="row" style="display:flex; justify-content:space-between;">
+          <strong>🚨 Mức độ nghi ngờ / Public Suspicion</strong>
+          <span id="suspPct">0%</span>
+        </div>
+        <div class="meter"><div class="meter-fill" id="suspFill"></div></div>
+        <div class="meter-label">
+          <span id="suspRate">cộng đồng mạng đang ngủ yên…</span>
+          <span id="suspStatus"></span>
+        </div>
+      </div>
+
+      <div class="ticker">
+        <span class="live-badge"><span class="dot">●</span>TRỰC TIẾP</span>
+        <div class="ticker-viewport">
+          <span id="tickerText">Chào mừng đến với dự án! Hãy bấm nút để kêu gọi quyên góp.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Founder avatar scene -->
+    <div class="panel avatar-panel">
+      <h2>🧑‍💼 Founder &amp; cơ ngơi / The Founder</h2>
+      <svg id="avatarScene" viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#141a33"/><stop offset="0.75" stop-color="#222842"/><stop offset="1" stop-color="#262b3d"/>
+          </linearGradient>
+          <linearGradient id="groundG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#232838"/><stop offset="1" stop-color="#181c2a"/>
+          </linearGradient>
+          <radialGradient id="skinG" cx="0.4" cy="0.35" r="1">
+            <stop offset="0" stop-color="#ffdfb4"/><stop offset="1" stop-color="#eebd88"/>
+          </radialGradient>
+          <linearGradient id="shirtG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4f96d8"/><stop offset="1" stop-color="#33689c"/>
+          </linearGradient>
+          <linearGradient id="carG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3c4254"/><stop offset="0.5" stop-color="#181c28"/><stop offset="1" stop-color="#0e1118"/>
+          </linearGradient>
+          <linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffe28a"/><stop offset="1" stop-color="#d9a521"/>
+          </linearGradient>
+          <linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1f3f63"/><stop offset="1" stop-color="#15293f"/>
+          </linearGradient>
+          <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2.4" flood-color="#000" flood-opacity="0.45"/>
+          </filter>
+          <filter id="glowGold" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="2.2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <rect x="0" y="0" width="440" height="200" rx="12" fill="url(#skyG)"/>
+        <circle cx="36" cy="26" r="1.3" fill="#cfd6ff" opacity="0.8"/>
+        <circle cx="92" cy="16" r="1" fill="#cfd6ff" opacity="0.6"/>
+        <circle cx="206" cy="22" r="1.2" fill="#cfd6ff" opacity="0.7"/>
+        <circle cx="298" cy="14" r="1" fill="#cfd6ff" opacity="0.55"/>
+        <circle cx="372" cy="30" r="1.4" fill="#cfd6ff" opacity="0.8"/>
+        <path d="M404 26 a13 13 0 1 0 10 21 a11 11 0 0 1 -10 -21 z" fill="#f0e6c8" opacity="0.85"/>
+        <path d="M0 120 L70 64 L120 104 L170 70 L230 118 L300 78 L360 116 L440 84 L440 200 L0 200 Z" fill="#1b2032" opacity="0.85"/>
+        <path d="M0 142 L60 102 L130 138 L210 104 L290 140 L370 110 L440 138 L440 200 L0 200 Z" fill="#171b2b"/>
+        <rect x="0" y="156" width="440" height="44" fill="url(#groundG)"/>
+        <ellipse cx="220" cy="158" rx="230" ry="5" fill="#2c3148" opacity="0.6"/>
+
+        <!-- VILLA -->
+        <g id="av-villa" style="display:none" filter="url(#soft)">
+          <rect x="28" y="96" width="88" height="60" rx="3" fill="#cdbf9d"/>
+          <path d="M20 98 L72 66 L124 98 Z" fill="#8a4a3b"/>
+          <rect x="64" y="124" width="16" height="32" rx="2" fill="#5b4632"/>
+          <rect x="38" y="106" width="14" height="12" rx="2" fill="#ffd98a"/>
+          <rect x="92" y="106" width="14" height="12" rx="2" fill="#ffd98a"/>
+          <rect x="38" y="128" width="14" height="12" rx="2" fill="#ffd98a"/>
+          <rect x="92" y="128" width="14" height="12" rx="2" fill="#ffd98a"/>
+          <circle cx="16" cy="142" r="11" fill="#2f5d43"/>
+          <rect x="14" y="148" width="4" height="10" fill="#3d2e22"/>
+          <circle cx="130" cy="144" r="9" fill="#2f5d43"/>
+          <rect x="128" y="150" width="4" height="8" fill="#3d2e22"/>
+        </g>
+
+        <!-- YACHT -->
+        <g id="av-yacht" style="display:none">
+          <rect x="312" y="166" width="120" height="26" rx="8" fill="url(#waterG)"/>
+          <path d="M318 176 q8 -4 16 0 q8 4 16 0" stroke="#4f7fb5" stroke-width="1.4" fill="none" opacity="0.7"/>
+          <path d="M392 182 q8 -4 16 0" stroke="#4f7fb5" stroke-width="1.4" fill="none" opacity="0.7"/>
+          <g filter="url(#soft)">
+            <path d="M330 170 L420 170 L408 180 L344 180 Z" fill="#e8eaf2"/>
+            <rect x="352" y="156" width="44" height="12" rx="4" fill="#f4f6fc"/>
+            <rect x="360" y="159" width="8" height="5" rx="1.5" fill="#5ab0ff"/>
+            <rect x="374" y="159" width="8" height="5" rx="1.5" fill="#5ab0ff"/>
+            <rect x="394" y="148" width="2.5" height="10" fill="#c2c8d8"/>
+            <path d="M396.5 148 L408 151 L396.5 154 Z" fill="#ff5c6c"/>
+            <line x1="334" y1="173" x2="416" y2="173" stroke="#f5c542" stroke-width="1.6"/>
+          </g>
+        </g>
+
+        <!-- CAR -->
+        <g id="av-car" style="display:none" filter="url(#soft)">
+          <ellipse cx="330" cy="156" rx="50" ry="5" fill="#0c0f18" opacity="0.7"/>
+          <path d="M292 142 q2 -10 14 -12 l8 -10 q4 -4 12 -4 l20 0 q8 0 12 4 l10 10 q14 2 16 12 l0 6 q0 4 -4 4 l-84 0 q-4 0 -4 -4 z" fill="url(#carG)"/>
+          <path d="M310 130 l6 -8 q2 -2 6 -2 l16 0 q4 0 6 2 l7 8 z" fill="#a8cdf0" opacity="0.92"/>
+          <line x1="330" y1="120" x2="330" y2="130" stroke="#181c28" stroke-width="2"/>
+          <line x1="292" y1="140" x2="384" y2="140" stroke="#5a6378" stroke-width="1" opacity="0.6"/>
+          <circle cx="308" cy="152" r="8" fill="#0d0f16"/>
+          <circle cx="308" cy="152" r="3.4" fill="#9aa3b8"/>
+          <circle cx="362" cy="152" r="8" fill="#0d0f16"/>
+          <circle cx="362" cy="152" r="3.4" fill="#9aa3b8"/>
+          <circle cx="380" cy="138" r="2.4" fill="#ffe28a"/>
+          <circle cx="294" cy="138" r="2" fill="#ff8a8a" opacity="0.9"/>
+          <circle cx="338" cy="144" r="3" fill="none" stroke="#c9d2e4" stroke-width="0.8"/>
+        </g>
+
+        <!-- MONEY -->
+        <g id="av-money1" style="display:none" filter="url(#soft)">
+          <ellipse cx="150" cy="154" rx="7" ry="2.6" fill="url(#goldG)"/>
+          <ellipse cx="150" cy="150" rx="7" ry="2.6" fill="url(#goldG)" stroke="#b8860b" stroke-width="0.5"/>
+          <ellipse cx="150" cy="146" rx="7" ry="2.6" fill="url(#goldG)" stroke="#b8860b" stroke-width="0.5"/>
+        </g>
+        <g id="av-money2" style="display:none" filter="url(#soft)">
+          <rect x="118" y="146" width="20" height="5" rx="1.5" fill="#4cd97b"/>
+          <rect x="120" y="141" width="20" height="5" rx="1.5" fill="#3db368"/>
+          <rect x="118" y="136" width="20" height="5" rx="1.5" fill="#4cd97b"/>
+          <ellipse cx="132" cy="152" rx="8" ry="3" fill="url(#goldG)"/>
+        </g>
+        <g id="av-money3" style="display:none" filter="url(#soft)">
+          <path d="M96 154 l8 -16 q2 -4 8 -4 l4 0 q6 0 8 4 l8 16 z" fill="#caa64a"/>
+          <text x="108" y="151" font-size="10" fill="#6b4d0e" font-weight="bold">$</text>
+          <rect x="84" y="148" width="22" height="5" rx="1.5" fill="#4cd97b"/>
+          <rect x="86" y="143" width="22" height="5" rx="1.5" fill="#3db368"/>
+          <ellipse cx="100" cy="155" rx="8" ry="3" fill="url(#goldG)"/>
+        </g>
+
+        <!-- FOUNDER (fictional cartoon) -->
+        <g id="av-person">
+          <ellipse cx="220" cy="172" rx="36" ry="6" fill="#0c0f18" opacity="0.7"/>
+          <rect x="206" y="128" width="12" height="38" rx="5" fill="#2b3147"/>
+          <rect x="223" y="128" width="12" height="38" rx="5" fill="#262b3f"/>
+          <path d="M204 162 q-6 8 2 9 l12 0 l0 -7 z" fill="#15161d"/>
+          <path d="M237 162 q6 8 -2 9 l-12 0 l0 -7 z" fill="#15161d"/>
+          <rect x="194" y="88" width="52" height="46" rx="13" fill="url(#shirtG)"/>
+          <path d="M212 88 l8 10 l8 -10 z" fill="#dde7f5"/>
+          <circle cx="220" cy="106" r="1.4" fill="#23446b"/>
+          <circle cx="220" cy="116" r="1.4" fill="#23446b"/>
+          <rect x="184" y="92" width="13" height="38" rx="6.5" fill="url(#shirtG)"/>
+          <circle cx="190.5" cy="132" r="5.5" fill="url(#skinG)"/>
+          <rect x="243" y="92" width="13" height="34" rx="6.5" fill="url(#shirtG)"/>
+          <circle cx="249.5" cy="128" r="5.5" fill="url(#skinG)"/>
+          <g id="av-watch" style="display:none">
+            <rect x="183.5" y="120" width="14" height="6" rx="2" fill="url(#goldG)"/>
+            <circle cx="190.5" cy="123" r="4.4" fill="#fff7dc" stroke="#d9a521" stroke-width="1.4"/>
+            <line x1="190.5" y1="123" x2="190.5" y2="120.4" stroke="#8a6d1d" stroke-width="0.8"/>
+          </g>
+          <g id="av-phone" style="display:none">
+            <rect x="245" y="116" width="10" height="17" rx="2.4" fill="#15161d"/>
+            <rect x="246.2" y="118" width="7.6" height="13" rx="1.4" fill="#7fd0ff" opacity="0.95"/>
+          </g>
+          <g id="av-medal" style="display:none">
+            <path d="M229 92 l7 0 l-2.5 10 l-2 0 z" fill="#c0392b"/>
+            <circle cx="232" cy="105" r="5" fill="url(#goldG)" stroke="#b8860b" stroke-width="0.8"/>
+            <text x="229.6" y="107.6" font-size="6.5" fill="#8a6d1d">★</text>
+          </g>
+          <rect x="213" y="78" width="14" height="12" rx="5" fill="#eebd88"/>
+          <circle cx="220" cy="58" r="27" fill="url(#skinG)"/>
+          <circle cx="193.5" cy="60" r="4.5" fill="#eebd88"/>
+          <circle cx="246.5" cy="60" r="4.5" fill="#eebd88"/>
+          <path d="M194 49 a26 21 0 0 1 52 0 l-7 -3 l-6 4 l-7 -4 l-6 4 l-7 -4 l-6 4 l-7 -3 z" fill="#241f2e"/>
+          <path d="M202 36 q9 -6 20 -4" stroke="#3a3350" stroke-width="2" fill="none" opacity="0.8" stroke-linecap="round"/>
+          <g id="av-brows-calm">
+            <path d="M201 52 q5 -3 10 -1" stroke="#241f2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M229 51 q5 -2 10 1" stroke="#241f2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g id="av-brows" style="display:none">
+            <path d="M201 50 q5 1 10 4" stroke="#241f2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M239 50 q-5 1 -10 4" stroke="#241f2e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g id="av-eyes">
+            <ellipse cx="208" cy="60" rx="4.4" ry="5" fill="#fff"/>
+            <circle cx="209" cy="61" r="2.2" fill="#2a2430"/>
+            <circle cx="209.9" cy="60" r="0.7" fill="#fff"/>
+            <ellipse cx="232" cy="60" rx="4.4" ry="5" fill="#fff"/>
+            <circle cx="233" cy="61" r="2.2" fill="#2a2430"/>
+            <circle cx="233.9" cy="60" r="0.7" fill="#fff"/>
+          </g>
+          <g id="av-shades" style="display:none">
+            <rect x="199" y="54" width="18" height="11" rx="4" fill="#10121a"/>
+            <rect x="223" y="54" width="18" height="11" rx="4" fill="#10121a"/>
+            <line x1="217" y1="58" x2="223" y2="58" stroke="#10121a" stroke-width="2.4"/>
+            <line x1="196" y1="57" x2="199" y2="56" stroke="#10121a" stroke-width="2"/>
+            <line x1="244" y1="56" x2="241" y2="57" stroke="#10121a" stroke-width="2"/>
+            <line x1="203" y1="57" x2="208" y2="62" stroke="#7a86a8" stroke-width="1.2" opacity="0.8"/>
+            <line x1="227" y1="57" x2="232" y2="62" stroke="#7a86a8" stroke-width="1.2" opacity="0.8"/>
+          </g>
+          <path d="M219 63 q2 4 0 7 q-1 1 -3 0.6" stroke="#d8a06b" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <g id="av-blush">
+            <ellipse cx="203" cy="70" rx="4.5" ry="2.4" fill="#ff8a8a" opacity="0.28"/>
+            <ellipse cx="237" cy="70" rx="4.5" ry="2.4" fill="#ff8a8a" opacity="0.28"/>
+          </g>
+          <path id="av-mouth-happy" d="M209 73 q11 10 22 0 q-3 9 -11 9 q-8 0 -11 -9" fill="#7c3a3a"/>
+          <path id="av-mouth-flat" d="M211 77 L229 77" stroke="#5e4040" stroke-width="2.6" fill="none" stroke-linecap="round" style="display:none"/>
+          <path id="av-mouth-sad" d="M210 80 q10 -8 20 0" stroke="#5e4040" stroke-width="2.6" fill="none" stroke-linecap="round" style="display:none"/>
+          <path id="av-sweat" d="M250 46 q6 9 0 13 q-7 -4 0 -13" fill="#7fd0ff" style="display:none"/>
+          <ellipse id="av-halo" cx="220" cy="18" rx="21" ry="6.5" fill="none" stroke="url(#goldG)" stroke-width="3.6" filter="url(#glowGold)" style="display:none"/>
+        </g>
+      </svg>
+      <div id="avCaption"></div>
+    </div>
+
+    <!-- Legacy -->
+    <div class="panel">
+      <div class="legacy-head">
+        <h2 style="margin:0;">🤝 Di sản &amp; Thành tựu / Legacy</h2>
+        <span class="conn-display" id="connVal">🤝 0 quan hệ</span>
+      </div>
+      <div class="lifetime" id="lifetimeVal"></div>
+      <div class="endings-row" id="endingsRow"></div>
+      <div style="font-size:0.73rem; color:var(--muted); line-height:1.45; margin-bottom:8px;">
+        Khi một "dự án" kết thúc, bạn nhận <b style="color:var(--purple)">Quan hệ 🤝</b> theo tổng tiền đã kêu gọi.
+        Mỗi quan hệ chưa dùng cộng <b>+5% thu nhập</b> — hoặc đem mua đặc quyền vĩnh viễn. Mỗi thành tựu 🏆 cộng <b>+2% thu nhập</b>.
+        Mỗi dự án mới có một <b style="color:var(--purple)">"thời cuộc" 📅</b> ngẫu nhiên thay đổi luật chơi.
+      </div>
+      <div class="shop-list" id="perkList" style="max-height:280px;"></div>
+      <div class="ach-grid" id="achGrid"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: shop -->
+  <div class="panel">
+    <div class="shop-head">
+      <h2>🛒 Cửa hàng / Shop</h2>
+      <button id="buyMultBtn">Mua x1</button>
+    </div>
+    <div class="shop-tabs">
+      <button id="tabGrow" class="active">📈 Phát triển</button>
+      <button id="tabShady">😈 Mờ ám</button>
+      <button id="tabLux">💎 Hưởng thụ</button>
+      <button id="tabGood" style="display:none;">😇 Chính đạo</button>
+      <button id="tabMap">🗺️ Mở rộng</button>
+    </div>
+    <div class="shop-list" id="shopList"></div>
+  </div>
+</div>
+
+<!-- Intro -->
+<div class="overlay" id="introOverlay">
+  <div class="card intro-card">
+    <h2>🍚 NUÔI ANH</h2>
+    <div id="introText"></div>
+    <div class="intro-actions">
+      <button id="introStartBtn">BẮT ĐẦU HÀNH TRÌNH</button>
+      <button id="introSkipBtn" class="ghost">Bỏ qua intro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game over -->
+<div class="overlay" id="gameOverOverlay">
+  <div class="card" id="overlayCard">
+    <h2 id="overTitle"></h2>
+    <p id="overDesc"></p>
+    <div class="final-stats" id="finalStats"></div>
+    <button id="restartBtn">Tái xuất với danh nghĩa mới 🤝</button>
+  </div>
+</div>
+
+<!-- Random event -->
+<div class="overlay" id="eventOverlay">
+  <div class="card event-card">
+    <h2 id="eventTitle"></h2>
+    <p id="eventDesc"></p>
+    <div class="event-choices" id="eventChoices"></div>
+  </div>
+</div>
+
+<!-- Apology livestream minigame -->
+<div class="overlay" id="apologyOverlay">
+  <div class="card apology-card">
+    <h2>📵 LIVESTREAM XIN LỖI — CƠ HỘI CUỐI!</h2>
+    <p>Nghi ngờ chạm đỉnh! Chỉ còn một cách: lên livestream khóc xin lỗi.
+    Bấm <b>KHÓC</b> khi kim chạy vào <b style="color:var(--green)">vùng xanh</b> để nước mắt rơi đúng nhịp.
+    Trượt ra ngoài… thì hẹn gặp ở phòng hỏi cung.</p>
+    <div class="ap-bar" id="apBar">
+      <div class="ap-zone yellow" id="apYellow"></div>
+      <div class="ap-zone green" id="apGreen"></div>
+      <div class="ap-needle" id="apNeedle"></div>
+    </div>
+    <div class="ap-hint">Mỗi dự án chỉ được dùng MỘT lần. Cả nước đang xem. Đừng run tay. (phím <b>Space</b> cũng dùng được)</div>
+    <button id="apCryBtn">😭 KHÓC NGAY</button>
+  </div>
+</div>
+
+<footer>
+  ⚠️ Đây là trò chơi châm biếm (parody) lấy cảm hứng từ các sự kiện được báo chí đưa tin, nhằm mục đích giải trí và phê phán xã hội.
+  Mọi nhân vật trong game đều là hư cấu, không ám chỉ cá nhân hay tổ chức cụ thể nào.
+  Hãy luôn tìm hiểu kỹ và quyên góp cho các tổ chức từ thiện minh bạch.<br>
+  This is a satirical parody for entertainment and social commentary. All characters are fictional. Please donate responsibly to transparent charities.
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var MEAL_COST = 8500;
+  var ESCAPE_AT = 33e9;
+  var DISSOLVE_AT = 5e8;
+  var SAINT_AT = 2e9;
+
+  // ================= Audio =================
+  var AC = null;
+  function ac() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    return AC;
+  }
+  function beep(freq, dur, type, vol, delay) {
+    if (META.muted) return;
+    var ctx = ac(); if (!ctx) return;
+    var t = ctx.currentTime + (delay || 0);
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol || 0.07, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + dur + 0.05);
+  }
+  function sCoin() { beep(650 + Math.random() * 350, 0.08, "sine", 0.05); }
+  function sCrit() { beep(880, 0.12, "square", 0.06); beep(1320, 0.18, "square", 0.05, 0.06); }
+  function sBuy() { beep(420, 0.09, "triangle", 0.07); beep(630, 0.12, "triangle", 0.07, 0.08); }
+  function sAch() { [660, 830, 990, 1320].forEach(function (f, i) { beep(f, 0.14, "triangle", 0.07, i * 0.09); }); }
+  function sAlarm() { [620, 520, 620, 520].forEach(function (f, i) { beep(f, 0.16, "sawtooth", 0.05, i * 0.18); }); }
+  function sEnv() { [520, 780, 1040, 1560].forEach(function (f, i) { beep(f, 0.1, "sine", 0.06, i * 0.06); }); }
+
+  // Ambient generative music (pentatonic plucks)
+  var MUSIC_SCALE = [220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33];
+  function musicNote() {
+    if (!META.music || META.muted || document.hidden) return;
+    var f = MUSIC_SCALE[Math.floor(Math.random() * MUSIC_SCALE.length)];
+    beep(f, 1.6, "sine", 0.022);
+    if (Math.random() < 0.3) beep(f * 1.5, 1.8, "sine", 0.012, 0.12);
+    if (Math.random() < 0.15) beep(f / 2, 2.2, "triangle", 0.014, 0.05);
+  }
+
+  // ================= State =================
+  var S = null, META = null;
+
+  function freshMeta() {
+    return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
+             lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, numFmt: "vi" };
+  }
+  function perkLvl(id) { return META.perks[id] || 0; }
+
+  function freshState() {
+    var s = {
+      fund: 200000 * perkLvl("capital"),
+      stash: 0, totalRaised: 0, meals: 0, suspicion: 0, skim: 0, clicks: 0,
+      startTime: Date.now(), owned: {}, buffs: [],
+      wasNear95: false, gameOver: false,
+      maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
+      halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0
+    };
+    if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
+    return s;
+  }
+
+  // ================= Run modifiers (roguelike "thời cuộc") =================
+  var MODS = [
+    { id: "normal", name: "Năm bình thường", emoji: "📅", desc: "Không có gì đặc biệt xảy ra. Hiếm lắm đấy." },
+    { id: "tet", name: "Mùa Tết thiện nguyện", emoji: "🧨", desc: "Cả nước hào phóng: thu nhập +30%, nhưng nghi ngờ tăng nhanh hơn 15%.", income: 1.3, susp: 1.15 },
+    { id: "recession", name: "Kinh tế khó khăn", emoji: "📉", desc: "Thu nhập -25%, bù lại dân mạng bận lo cơm áo: nghi ngờ -25%.", income: 0.75, susp: 0.75 },
+    { id: "chill", name: "Dân mạng hiền hoà", emoji: "🧘", desc: "Một năm ai cũng tử tế lạ thường: nghi ngờ tăng chậm hơn 30%.", susp: 0.7 },
+    { id: "paparazzi", name: "Phóng viên rảnh rỗi", emoji: "📸", desc: "Bị soi gắt: nghi ngờ +35%. Nhưng drama kéo tương tác: click +50%.", susp: 1.35, click: 1.5 },
+    { id: "viral", name: "Viral bất ngờ", emoji: "🚀", desc: "Một bài đăng nổ tung: bắt đầu với buff thu nhập x5 trong 2 phút." },
+    { id: "lucky", name: "Năm phong thuỷ đẹp", emoji: "🧧", desc: "Thầy bảo hướng bàn làm việc rất tốt: phong bì vàng xuất hiện gấp đôi.", env: 0.5 }
+  ];
+  var modById = {};
+  MODS.forEach(function (m) { modById[m.id] = m; });
+  function curMod() { return modById[S.modifier] || modById.normal; }
+
+  // ================= Shop items =================
+  var ITEMS = [
+    { id: "volunteer", tab: "grow", name: "Tình nguyện viên", emoji: "🧑‍🤝‍🧑",
+      desc: "Sinh viên nhiệt huyết chia sẻ bài viết. +200₫/giây quyên góp.",
+      base: 2800, growth: 1.26, dps: 200, currency: "fund" },
+    { id: "fanpage", tab: "grow", name: "Fanpage triệu like", emoji: "📱",
+      desc: "Đăng ảnh các em nhỏ vùng cao kèm caption xúc động. +1.500₫/giây.",
+      base: 42000, growth: 1.26, dps: 1500, currency: "fund" },
+    { id: "kol", tab: "grow", name: "KOL chia sẻ", emoji: "🤳",
+      desc: "Người nổi tiếng đăng story kêu gọi. +9.000₫/giây.",
+      base: 504000, growth: 1.28, dps: 9000, currency: "fund" },
+    { id: "gala", tab: "grow", name: "Gala gây quỹ", emoji: "🎤",
+      desc: "Đêm nhạc thiện nguyện, nước mắt và ví tiền cùng rơi. +50.000₫/giây.",
+      base: 5600000, growth: 1.3, dps: 50000, currency: "fund" },
+    { id: "audit", tab: "grow", name: "Kiểm toán 'độc lập'", emoji: "🧮",
+      desc: "Công ty kiểm toán (của anh họ) xác nhận mọi thứ minh bạch. Nghi ngờ -0,1%/giây mỗi đội.",
+      base: 16800000, growth: 1.54, cool: 0.1, currency: "fund" },
+    { id: "tvshow", tab: "grow", name: "Lên sóng truyền hình", emoji: "📺",
+      desc: "Phóng sự giờ vàng. Cả nước rơi nước mắt chuyển khoản. +300.000₫/giây.",
+      base: 63000000, growth: 1.32, dps: 300000, currency: "fund" },
+    { id: "app", tab: "grow", name: "Siêu ứng dụng thiện nguyện", emoji: "🦄",
+      desc: "Startup 'công nghệ vị nhân sinh', gọi vốn series A. +2.000.000₫/giây.",
+      base: 840000000, growth: 1.34, dps: 2000000, currency: "fund" },
+    { id: "empire", tab: "grow", name: "Đế chế truyền thông", emoji: "👑",
+      desc: "Sở hữu cả hệ sinh thái báo, kênh, KOL. +15.000.000₫/giây.",
+      base: 12600000000, growth: 1.36, dps: 15000000, currency: "fund" },
+
+    { id: "dupcode", tab: "shady", name: "Mã nuôi em trùng lặp", emoji: "👯",
+      desc: "Một em bé, năm nhà hảo tâm cùng 'nuôi'. +12.000₫/giây nhưng nghi ngờ +0,3%/giây.",
+      base: 336000, growth: 1.32, dps: 12000, susp: 0.3, currency: "fund" },
+    { id: "ghostkid", tab: "shady", name: "Em bé 'ảo'", emoji: "👻",
+      desc: "Hồ sơ em nhỏ không tồn tại, ảnh lấy trên mạng. +80.000₫/giây, nghi ngờ +0,8%/giây.",
+      base: 4480000, growth: 1.34, dps: 80000, susp: 0.8, currency: "fund" },
+    { id: "fakebill", tab: "shady", name: "Hoá đơn khống", emoji: "🧾",
+      desc: "Bếp ăn báo giá 10 triệu, thực nấu 1 triệu. +400.000₫/giây, nghi ngờ +1,5%/giây.",
+      base: 33600000, growth: 1.36, dps: 400000, susp: 1.5, currency: "fund" },
+    { id: "shellco", tab: "shady", name: "Công ty sân sau", emoji: "🏢",
+      desc: "Quỹ 'thuê dịch vụ' từ công ty của… chính bạn. +2.500.000₫/giây, nghi ngờ +3%/giây.",
+      base: 350000000, growth: 1.38, dps: 2500000, susp: 3, currency: "fund" },
+    { id: "pyramid", tab: "shady", name: "Ma trận quỹ đa cấp", emoji: "🕳️",
+      desc: "Quỹ con nuôi quỹ cháu, tiền chạy lòng vòng đến chóng mặt. +20.000.000₫/giây, nghi ngờ +6%/giây.",
+      base: 5600000000, growth: 1.4, dps: 20000000, susp: 6, currency: "fund" },
+    { id: "pr", tab: "shady", name: "Bài PR 'minh bạch'", emoji: "📰",
+      desc: "Thuê báo viết bài 'sao kê rõ ràng, tấm lòng vàng'. Giảm ngay 10% nghi ngờ.",
+      base: 50000, growth: 1.5, instant: { susp: -10 }, currency: "stash", consumable: true },
+    { id: "lawyer", tab: "shady", name: "Luật sư thân quen", emoji: "⚖️",
+      desc: "Gửi công văn đến các 'thế lực thù địch' đăng bài bóc phốt. Giảm ngay 25% nghi ngờ.",
+      base: 400000, growth: 1.6, instant: { susp: -25 }, currency: "stash", consumable: true },
+    { id: "charity_blitz", tab: "shady", name: "Đợt từ thiện rầm rộ", emoji: "📸",
+      desc: "Lên vùng cao chụp 500 tấm ảnh trao quà (trao xong... xin lại). Giảm 40% nghi ngờ.",
+      base: 2500000, growth: 1.7, instant: { susp: -40 }, currency: "stash", consumable: true },
+
+    { id: "iphone", tab: "lux", name: "iPhone mới nhất", emoji: "📱",
+      desc: "'Công cụ làm việc thiện nguyện'. Uy tín x+0.1, nghi ngờ +0,05%/giây.",
+      base: 30000000, growth: 1.6, mult: 0.1, susp: 0.05, currency: "stash" },
+    { id: "watch", tab: "lux", name: "Đồng hồ Thuỵ Sỹ", emoji: "⌚",
+      desc: "'Bạn tặng, mình không biết giá'. Uy tín x+0.25, nghi ngờ +0,1%/giây.",
+      base: 150000000, growth: 1.7, mult: 0.25, susp: 0.1, currency: "stash" },
+    { id: "merc", tab: "lux", name: "Xe Mẹc đi vùng cao", emoji: "🚙",
+      desc: "'Đường lên bản hiểm trở, cần xe an toàn'. Uy tín x+0.6, nghi ngờ +0,25%/giây.",
+      base: 1200000000, growth: 1.8, mult: 0.6, susp: 0.25, currency: "stash" },
+    { id: "villa", tab: "lux", name: "Biệt thự 'văn phòng dự án'", emoji: "🏰",
+      desc: "Trên giấy tờ là trụ sở điều phối bữa ăn. Uy tín x+1.5, nghi ngờ +0,5%/giây.",
+      base: 8000000000, growth: 1.9, mult: 1.5, susp: 0.5, currency: "stash" },
+    { id: "yacht", tab: "lux", name: "Du thuyền 'khảo sát đường thuỷ'", emoji: "🛥️",
+      desc: "Để 'tiếp cận các điểm trường ven sông'. Uy tín x+3, nghi ngờ +1%/giây.",
+      base: 40000000000, growth: 2.0, mult: 3, susp: 1, currency: "stash" },
+
+    // 😇 Chính đạo — hidden path, paid in Halo ✨, only while hands are clean
+    { id: "speech", tab: "good", name: "Diễn thuyết truyền cảm hứng", emoji: "🎙️",
+      desc: "'Tay sạch cũng xây được điều lớn.' Cát-xê chảy vào túi riêng — hợp pháp 100%. +60.000₫/giây tiền sạch.",
+      base: 2, growth: 1.6, hdps: 60000, currency: "halo" },
+    { id: "book", tab: "good", name: "Sách 'Tay sạch, tâm sáng'", emoji: "📖",
+      desc: "Tự truyện bán chạy nhất năm, NXB in không kịp. +400.000₫/giây tiền bản quyền sạch.",
+      base: 6, growth: 1.7, hdps: 400000, currency: "halo" },
+    { id: "ambassador", tab: "good", name: "Đại sứ thương hiệu tử tế", emoji: "🤝",
+      desc: "Các nhãn hàng xếp hàng xin hợp tác với người sạch hiếm hoi. +3.000.000₫/giây tiền sạch.",
+      base: 15, growth: 1.8, hdps: 3000000, currency: "halo" },
+    { id: "award", tab: "good", name: "Giải 'Gương mặt trẻ tiêu biểu'", emoji: "🏅", once: true,
+      desc: "Cả nước biết tên bạn — lần này vì điều đúng. Uy tín x+0.8.",
+      base: 10, growth: 1, mult: 0.8, currency: "halo" },
+    { id: "medal", tab: "good", name: "Huân chương vì cộng đồng", emoji: "🎖️", once: true,
+      desc: "Ai dám soi người đeo huân chương? Nghi ngờ -0,3%/giây.",
+      base: 20, growth: 1, cool: 0.3, currency: "halo" },
+    { id: "gov", tab: "good", name: "Quỹ được bảo trợ chính thức", emoji: "🏛️", once: true,
+      desc: "Dự án trở thành mô hình điểm quốc gia. Thu nhập +50%.",
+      base: 30, growth: 1, incomeBoost: 0.5, currency: "halo" },
+
+    { id: "prov_db", tab: "map", name: "Điện Biên", emoji: "⛰️", once: true,
+      desc: "Mở 1.200 mã nuôi em mới tại các điểm trường xa nhất. Thu nhập +15%.",
+      base: 4200000, growth: 1, provMult: 0.15, currency: "fund" },
+    { id: "prov_lc", tab: "map", name: "Lào Cai", emoji: "🏔️", once: true,
+      desc: "Vươn tới các bản trên mây. Thu nhập +15%.",
+      base: 56000000, growth: 1, provMult: 0.15, currency: "fund" },
+    { id: "prov_gl", tab: "map", name: "Gia Lai", emoji: "🌄", once: true,
+      desc: "Tây Nguyên đón đoàn thiện nguyện. Thu nhập +15%.",
+      base: 700000000, growth: 1, provMult: 0.15, currency: "fund" },
+    { id: "prov_hg", tab: "map", name: "Hà Giang", emoji: "🗻", once: true,
+      desc: "Cột cờ Lũng Cú chứng giám. Thu nhập +15%.",
+      base: 5600000000, growth: 1, provMult: 0.15, currency: "fund" },
+    { id: "prov_sl", tab: "map", name: "Sơn La", emoji: "🌾", once: true,
+      desc: "Mỗi điểm trường một bếp ăn (trên PowerPoint). Thu nhập +15%.",
+      base: 28000000000, growth: 1, provMult: 0.15, currency: "fund" },
+    { id: "prov_kt", tab: "map", name: "Kon Tum", emoji: "🌋", once: true,
+      desc: "Phủ sóng toàn quốc, truyền thông gọi bạn là 'huyền thoại sống'. Thu nhập +15%.",
+      base: 112000000000, growth: 1, provMult: 0.15, currency: "fund" }
+  ];
+  var itemById = {};
+  ITEMS.forEach(function (it) { itemById[it.id] = it; });
+  var PROVINCES = ITEMS.filter(function (i) { return i.once; });
+
+  // ================= Perks =================
+  var PERKS = [
+    { id: "capital", name: "Vốn lận lưng", emoji: "💼", max: 10,
+      desc: "Mỗi dự án mới khởi đầu với +200.000₫ quỹ / cấp.",
+      cost: function (l) { return 2 + l; } },
+    { id: "minions", name: "Đàn em thân tín", emoji: "🫡", max: 5,
+      desc: "Khởi đầu mỗi dự án với 2 tình nguyện viên / cấp.",
+      cost: function (l) { return 3 + l * 2; } },
+    { id: "umbrella", name: "Ô dù che chắn", emoji: "☂️", max: 5,
+      desc: "'Người quen ở trển'. Nghi ngờ tăng chậm hơn 8% / cấp.",
+      cost: function (l) { return 5 + l * 3; } },
+    { id: "silver_tongue", name: "Miệng lưỡi truyền thông", emoji: "🗣️", max: 5,
+      desc: "Mỗi cú click kêu gọi mạnh hơn 30% / cấp.",
+      cost: function (l) { return 3 + l * 2; } },
+    { id: "pr_network", name: "Mạng lưới báo chí", emoji: "🕸️", max: 3,
+      desc: "Các món giảm nghi ngờ rẻ hơn 15% / cấp.",
+      cost: function (l) { return 4 + l * 3; } },
+    { id: "lucky_env", name: "Phong thuỷ tốt", emoji: "🧧", max: 3,
+      desc: "Phong bì vàng xuất hiện thường xuyên hơn 20% / cấp.",
+      cost: function (l) { return 4 + l * 4; } },
+    { id: "autoclick", name: "Cánh tay nối dài", emoji: "🦾", max: 5,
+      desc: "Đội seeding tự kêu gọi 1 lần/giây mỗi cấp — kể cả khi bạn đi 'họp'.",
+      cost: function (l) { return 6 + l * 4; } }
+  ];
+  var perkById = {};
+  PERKS.forEach(function (p) { perkById[p.id] = p; });
+
+  // ================= Endings =================
+  var ENDINGS = [
+    { id: "caught", emoji: "🚔", name: "Vào lò" },
+    { id: "dissolved", emoji: "📦", name: "Giải thể êm" },
+    { id: "escaped", emoji: "🏝️", name: "Tẩu thoát" },
+    { id: "saint", emoji: "😇", name: "Người tử tế" }
+  ];
+
+  // ================= Achievements =================
+  var ACHS = [
+    { id: "meals1k", name: "Bếp đỏ lửa", desc: "Nấu 1.000 bữa cơm trong một dự án",
+      check: function () { return S.meals >= 1000; } },
+    { id: "meals100k", name: "Nuôi cả bản", desc: "Nấu 100.000 bữa cơm trong một dự án",
+      check: function () { return S.meals >= 100000; } },
+    { id: "raise1b", name: "Tỷ phú nước mắt", desc: "Kêu gọi tổng cộng 1 tỷ₫ trong một dự án",
+      check: function () { return S.totalRaised >= 1e9; } },
+    { id: "stash100m", name: "Của để dành", desc: "Túi riêng đạt 100 triệu₫",
+      check: function () { return S.stash >= 1e8; } },
+    { id: "skimmax", name: "Không còn lương tâm", desc: "Chỉnh tỷ lệ rút ruột lên 90%",
+      check: function () { return S.skim >= 90; } },
+    { id: "clicks500", name: "Chai mặt kêu gọi", desc: "Bấm kêu gọi 500 lần trong một dự án",
+      check: function () { return S.clicks >= 500; } },
+    { id: "luxall", name: "Sống ảo đỉnh cao", desc: "Sở hữu đủ cả 5 món xa xỉ",
+      check: function () { return ["iphone","watch","merc","villa","yacht"].every(function (id) { return (S.owned[id] || 0) > 0; }); } },
+    { id: "nearmiss", name: "Thoát hiểm ngoạn mục", desc: "Nghi ngờ chạm 95% rồi kéo về dưới 50%",
+      check: function () { return S.wasNear95 && S.suspicion <= 50; } },
+    { id: "survive30", name: "Sống dai", desc: "Một dự án tồn tại 30 ngày (30 phút thật)",
+      check: function () { return days() >= 30; } },
+    { id: "serial", name: "Tái phạm chuyên nghiệp", desc: "Khởi động dự án thứ 3",
+      check: function () { return META.runs >= 3; } },
+    { id: "env10", name: "Thợ săn phong bì", desc: "Mở 10 phong bì vàng 🧧",
+      check: function () { return META.envOpened >= 10; } },
+    { id: "crit1", name: "Chạm đúng trái tim", desc: "Có bài kêu gọi đầu tiên lên xu hướng (VIRAL 💥)",
+      check: function () { return META.crits >= 1; } },
+    { id: "prov6", name: "Phủ sóng toàn quốc", desc: "Mở rộng đủ 6 tỉnh trong một dự án",
+      check: function () { return PROVINCES.every(function (i) { return (S.owned[i.id] || 0) > 0; }); } },
+    { id: "lifetime100b", name: "Huyền thoại ngành", desc: "Tổng kêu gọi mọi thời đại đạt 100 tỷ₫",
+      check: function () { return META.lifetimeRaised >= 1e11; } },
+    { id: "offline1", name: "Tiền tự chảy về", desc: "Nhận thu nhập trong lúc vắng mặt",
+      check: function () { return META.gotOffline; } },
+    { id: "combo50", name: "Cuồng nhiệt", desc: "Đạt COMBO x50 khi kêu gọi",
+      check: function () { return S.maxCombo >= 50; } },
+    { id: "actor", name: "Diễn sâu", desc: "Khóc đúng nhịp trong livestream xin lỗi",
+      check: function () { return META.actor; } },
+    { id: "saintach", name: "Người tốt thật sự", desc: "Mở kết cục bí mật: cả run không rút ruột quá 5%",
+      check: function () { return !!META.endings.saint; } },
+    { id: "konami", name: "Hacker lương thiện", desc: "Nhập một mật mã cổ xưa (↑↑↓↓←→←→BA)",
+      check: function () { return META.konami; } },
+    { id: "collector", name: "Nhà sưu tầm kết cục", desc: "Mở đủ cả 4 kết cục",
+      check: function () { return ENDINGS.every(function (e) { return !!META.endings[e.id]; }); } },
+    { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
+      check: function () { return META.goodFound; } },
+    { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
+      check: function () { return isClean() && S.stash >= 1e9; } },
+    { id: "idol", name: "Thần tượng quốc dân", desc: "Nhận đủ Giải thưởng, Huân chương và Bảo trợ chính thức",
+      check: function () { return ["award", "medal", "gov"].every(function (id) { return count(id) > 0; }); } }
+  ];
+  function achCount() { return Object.keys(META.achievements).length; }
+
+  // ================= Random events =================
+  var EVENTS = [
+    { title: "🕵️ Nhà báo điều tra liên hệ",
+      desc: "Một phóng viên nhắn tin: 'Em có vài câu hỏi về dòng tiền của dự án, anh sắp xếp trả lời giúp em nhé.'",
+      choices: [
+        { label: "Mời đi 'cà phê' (tốn 15% túi riêng)", hint: "Nghi ngờ -15%",
+          fx: function () { S.stash *= 0.85; S.suspicion -= 15; return "Bài báo không bao giờ được đăng. 'Anh em cả mà.'"; } },
+        { label: "Phớt lờ tin nhắn", hint: "Nghi ngờ +10%",
+          fx: function () { S.suspicion += 10; return "Bài điều tra lên trang nhất: 'Dự án X im lặng bất thường'."; } },
+        { label: "Trả lời phỏng vấn, kể chuyện cảm động", hint: "50/50: nghi ngờ -10% hoặc +15%",
+          fx: function () {
+            if (Math.random() < 0.5) { S.suspicion -= 10; return "Bạn khóc đúng đoạn cao trào. Dư luận cảm động, tạm tin."; }
+            S.suspicion += 15; return "Nhà báo hỏi đúng chỗ hiểm. Bạn ấp úng. Clip viral với caption 'sao mắt anh láo liên thế?'";
+          } }
+      ] },
+    { title: "💰 Đại gia muốn tài trợ 'khủng'",
+      desc: "Một doanh nhân bí ẩn muốn chuyển một khoản lớn, 'không cần hoá đơn, anh tin chú'.",
+      choices: [
+        { label: "Nhận và đưa hết vào quỹ", hint: "Quỹ + lớn",
+          fx: function () { var g = incomePerSec() * 200 + 500000; S.fund += g; return "Quỹ nhận thêm " + fmt(g) + ". Các em sắp có thêm cơm thịt!"; } },
+        { label: "Nhận và 'xử lý linh hoạt'", hint: "Túi riêng + lớn, nghi ngờ +12%",
+          fx: function () { var g = incomePerSec() * 150 + 500000; S.stash += g; S.suspicion += 12; return "Túi riêng dày thêm " + fmt(g) + ". Kế toán: 'Em không thấy gì hết.'"; } }
+      ] },
+    { title: "😰 Tình nguyện viên phát hiện sổ sách",
+      desc: "Một TNV kỳ cựu vô tình thấy hai cuốn sổ kế toán… không giống nhau. Cậu ấy đang rất hoang mang.",
+      choices: [
+        { label: "Thăng chức + tăng 'phụ cấp' (tốn 10% túi riêng)", hint: "Không tăng nghi ngờ",
+          fx: function () { S.stash *= 0.9; return "Cậu ấy giờ là 'Trưởng ban Minh bạch'. Đời đúng là biết đùa."; } },
+        { label: "Đuổi việc thẳng tay", hint: "Nghi ngờ +18%",
+          fx: function () { S.suspicion += 18; return "Cậu ấy đăng tâm thư 3.000 chữ lúc nửa đêm. 50k share."; } },
+        { label: "Giải thích đó là 'sổ nháp'", hint: "50/50: yên ổn hoặc nghi ngờ +25%",
+          fx: function () {
+            if (Math.random() < 0.5) return "'À ra thế!' — cậu ấy tin. Sinh viên thật trong sáng.";
+            S.suspicion += 25; return "Cậu ấy chụp lại cả hai cuốn sổ trước khi hỏi. Toang.";
+          } }
+      ] },
+    { title: "📋 Tin đồn thanh tra",
+      desc: "Trong nhóm kín, có người rỉ tai: 'Sắp có đoàn vào kiểm tra các quỹ từ thiện lớn đấy.'",
+      choices: [
+        { label: "Đại tu sổ sách (tốn 20% quỹ)", hint: "Nghi ngờ -20%",
+          fx: function () { S.fund *= 0.8; S.suspicion -= 20; return "Sổ sách giờ đẹp như mơ. Đẹp hơn cả sự thật."; } },
+        { label: "Kệ, chắc tin vịt", hint: "70% không sao, 30% nghi ngờ +20%",
+          fx: function () {
+            if (Math.random() < 0.7) return "Đúng là tin vịt. Hú hồn.";
+            S.suspicion += 20; return "Không phải tin vịt. Đoàn kiểm tra ghé thăm đột xuất.";
+          } }
+      ] },
+    { title: "🥹 Em nhỏ cảm ơn trên sóng",
+      desc: "Một em được dự án hỗ trợ nói lời cảm ơn trong phóng sự, cả nước tan chảy. Đây là thời cơ vàng.",
+      choices: [
+        { label: "Khiêm tốn: 'Công lao là của các nhà hảo tâm'", hint: "Nghi ngờ -8%",
+          fx: function () { S.suspicion -= 8; return "Dư luận: 'Người đâu mà vừa giỏi vừa khiêm tốn.'"; } },
+        { label: "Tận dụng truyền thông tối đa", hint: "Quỹ + lớn, nghi ngờ +5%",
+          fx: function () { var g = incomePerSec() * 150 + 200000; S.fund += g; S.suspicion += 5; return "Chiến dịch 'Một bữa cơm, vạn yêu thương' thu về " + fmt(g) + ". Hơi lố, nhưng hiệu quả."; } }
+      ] },
+    { title: "🪙 'Chuyên gia' mời đầu tư coin",
+      desc: "Bạn cũ thời đại học giờ là 'chuyên gia tài chính' rủ bỏ túi riêng vào đồng coin CharityMoon: 'Uy tín, x2 trong tuần.'",
+      choices: [
+        { label: "Tất tay 30% túi riêng", hint: "50/50: x2 hoặc mất sạch khoản đó",
+          fx: function () {
+            var bet = S.stash * 0.3;
+            if (Math.random() < 0.5) { S.stash += bet; return "CharityMoon x2 thật! +" + fmt(bet) + ". Lùa gà gặp gà may."; }
+            S.stash -= bet; return "Sàn sập sau 2 ngày. -" + fmt(bet) + ". 'Chuyên gia' đã chặn bạn.";
+          } },
+        { label: "Từ chối khéo", hint: "Không có gì xảy ra",
+          fx: function () { return "Bạn lịch sự từ chối. Một quyết định hiếm hoi mà lương tâm và lý trí cùng đồng ý."; } }
+      ] },
+    { title: "👯 Hai nhà hảo tâm phát hiện nuôi cùng một em",
+      desc: "Họ so mã hỗ trợ trong group và phát hiện trùng nhau. Topic đang nóng dần lên…",
+      choices: [
+        { label: "Hoàn tiền + tặng quà xin lỗi (tốn 5% quỹ)", hint: "Nghi ngờ -10%",
+          fx: function () { S.fund *= 0.95; S.suspicion -= 10; return "'Lỗi hệ thống thôi các bác ạ.' Kèm voucher trà sữa. Dập lửa thành công."; } },
+        { label: "Đổ lỗi cho thực tập sinh", hint: "Nghi ngờ +8%",
+          fx: function () { S.suspicion += 8; return "Thực tập sinh: 'Em chưa từng được cấp quyền vào hệ thống???'"; } }
+      ] },
+    { title: "🥊 Dự án từ thiện đối thủ nổi lên",
+      desc: "Một dự án mới toanh, minh bạch sao kê từng đồng, đang hút hết nhà hảo tâm của bạn.",
+      choices: [
+        { label: "Chơi xấu: seeding tin đồn về họ", hint: "Thu nhập x2 trong 60 giây, nghi ngờ +12%",
+          fx: function () { S.suspicion += 12; addBuff("😈 Dìm hàng đối thủ", "income", 2, 60); return "Đối thủ bận rộn giải trình. Nhà hảo tâm quay về với bạn. Tạm thời."; } },
+        { label: "Đề nghị 'hợp tác chiến lược'", hint: "Nghi ngờ -5%",
+          fx: function () { S.suspicion -= 5; return "Ảnh bắt tay đăng khắp nơi. Uy tín của họ che bớt cho bạn."; } }
+      ] },
+    { title: "🧒 Fan cứng đòi đi thăm em bé đã nuôi 2 năm",
+      desc: "Chị nhà hảo tâm nhiệt tình nhất muốn lên tận bản thăm 'con nuôi'. Vấn đề là… mã của chị thuộc nhóm 'linh hoạt'.",
+      choices: [
+        { label: "Dàn dựng buổi gặp 'thế thân' (tốn 10% quỹ)", hint: "Không tăng nghi ngờ",
+          fx: function () { S.fund *= 0.9; return "Một em bé khác đóng vai. Diễn sâu. Chị ấy khóc, bạn cũng khóc (vì lý do khác)."; } },
+        { label: "Báo 'em ấy vừa chuyển trường'", hint: "50/50: yên ổn hoặc nghi ngờ +20%",
+          fx: function () {
+            if (Math.random() < 0.5) return "Chị ấy tiếc nuối nhưng tin. Chuyển sang nuôi 'em' khác.";
+            S.suspicion += 20; return "Chị ấy gọi thẳng lên trường: 'Không có học sinh nào tên vậy.' Toang.";
+          } },
+        { label: "Tổ chức chuyến thăm thật (tốn 5% quỹ)", hint: "Nghi ngờ -12%",
+          fx: function () { S.fund *= 0.95; S.suspicion -= 12; return "Hoá ra làm thật cũng… không tệ? Chị ấy đăng 47 tấm ảnh, ai cũng cảm động."; } }
+      ] },
+    { title: "🌙 Mất ngủ vì lương tâm",
+      desc: "3 giờ sáng. Bạn nhìn trần nhà. Đâu đó trên núi, có những đứa trẻ ăn cơm trắng với muối. Còn bạn vừa đặt cọc xe mới.",
+      choices: [
+        { label: "Làm một đợt từ thiện THẬT (tốn 10% quỹ)", hint: "Bữa cơm + nhiều, nghi ngờ -8%",
+          fx: function () { var spend = S.fund * 0.1; S.fund -= spend; S.meals += Math.floor(spend / MEAL_COST); S.suspicion -= 8; return "Tuần này, cơm có thịt thật. Bạn ngủ ngon hơn. Một chút."; } },
+        { label: "Uống trà an thần, lướt TikTok", hint: "Không có gì xảy ra",
+          fx: function () { return "Bạn xem 200 video mèo và quên hết. Lương tâm: 'Để mai tính.'"; } }
+      ] }
+  ];
+
+  // ================= Helpers =================
+  // three display modes, cycled via the 🔢 header button: vi (tỷ/tr) → sci (1.23e9) → letter (K M B T aa ab…)
+  function fmt(n) {
+    n = Math.floor(n);
+    if (!isFinite(n)) return "0₫";
+    var mode = META ? META.numFmt : "vi";
+
+    if (mode === "sci" && n >= 1e6) {
+      var exp = Math.floor(Math.log10(n));
+      return (n / Math.pow(10, exp)).toFixed(2) + "e" + exp + "₫";
+    }
+    if (mode === "letter" && n >= 1e3) {
+      var tier = Math.floor(Math.log10(n) / 3);
+      var suffix;
+      if (tier <= 4) suffix = ["", "K", "M", "B", "T"][tier];
+      else {
+        var idx = tier - 5;
+        suffix = String.fromCharCode(97 + Math.floor(idx / 26)) + String.fromCharCode(97 + (idx % 26));
+      }
+      return (n / Math.pow(10, tier * 3)).toFixed(2) + suffix + "₫";
+    }
+    if (n >= 1e15) return (n / 1e15).toFixed(2).replace(".", ",") + " triệu tỷ₫";
+    if (n >= 1e12) return (n / 1e12).toFixed(2).replace(".", ",") + " nghìn tỷ₫";
+    if (n >= 1e9) return (n / 1e9).toFixed(2).replace(".", ",") + " tỷ₫";
+    if (n >= 1e6) return (n / 1e6).toFixed(2).replace(".", ",") + " tr₫";
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(".", ",") + "k₫";
+    return n + "₫";
+  }
+  function count(id) { return S.owned[id] || 0; }
+  function days() { return Math.floor((Date.now() - S.startTime) / 60000); }
+  function fmtTime(s) {
+    if (s < 90) return Math.ceil(s) + " giây";
+    if (s < 5400) return Math.ceil(s / 60) + " phút";
+    return (s / 3600).toFixed(1) + " giờ";
+  }
+  function clampSusp() { S.suspicion = Math.max(0, Math.min(100, S.suspicion)); }
+
+  function unitCost(it) {
+    var c = it.base * Math.pow(it.growth, count(it.id));
+    if (it.instant) c *= (1 - 0.15 * perkLvl("pr_network"));
+    return Math.floor(c);
+  }
+  function bulkCost(it, n) {
+    if (it.growth === 1) return unitCost(it) * n;
+    return Math.floor(unitCost(it) * (Math.pow(it.growth, n) - 1) / (it.growth - 1));
+  }
+  function maxAffordable(it, wallet) {
+    var n = 0;
+    while (n < 500 && bulkCost(it, n + 1) <= wallet) n++;
+    return n;
+  }
+
+  function buffMult(type) {
+    var m = 1;
+    S.buffs.forEach(function (b) { if (b.type === type) m *= b.mult; });
+    return m;
+  }
+  function addBuff(name, type, mult, secs) {
+    S.buffs.push({ name: name, type: type, mult: mult, until: Date.now() + secs * 1000 });
+    renderBuffs();
+  }
+
+  function globalMult() { return (1 + 0.05 * META.connections) * (1 + 0.02 * achCount()); }
+  function provMult() {
+    var m = 1;
+    PROVINCES.forEach(function (it) { if (count(it.id) > 0) m += it.provMult; });
+    return m;
+  }
+  // The clean path: never skimmed above 5%, never bought shady income schemes
+  var SHADY_INCOME = ["dupcode", "ghostkid", "fakebill", "shellco", "pyramid"];
+  function isClean() {
+    return S.maxSkim <= 5 && SHADY_INCOME.every(function (id) { return count(id) === 0; });
+  }
+  function honestDps() {
+    var d = 0;
+    ITEMS.forEach(function (it) { if (it.hdps) d += it.hdps * count(it.id); });
+    return d;
+  }
+
+  function repMult() {
+    // meals stay relevant deep into the run: cap +4 reached at 32k meals
+    var m = 1 + Math.min(4, S.meals / 8000);
+    ITEMS.forEach(function (it) { if (it.mult) m += it.mult * count(it.id); });
+    return m;
+  }
+  function baseDps() {
+    var d = 0;
+    ITEMS.forEach(function (it) { if (it.dps) d += it.dps * count(it.id); });
+    return d;
+  }
+  // every permanent income multiplier except temporary buffs — used for payback math too
+  function incomeFactor() {
+    var boost = 1;
+    ITEMS.forEach(function (it) { if (it.incomeBoost) boost += it.incomeBoost * count(it.id); });
+    return repMult() * globalMult() * provMult() * (curMod().income || 1) * boost;
+  }
+  function incomePerSec() {
+    return baseDps() * incomeFactor() * buffMult("income");
+  }
+  function suspPerSec() {
+    // superlinear: petty graft is nearly invisible, heavy graft is explosive.
+    // Equilibrium vs. base cooling sits around skim ~21% — discoverable, not displayed.
+    var grow = 1.6 * Math.pow(S.skim / 100, 1.5);
+    // luxury bought with clean money barely raises eyebrows
+    var luxFactor = isClean() ? 0.2 : 1;
+    ITEMS.forEach(function (it) {
+      if (it.susp) grow += it.susp * count(it.id) * (it.mult ? luxFactor : 1);
+    });
+    grow *= (1 - 0.08 * perkLvl("umbrella")) * (curMod().susp || 1);
+    var cool = 0.15;
+    ITEMS.forEach(function (it) { if (it.cool) cool += it.cool * count(it.id); });
+    return grow - cool;
+  }
+  function clickPower() {
+    return 1000 * repMult() * globalMult() * provMult() * buffMult("click")
+      * (1 + 0.3 * perkLvl("silver_tongue")) * (1 + baseDps() / 35000) * (curMod().click || 1);
+  }
+
+  // ================= Core =================
+  function earn(amount) {
+    if (!isFinite(amount)) return; // never let NaN poison the wallets
+    var toStash = amount * (S.skim / 100);
+    var clean = amount - toStash;
+    var toKitchen = clean * 0.2; // the kitchen takes its cut off the top — kids eat first
+    S.stash += toStash;
+    S.fund += clean - toKitchen;
+    S.mealAcc += toKitchen / MEAL_COST;
+    S.totalRaised += amount;
+    META.lifetimeRaised += amount;
+  }
+
+  var paused = false; // true while intro/event/minigame open
+
+  function tick(dt) {
+    if (S.gameOver || paused) return;
+    earn(incomePerSec() * dt);
+
+    // auto-clicker perk
+    var acl = perkLvl("autoclick");
+    if (acl > 0) {
+      S.autoAcc += dt * acl;
+      var k = Math.floor(S.autoAcc);
+      if (k > 0) { S.autoAcc -= k; S.clicks += k; earn(clickPower() * k); }
+    }
+
+    // meals finish cooking as the kitchen's cut (taken in earn) accumulates
+    var mealsToCook = Math.floor(S.mealAcc);
+    if (mealsToCook > 0) {
+      S.mealAcc -= mealsToCook;
+      S.meals += mealsToCook;
+      META.totalMeals += mealsToCook;
+      // clean hands turn real meals into Halo ✨ (only after the path is found)
+      if (S.goodUnlocked && isClean()) {
+        S.haloProgress += mealsToCook;
+        while (S.haloProgress >= 500) { S.haloProgress -= 500; S.halo++; }
+      }
+    }
+
+    // honest fame income (speaking fees, royalties) — clean money, no suspicion
+    if (honestDps() > 0) S.stash += honestDps() * globalMult() * dt;
+
+    // the hidden path: stay clean long enough, feed enough real children
+    if (!S.goodUnlocked && isClean()) {
+      S.cleanTime += dt;
+      if (S.cleanTime >= 600 && S.meals >= 2000) unlockGoodPath();
+    }
+
+    var before = S.buffs.length;
+    S.buffs = S.buffs.filter(function (b) { return b.until > Date.now(); });
+    if (S.buffs.length !== before) renderBuffs();
+
+    S.suspicion += suspPerSec() * dt;
+    clampSusp();
+    if (S.suspicion >= 95) S.wasNear95 = true;
+    if (S.suspicion >= 100) { checkBust(); return; }
+    checkAchievements();
+  }
+
+  function unlockGoodPath() {
+    S.goodUnlocked = true;
+    META.goodFound = true;
+    document.getElementById("tabGood").style.display = "";
+    sAch();
+    confetti();
+    toast("💌 <b>Một lá thư viết tay từ vùng cao…</b><br>'Cảm ơn chú đã cho con ăn cơm có thịt. Mai mốt lớn con cũng muốn làm người tốt giống chú.'<br>Một lối đi mới đã hiện ra: <b>😇 Chính đạo</b>.");
+    setTicker("💌 Bạn đọc lá thư ba lần. Hôm đó, bạn không kiểm tra số dư lần nào.");
+    checkAchievements();
+    save();
+  }
+
+  // Last-chance apology livestream before being busted
+  function checkBust() {
+    if (S.gameOver) return;
+    if (!S.apologyUsed) {
+      S.apologyUsed = true;
+      S.suspicion = 99;
+      openApology();
+    } else {
+      endRun("caught");
+    }
+  }
+
+  function checkAchievements() {
+    ACHS.forEach(function (a) {
+      if (!META.achievements[a.id] && a.check()) {
+        META.achievements[a.id] = true;
+        toast("🏆 <b>Thành tựu: " + a.name + "</b><br>" + a.desc + " (+2% thu nhập vĩnh viễn)");
+        sAch();
+        confetti();
+        renderLegacy();
+      }
+    });
+  }
+
+  function connectionsEarned(outcome) {
+    var base = S.totalRaised > 5e7 ? Math.floor(8 * Math.log10(S.totalRaised / 5e7)) : 0;
+    var factor = outcome === "escaped" ? 1.5 : outcome === "saint" ? 2.0 : outcome === "dissolved" ? 1.0 : 0.6;
+    return Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor));
+  }
+
+  function endRun(outcome) {
+    if (S.gameOver) return;
+    S.gameOver = true;
+    hideEvent();
+    hideApology();
+    removeEnvelope();
+    var conns = connectionsEarned(outcome);
+    META.connections += conns;
+    META.runs += 1;
+    META.endings[outcome] = true;
+
+    var card = document.getElementById("overlayCard");
+    var title = document.getElementById("overTitle");
+    var desc = document.getElementById("overDesc");
+    card.classList.remove("win-card");
+
+    if (outcome === "escaped") {
+      card.classList.add("win-card");
+      title.textContent = "🏝️ TẨU THOÁT THÀNH CÔNG!";
+      desc.innerHTML = "Bạn đã kịp 'nghỉ hưu non' ở một hòn đảo không có hiệp định dẫn độ, trước khi mọi chuyện vỡ lở. Nhưng làm giàu nhanh quen rồi, nghỉ sao nổi…";
+      confetti();
+    } else if (outcome === "dissolved") {
+      card.classList.add("win-card");
+      title.textContent = "📦 GIẢI THỂ ÊM ĐẸP";
+      desc.innerHTML = "Dự án 'hoàn thành sứ mệnh lịch sử' và đóng cửa trong yên bình. Không ai hỏi gì. Lần sau, với từng này quan hệ, mọi thứ sẽ dễ hơn nhiều.";
+    } else if (outcome === "saint") {
+      card.classList.add("win-card");
+      title.textContent = "😇 NGƯỜI TỬ TẾ CÓ THẬT";
+      desc.innerHTML = "Bạn chuyển giao toàn bộ dự án cho một tổ chức minh bạch, công khai mọi sổ sách. Báo chí viết về bạn như một phép màu giữa thời đại hoài nghi. Hoá ra… làm người tốt cũng được nhận quan hệ. Gấp đôi.";
+      confetti(); confetti();
+    } else {
+      title.textContent = "🚔 CÔNG AN VÀO CUỘC!";
+      desc.innerHTML = "Mức độ nghi ngờ chạm đỉnh. Cơ quan điều tra khởi tố vụ án, phong toả tài khoản. Cộng đồng mạng: 'Biết ngay mà!!!' May là bạn còn giữ được vài mối quan hệ…";
+      sAlarm();
+    }
+
+    document.getElementById("finalStats").innerHTML =
+      "💰 Tổng tiền kêu gọi: <b>" + fmt(S.totalRaised) + "</b><br>" +
+      "🤫 Tiền vào túi riêng: <b style='color:var(--gold)'>" + fmt(S.stash) + "</b><br>" +
+      "🍱 Bữa cơm đến tay các em: <b style='color:var(--green)'>" + S.meals.toLocaleString("vi-VN") + "</b><br>" +
+      "📅 Tồn tại: <b>" + days() + " ngày</b> &nbsp;|&nbsp; 🖱️ " + S.clicks.toLocaleString("vi-VN") + " lần kêu gọi<br>" +
+      "🤝 Quan hệ nhận được: <b style='color:var(--purple)'>+" + conns + "</b> (tổng: " + META.connections + ")";
+
+    document.getElementById("gameOverOverlay").classList.add("show");
+    save();
+  }
+
+  function startNewRun() {
+    S = freshState();
+    // once you've found the path, you never forget it (items still demand clean hands)
+    if (META.goodFound) S.goodUnlocked = true;
+    updateGoodTab();
+    // roll a modifier (first run is always normal)
+    if (META.runs > 0) {
+      S.modifier = MODS[Math.floor(Math.random() * MODS.length)].id;
+    }
+    document.getElementById("gameOverOverlay").classList.remove("show");
+    document.getElementById("skimSlider").value = 0;
+    document.getElementById("skimPct").textContent = "0%";
+    var m = curMod();
+    if (S.modifier === "viral") addBuff("🚀 Khởi đầu viral x5", "income", 5, 120);
+    if (META.runs > 0) {
+      toast(m.emoji + " <b>Thời cuộc: " + m.name + "</b><br>" + m.desc);
+      setTicker("Dự án thứ " + (META.runs + 1) + " ra đời dưới một cái tên mới tinh. 'Lần này em làm thật, các bác ạ.' 🙂");
+    } else {
+      setTicker("Một dự án mới ra đời. Hãy bấm nút để kêu gọi quyên góp!");
+    }
+    scheduleEvent();
+    scheduleEnvelope();
+    renderAll();
+    save();
+  }
+
+  // ================= Shop =================
+  var activeTab = "grow";
+  var buyMult = 1;
+
+  function renderShop() {
+    var list = document.getElementById("shopList");
+    list.innerHTML = "";
+
+    if (activeTab === "map") {
+      var owned = PROVINCES.filter(function (i) { return count(i.id) > 0; }).length;
+      var prog = document.createElement("div");
+      prog.className = "map-progress";
+      prog.innerHTML = "🗺️ Đã phủ sóng <b>" + owned + "/" + PROVINCES.length + "</b> tỉnh — mỗi tỉnh +15% thu nhập" +
+        '<div class="meter"><div class="meter-fill" style="width:' + (owned / PROVINCES.length * 100) + '%"></div></div>' +
+        influenceMapSVG();
+      list.appendChild(prog);
+    }
+
+    if (activeTab === "good") {
+      var info = document.createElement("div");
+      info.className = "map-progress";
+      if (isClean()) {
+        info.innerHTML = "😇 Con đường chính đạo đang <b style='color:var(--green)'>MỞ</b>. " +
+          "✨ Hào quang: <b style='color:var(--gold)'>" + S.halo + "</b> — cứ 500 bữa cơm sạch đến tay các em = 1 ✨. " +
+          "Tiền kiếm từ đây là <b>tiền sạch</b>: hưởng thụ thoải mái, dân mạng chỉ khen." +
+          '<div class="meter"><div class="meter-fill" style="width:' + (S.haloProgress / 500 * 100) + '%"></div></div>';
+      } else {
+        info.innerHTML = "🚪 <b style='color:var(--red)'>Con đường này đã khép lại</b> trong dự án hiện tại — " +
+          "bàn tay đã nhúng chàm (rút ruột quá 5% hoặc dùng chiêu trò mờ ám) thì hào quang không quay lại. " +
+          "Nó sẽ mở lại ở dự án sau, nếu bạn giữ mình trong sạch.";
+      }
+      list.appendChild(info);
+    }
+
+    var tabItems = ITEMS.filter(function (it) { return it.tab === activeTab; });
+    var hiddenItems = 0;
+    // progressive disclosure: owned items + only the NEXT one; the rest stay a mystery.
+    // Damage-control consumables are always visible — even a skim-only player needs them.
+    if (activeTab === "grow" || activeTab === "shady" || activeTab === "lux" || activeTab === "map") {
+      var prog = tabItems.filter(function (it) { return !it.consumable; });
+      var always = tabItems.filter(function (it) { return it.consumable; });
+      var nextIdx = 0;
+      while (nextIdx < prog.length && count(prog[nextIdx].id) > 0) nextIdx++;
+      hiddenItems = Math.max(0, prog.length - (nextIdx + 1));
+      tabItems = prog.slice(0, Math.min(nextIdx + 1, prog.length)).concat(always);
+      if (activeTab === "map") {
+        // the next conquest goes on top; already-claimed provinces sink to the bottom as history
+        var ownedArr = tabItems.filter(function (it) { return count(it.id) > 0; });
+        var nextArr = tabItems.filter(function (it) { return count(it.id) === 0; });
+        tabItems = nextArr.concat(ownedArr);
+      }
+    }
+
+    tabItems.forEach(function (it) {
+      var wallet = it.currency === "fund" ? S.fund : it.currency === "halo" ? S.halo : S.stash;
+      var ownedOnce = it.once && count(it.id) > 0;
+      var n = 1;
+      if (!it.once && !it.consumable) {
+        if (buyMult === 10) n = 10;
+        else if (buyMult === "max") n = Math.max(1, maxAffordable(it, wallet));
+      }
+      var c = bulkCost(it, n);
+      var afford = !ownedOnce && wallet >= c && (it.tab !== "good" || isClean());
+
+      var div = document.createElement("div");
+      div.className = "item" + (afford ? "" : " disabled");
+      div.dataset.id = it.id;
+      div.dataset.n = n;
+
+      var tag = "";
+      if (it.susp && !it.mult) tag = ' <span class="risk-tag">⚠ rủi ro</span>';
+      if (it.instant || it.cool) tag = ' <span class="safe-tag">✚ giảm nghi ngờ</span>';
+      if (it.hdps) tag = ' <span class="safe-tag">💵 tiền sạch</span>';
+      if (it.once) tag += ' <span class="perk-tag">MỘT LẦN</span>';
+
+      var countLabel = it.consumable ? "" : it.once ? (ownedOnce ? "✓ ĐÃ MỞ" : "") : "x" + count(it.id);
+      var curPrefix = it.currency === "fund" ? "💚 " : it.currency === "halo" ? "✨ " : "🤫 ";
+      var costLabel = ownedOnce ? "✓ Hoàn thành" :
+        (n > 1 ? "mua x" + n + " — " : "") + curPrefix + (it.currency === "halo" ? c + " hào quang" : fmt(c));
+      var costClass = it.currency === "fund" ? "fund-cost" : it.currency === "halo" ? "conn-cost" : "stash-cost";
+      // payback time makes the buy decision an actual calculation, not a reflex
+      if (it.dps && !ownedOnce) {
+        var pb = c / (it.dps * n * incomeFactor());
+        costLabel += ' <span style="color:var(--muted);font-weight:400;font-size:0.72rem">· hoàn vốn ~' + fmtTime(pb) + "</span>";
+      }
+
+      div.innerHTML =
+        '<div class="top"><span class="name">' + it.emoji + " " + it.name + tag + "</span>" +
+        '<span class="count">' + countLabel + "</span></div>" +
+        '<div class="desc">' + it.desc + "</div>" +
+        '<div class="cost ' + costClass + '">' + costLabel + "</div>";
+      list.appendChild(div);
+    });
+
+    if (hiddenItems > 0) {
+      var MYSTERY_TEXT = {
+        grow: "Còn " + hiddenItems + " hướng phát triển nữa chưa hé lộ. Đầu tư vào hạng mục mới nhất để mở ra tầm nhìn tiếp theo…",
+        shady: "Còn " + hiddenItems + " 'chiêu trò' nữa ẩn trong bóng tối. Nhúng tay sâu hơn thì sẽ thấy…",
+        lux: "Còn " + hiddenItems + " món xa xỉ nữa chờ bạn đủ 'đẳng cấp'. Cứ tiêu đi rồi biết…",
+        map: "Còn " + hiddenItems + " vùng đất nữa ẩn trong màn sương. Mở rộng tỉnh hiện tại để hé lộ con đường tiếp theo…"
+      };
+      var myst = document.createElement("div");
+      myst.className = "item disabled";
+      myst.innerHTML =
+        '<div class="top"><span class="name">🌫️ ??? </span></div>' +
+        '<div class="desc">' + MYSTERY_TEXT[activeTab] + "</div>";
+      list.appendChild(myst);
+      // on the map, keep the mystery row right under the suggested next province
+      if (activeTab === "map" && tabItems.length > 0 && count(tabItems[0].id) === 0 && list.children.length > 2) {
+        list.insertBefore(myst, list.children[2]);
+      }
+    }
+
+    if (activeTab === "lux") {
+      // secret saint ending
+      if (S.totalRaised >= SAINT_AT * 0.5 && S.maxSkim <= 5) {
+        var st = document.createElement("div");
+        var okS = S.totalRaised >= SAINT_AT;
+        st.className = "item" + (okS ? "" : " disabled");
+        st.dataset.id = "__saint";
+        st.innerHTML =
+          '<div class="top"><span class="name">😇 Chuyển giao minh bạch <span class="perk-tag">KẾT CỤC BÍ MẬT</span></span></div>' +
+          '<div class="desc">Bạn chưa từng rút ruột quá 5%. Trao toàn bộ dự án cho một tổ chức uy tín, công khai mọi sổ sách. Cần tổng kêu gọi ≥ 2 tỷ₫. Nhận 200% quan hệ.</div>' +
+          '<div class="cost conn-cost">🤝 +' + connectionsEarned("saint") + " quan hệ — và một giấc ngủ ngon</div>";
+        list.appendChild(st);
+      }
+      if (S.totalRaised >= DISSOLVE_AT * 0.6) {
+        var dis = document.createElement("div");
+        var ok = S.totalRaised >= DISSOLVE_AT && S.suspicion < 60;
+        dis.className = "item" + (ok ? "" : " disabled");
+        dis.dataset.id = "__dissolve";
+        dis.innerHTML =
+          '<div class="top"><span class="name">📦 Giải thể dự án êm đẹp <span class="perk-tag">KẾT THÚC RUN</span></span></div>' +
+          '<div class="desc">Đóng dự án khi chưa ai nghi ngờ, ôm trọn quan hệ. Cần tổng kêu gọi ≥ 500 tr₫ và nghi ngờ &lt; 60%. Nhận 100% quan hệ.</div>' +
+          '<div class="cost conn-cost">🤝 +' + connectionsEarned("dissolved") + " quan hệ nếu giải thể ngay</div>";
+        list.appendChild(dis);
+      }
+      if (S.stash >= ESCAPE_AT * 0.5) {
+        var esc = document.createElement("div");
+        var ready = S.stash >= ESCAPE_AT;
+        esc.className = "item" + (ready ? "" : " disabled");
+        esc.dataset.id = "__escape";
+        esc.innerHTML =
+          '<div class="top"><span class="name">🛫 "Đi công tác nước ngoài" <span class="safe-tag">KẾT THÚC RUN</span></span></div>' +
+          '<div class="desc">Vé một chiều đến nơi không có hiệp định dẫn độ. Cần 33 tỷ₫ trong túi riêng. Nhận 150% quan hệ.</div>' +
+          '<div class="cost stash-cost">🤫 ' + fmt(ESCAPE_AT) + "</div>";
+        list.appendChild(esc);
+      }
+    }
+  }
+
+  function buy(id, n) {
+    if (S.gameOver) return;
+    if (id === "__escape") { if (S.stash >= ESCAPE_AT) endRun("escaped"); return; }
+    if (id === "__dissolve") { if (S.totalRaised >= DISSOLVE_AT && S.suspicion < 60) endRun("dissolved"); return; }
+    if (id === "__saint") { if (S.totalRaised >= SAINT_AT && S.maxSkim <= 5) endRun("saint"); return; }
+
+    var it = itemById[id];
+    if (!it) return;
+    if (it.once && count(id) > 0) return;
+    if (it.tab === "good" && !isClean()) return;
+    n = it.once || it.consumable ? 1 : (n || 1);
+
+    var c = bulkCost(it, n);
+    var wallet = it.currency === "fund" ? S.fund : it.currency === "halo" ? S.halo : S.stash;
+    if (wallet < c) return;
+
+    if (it.currency === "fund") S.fund -= c;
+    else if (it.currency === "halo") S.halo -= c;
+    else S.stash -= c;
+    S.owned[id] = count(id) + n;
+    sBuy();
+
+    if (it.instant && it.instant.susp) {
+      S.suspicion += it.instant.susp;
+      clampSusp();
+      setTicker("📰 " + it.name + " phát huy tác dụng! Dư luận tạm lắng xuống…");
+    }
+    if (it.once && it.provMult) {
+      toast("🗺️ <b>Mở rộng đến " + it.name + "!</b><br>Hàng nghìn mã nuôi em mới được mở. Thu nhập +15%.");
+      confetti();
+    } else if (it.once) {
+      toast(it.emoji + " <b>" + it.name + "</b><br>Danh tiếng sạch của bạn lại sáng thêm một bậc.");
+      confetti();
+    }
+    renderShop();
+    renderStats();
+  }
+
+  // ================= Legacy =================
+  function renderLegacy() {
+    document.getElementById("connVal").textContent = "🤝 " + META.connections + " quan hệ";
+    document.getElementById("lifetimeVal").innerHTML =
+      "Dự án đã qua: <b>" + META.runs + "</b> &nbsp;•&nbsp; Tổng kêu gọi mọi thời đại: <b>" + fmt(META.lifetimeRaised) + "</b> &nbsp;•&nbsp; Tổng bữa cơm: <b>" + META.totalMeals.toLocaleString("vi-VN") + "</b>";
+
+    var row = document.getElementById("endingsRow");
+    row.innerHTML = "";
+    ENDINGS.forEach(function (e) {
+      var un = !!META.endings[e.id];
+      var d = document.createElement("div");
+      d.className = "ending-badge" + (un ? " unlocked" : "");
+      d.innerHTML = '<span class="e-emoji">' + e.emoji + "</span>" + (un ? e.name : "???");
+      row.appendChild(d);
+    });
+
+    var list = document.getElementById("perkList");
+    list.innerHTML = "";
+    PERKS.forEach(function (p) {
+      var lvl = perkLvl(p.id);
+      var maxed = lvl >= p.max;
+      var c = maxed ? null : p.cost(lvl);
+      var afford = !maxed && META.connections >= c;
+      var div = document.createElement("div");
+      div.className = "item" + (afford ? "" : " disabled");
+      div.dataset.perk = p.id;
+      div.innerHTML =
+        '<div class="top"><span class="name">' + p.emoji + " " + p.name + '</span>' +
+        '<span class="count">' + lvl + "/" + p.max + "</span></div>" +
+        '<div class="desc">' + p.desc + "</div>" +
+        '<div class="cost conn-cost">' + (maxed ? "✓ TỐI ĐA" : "🤝 " + c + " quan hệ") + "</div>";
+      list.appendChild(div);
+    });
+
+    var grid = document.getElementById("achGrid");
+    grid.innerHTML = "";
+    ACHS.forEach(function (a) {
+      var un = !!META.achievements[a.id];
+      var div = document.createElement("div");
+      div.className = "ach" + (un ? " unlocked" : "");
+      div.innerHTML = '<div class="ach-name">' + (un ? "🏆 " : "🔒 ") + a.name + "</div>" + a.desc;
+      grid.appendChild(div);
+    });
+  }
+
+  function buyPerk(id) {
+    var p = perkById[id];
+    var lvl = perkLvl(id);
+    if (lvl >= p.max) return;
+    var c = p.cost(lvl);
+    if (META.connections < c) return;
+    META.connections -= c;
+    META.perks[id] = lvl + 1;
+    sBuy();
+    toast("🤝 <b>Đặc quyền mới: " + p.name + "</b> (cấp " + (lvl + 1) + ")<br>Quan hệ là tiên là tiền mà.");
+    renderLegacy();
+    renderStats();
+    save();
+  }
+
+  // ================= Random events =================
+  var nextEventAt = 0, eventOpen = false;
+
+  function scheduleEvent() { nextEventAt = Date.now() + (50 + Math.random() * 60) * 1000; }
+
+  function maybeFireEvent() {
+    if (S.gameOver || paused) return;
+    if (Date.now() < nextEventAt) return;
+    if (S.totalRaised < 50000) { nextEventAt = Date.now() + 20000; return; }
+    showEvent(EVENTS[Math.floor(Math.random() * EVENTS.length)]);
+  }
+
+  function showEvent(ev) {
+    eventOpen = true; paused = true;
+    document.getElementById("eventTitle").textContent = ev.title;
+    document.getElementById("eventDesc").textContent = ev.desc;
+    var box = document.getElementById("eventChoices");
+    box.innerHTML = "";
+    ev.choices.forEach(function (ch) {
+      var b = document.createElement("button");
+      b.innerHTML = ch.label + "<small>" + ch.hint + "</small>";
+      b.addEventListener("click", function () {
+        var result = ch.fx();
+        clampSusp();
+        hideEvent();
+        setTicker("📌 " + result);
+        if (S.suspicion >= 100) checkBust();
+        renderAll();
+        save();
+      });
+      box.appendChild(b);
+    });
+    document.getElementById("eventOverlay").classList.add("show");
+    beep(440, 0.15, "triangle", 0.07);
+  }
+
+  function hideEvent() {
+    eventOpen = false; paused = apologyOpen;
+    document.getElementById("eventOverlay").classList.remove("show");
+    scheduleEvent();
+  }
+
+  // ================= Apology livestream minigame =================
+  var apologyOpen = false, apRaf = null, apPos = 0, apDir = 1, apSpeed = 0.011, apGreen = [0.4, 0.58];
+
+  function openApology() {
+    apologyOpen = true; paused = true;
+    sAlarm();
+    // randomize green zone; speed scales with how many runs you've done
+    var gw = 0.16 - Math.min(0.06, META.runs * 0.01);
+    var gc = 0.25 + Math.random() * 0.5;
+    apGreen = [gc - gw / 2, gc + gw / 2];
+    apSpeed = 0.011 + Math.min(0.008, META.runs * 0.0015);
+    apPos = 0; apDir = 1;
+
+    var bar = document.getElementById("apBar");
+    var w = bar.clientWidth || 400;
+    var yellow = document.getElementById("apYellow");
+    var green = document.getElementById("apGreen");
+    yellow.style.left = ((apGreen[0] - 0.08) * 100) + "%";
+    yellow.style.width = ((apGreen[1] - apGreen[0] + 0.16) * 100) + "%";
+    green.style.left = (apGreen[0] * 100) + "%";
+    green.style.width = ((apGreen[1] - apGreen[0]) * 100) + "%";
+
+    document.getElementById("apologyOverlay").classList.add("show");
+
+    function step() {
+      apPos += apSpeed * apDir;
+      if (apPos >= 1) { apPos = 1; apDir = -1; }
+      if (apPos <= 0) { apPos = 0; apDir = 1; }
+      document.getElementById("apNeedle").style.left = "calc(" + (apPos * 100) + "% - 2px)";
+      apRaf = requestAnimationFrame(step);
+    }
+    step();
+  }
+
+  function hideApology() {
+    apologyOpen = false; paused = eventOpen;
+    if (apRaf) { cancelAnimationFrame(apRaf); apRaf = null; }
+    document.getElementById("apologyOverlay").classList.remove("show");
+  }
+
+  document.getElementById("apCryBtn").addEventListener("click", function () {
+    var inGreen = apPos >= apGreen[0] && apPos <= apGreen[1];
+    var inYellow = apPos >= apGreen[0] - 0.08 && apPos <= apGreen[1] + 0.08;
+    hideApology();
+    if (inGreen) {
+      META.actor = true;
+      S.suspicion = 60;
+      sAch(); confetti();
+      toast("😭 <b>Nước mắt rơi ĐÚNG NHỊP!</b><br>Cả nước mủi lòng: 'Thôi, ai cũng có lúc sai.' Nghi ngờ về 60%.");
+      setTicker("📺 Clip xin lỗi đạt 2 triệu view. Bình luận: 'Khóc thế kia thì giả sao được.'");
+    } else if (inYellow) {
+      S.suspicion = 85;
+      toast("😬 <b>Hơi gượng…</b><br>Một nửa tin bạn, nửa kia đếm xem bạn chớp mắt bao nhiêu lần. Nghi ngờ 85%.");
+    } else {
+      toast("🎭 <b>Cười nhầm chỗ rồi!</b><br>Bạn nhếch mép đúng khúc cao trào. Meme tràn mạng. Hết cứu.");
+      endRun("caught");
+      return;
+    }
+    checkAchievements();
+    renderAll();
+    save();
+  });
+
+  // ================= Golden envelope =================
+  var nextEnvAt = 0, envEl = null;
+
+  function scheduleEnvelope() {
+    var base = (40 + Math.random() * 50) * (curMod().env || 1);
+    base *= (1 - 0.2 * perkLvl("lucky_env"));
+    nextEnvAt = Date.now() + base * 1000;
+  }
+  function removeEnvelope() { if (envEl) { envEl.remove(); envEl = null; } }
+
+  function maybeSpawnEnvelope() {
+    if (S.gameOver || paused || envEl || Date.now() < nextEnvAt) return;
+    var zone = document.getElementById("clickZone");
+    envEl = document.createElement("div");
+    envEl.className = "envelope";
+    envEl.textContent = "🧧";
+    envEl.style.left = (10 + Math.random() * 75) + "%";
+    envEl.style.top = (5 + Math.random() * 60) + "%";
+    envEl.title = "Phong bì vàng! Bấm ngay kẻo mất!";
+    envEl.addEventListener("click", openEnvelope);
+    zone.appendChild(envEl);
+    setTimeout(function () { if (envEl) { removeEnvelope(); scheduleEnvelope(); } }, 12000);
+  }
+
+  function openEnvelope(e) {
+    e.stopPropagation();
+    removeEnvelope();
+    scheduleEnvelope();
+    META.envOpened++;
+    sEnv();
+    var roll = Math.random();
+    if (roll < 0.3) {
+      addBuff("🌪️ Bão donate x7", "income", 7, 30);
+      toast("🧧 <b>Bão donate!</b><br>Một bài đăng viral! Thu nhập x7 trong 30 giây!");
+    } else if (roll < 0.5) {
+      addBuff("👆 Ngón tay vàng x15", "click", 15, 15);
+      toast("🧧 <b>Ngón tay vàng!</b><br>Mỗi cú kêu gọi mạnh x15 trong 15 giây!");
+    } else if (roll < 0.75) {
+      var g = Math.max(50000, incomePerSec() * 60);
+      earn(g);
+      toast("🧧 <b>Mạnh thường quân bí ẩn!</b><br>+" + fmt(g) + " tiền quyên góp tức thì!");
+    } else if (roll < 0.92) {
+      S.suspicion = Math.max(0, S.suspicion - 12);
+      toast("🧧 <b>Gió đổi chiều!</b><br>Một drama showbiz nổ ra, không ai thèm soi bạn nữa. Nghi ngờ -12%.");
+    } else {
+      var j = Math.max(100000, incomePerSec() * 30);
+      S.stash += j;
+      toast("🧧 <b>JACKPOT!</b> 💰<br>Một khoản 'lại quả' " + fmt(j) + " rơi thẳng vào túi riêng, không qua sổ sách!");
+      confetti();
+    }
+    checkAchievements();
+    renderAll();
+  }
+
+  // ================= News & ambience =================
+  var NEWS_CALM = [
+    "Cộng đồng mạng: 'Dự án ý nghĩa quá, mình vừa đăng ký nuôi 2 em!' 🥰",
+    "Báo X: 'Chàng trai vàng trong làng thiện nguyện tiếp tục toả sáng'",
+    "Bình luận: 'Mỗi ngày một cốc trà sữa là nuôi được một em rồi mọi người ơi'",
+    "Fanpage đạt thêm 10.000 lượt theo dõi trong tuần 📈",
+    "Nhà hảo tâm: 'Chuyển khoản xong thấy lòng nhẹ nhõm hẳn'",
+    "Một trường tiểu học gửi thư cảm ơn viết tay. Ai đó đang cắt hành 🥲"
+  ];
+  var NEWS_SUS = [
+    "Một phụ huynh thắc mắc: 'Sao 3 tháng rồi con mình chưa nhận được hỗ trợ?' 🤔",
+    "Group kín xôn xao: hai nhà hảo tâm phát hiện cùng 'nuôi' một em, mã khác nhau…",
+    "Thớt mới trên diễn đàn: 'Có ai thấy sao kê của dự án này lạ lạ không?'",
+    "Một TNV cũ đăng story ẩn ý: 'Có những thứ mình biết mà không dám nói' 👀",
+    "Dân mạng soi: founder đeo đồng hồ gì mà trông sang vậy ta?",
+    "Page 'Bóc Phốt Từ Thiện' vừa follow fanpage của bạn. Chỉ follow thôi. Chắc không sao đâu."
+  ];
+  var NEWS_HOT = [
+    "🔥 BÀI BÓC PHỐT 50K SHARE: 'SỰ THẬT về dự án nuôi cơm vùng cao'",
+    "🔥 Báo lớn đặt câu hỏi: 'Tiền quyên góp đã đi về đâu?'",
+    "🔥 Hàng trăm nhà hảo tâm đồng loạt yêu cầu sao kê chi tiết!",
+    "🔥 Trend mới: #SaoKêĐâu leo top 1 mạng xã hội",
+    "🔥 Luật sư của các nhà hảo tâm tuyên bố sẽ gửi đơn lên cơ quan chức năng",
+    "🔥 VTV đưa tin: 'Cần làm rõ dòng tiền của các dự án thiện nguyện tự phát'"
+  ];
+  function setTicker(text) {
+    var el = document.getElementById("tickerText");
+    el.textContent = text;
+    // restart the crawl from the right edge, duration scaled to headline length
+    var dur = Math.max(10, 6 + text.length * 0.16);
+    el.style.animation = "none";
+    void el.offsetWidth;
+    el.style.animation = "tickerScroll " + dur + "s linear infinite";
+  }
+  function randomNews() {
+    if (paused) return;
+    var pool = S.suspicion >= 70 ? NEWS_HOT : S.suspicion >= 35 ? NEWS_SUS : NEWS_CALM;
+    setTicker(pool[Math.floor(Math.random() * pool.length)]);
+  }
+
+  var DONOR_NAMES = ["Ngọc Anh", "Minh Tú", "Hải Yến", "Quốc Bảo", "Thu Hà", "Văn Đức", "Kim Chi", "Hoàng Long", "Mai Phương", "Tuấn Kiệt"];
+  var DONOR_MSGS = [
+    "vừa nuôi 1 em 🥰", "ủng hộ 150k, chúc các em ăn ngon!", "vừa nuôi 3 em một lúc! 💪",
+    "gửi 50k tiền trà sữa cho các em ☕", "đăng ký nuôi dài hạn 12 tháng ❤️", "share bài viết cho 5 người bạn 📢"
+  ];
+  function maybeDonorBubble() {
+    if (S.gameOver || paused || document.hidden || S.suspicion >= 50) return;
+    if (Math.random() < 0.55) return;
+    var zone = document.getElementById("clickZone");
+    var b = document.createElement("div");
+    b.className = "bubble";
+    b.textContent = "💌 " + DONOR_NAMES[Math.floor(Math.random() * DONOR_NAMES.length)] + " " + DONOR_MSGS[Math.floor(Math.random() * DONOR_MSGS.length)];
+    b.style.left = (4 + Math.random() * 60) + "%";
+    b.style.bottom = (8 + Math.random() * 30) + "%";
+    zone.appendChild(b);
+    setTimeout(function () { b.remove(); }, 3500);
+  }
+
+  // ================= Visual FX =================
+  function toast(html) {
+    var box = document.getElementById("toasts");
+    var t = document.createElement("div");
+    t.className = "toast";
+    t.innerHTML = html;
+    box.appendChild(t);
+    setTimeout(function () { t.classList.add("fade"); }, 4500);
+    setTimeout(function () { t.remove(); }, 5000);
+  }
+
+  var CONF_COLORS = ["#f5c542", "#4cd97b", "#5ab0ff", "#ff5c6c", "#b88cff", "#fff"];
+  function confetti() {
+    for (var i = 0; i < 26; i++) {
+      var p = document.createElement("div");
+      p.className = "confetti";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)];
+      p.style.animationDuration = (1.4 + Math.random() * 1.4) + "s";
+      p.style.animationDelay = (Math.random() * 0.4) + "s";
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 3500); })(p);
+    }
+  }
+
+  var PCL_EMOJI = ["💸", "🪙", "💰"];
+  function moneyBurst(x, y, n) {
+    var zone = document.getElementById("clickZone");
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement("span");
+      p.className = "pcl";
+      p.textContent = PCL_EMOJI[Math.floor(Math.random() * PCL_EMOJI.length)];
+      p.style.left = x + "px";
+      p.style.top = y + "px";
+      var ang = Math.random() * Math.PI * 2;
+      var dist = 36 + Math.random() * 50;
+      p.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+      p.style.setProperty("--dy", (Math.sin(ang) * dist - 26) + "px");
+      zone.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 750); })(p);
+    }
+  }
+
+  function spawnFloat(x, y, text, crit) {
+    var zone = document.getElementById("clickZone");
+    var el = document.createElement("div");
+    el.className = "float-num" + (crit ? " crit" : "");
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.color = crit ? "var(--red)" : S.skim > 0 ? "var(--gold)" : "var(--green)";
+    el.textContent = (crit ? "💥 VIRAL +" : "+") + text;
+    zone.appendChild(el);
+    setTimeout(function () { el.remove(); }, crit ? 1300 : 900);
+  }
+
+  // ================= Render =================
+  var alarmed = false;
+
+  function renderStats() {
+    document.getElementById("fundVal").textContent = fmt(S.fund);
+    document.getElementById("stashVal").textContent = fmt(S.stash);
+    document.getElementById("mealsVal").textContent = S.meals.toLocaleString("vi-VN");
+    document.getElementById("dayVal").textContent = "ngày " + days() +
+      (S.goodUnlocked ? " — ✨ hào quang: " + S.halo
+        : " — nồi cơm tiếp theo: " + Math.floor((S.mealAcc % 1) * 100) + "%");
+    document.getElementById("repVal").textContent = "x" + repMult().toFixed(1);
+    document.getElementById("globalMultVal").textContent = "hệ số chung x" + (globalMult() * provMult()).toFixed(2) + " (🤝+🏆+🗺️)";
+
+    var inc = incomePerSec();
+    document.getElementById("incomeVal").textContent = "+" + fmt(inc * (1 - S.skim / 100) * 0.8) + "/giây (bếp nhận 20%)";
+    var hInc = honestDps() * globalMult();
+    document.getElementById("skimIncomeVal").textContent = hInc > 0
+      ? "lương sạch: +" + fmt(hInc) + "/giây · rút: +" + fmt(inc * (S.skim / 100)) + "/giây"
+      : "đang rút: +" + fmt(inc * (S.skim / 100)) + "/giây";
+
+    var sp = Math.floor(S.suspicion);
+    document.getElementById("suspPct").textContent = sp + "%";
+    document.getElementById("suspFill").style.width = S.suspicion + "%";
+
+    // live net rate: lets players reason about what's sustainable vs a slow death
+    var rateEl = document.getElementById("suspRate");
+    var rate = suspPerSec();
+    if (rate > 0.005) {
+      rateEl.textContent = "▲ nghi ngờ +" + rate.toFixed(2) + "%/giây";
+      rateEl.style.color = rate > 1 ? "var(--red)" : "#e8a13d";
+    } else if (S.suspicion > 0.5) {
+      rateEl.textContent = "▼ đang hạ nhiệt " + rate.toFixed(2) + "%/giây";
+      rateEl.style.color = "var(--green)";
+    } else {
+      rateEl.textContent = "cộng đồng mạng đang ngủ yên…";
+      rateEl.style.color = "";
+    }
+    var status = document.getElementById("suspStatus");
+    var vig = document.getElementById("vignette");
+    if (sp >= 80) {
+      status.textContent = "🚨 SẮP BỊ ĐIỀU TRA!"; status.className = "suspicion-warning";
+      vig.classList.add("on");
+      if (!alarmed) { sAlarm(); alarmed = true; }
+    } else {
+      vig.classList.remove("on");
+      if (sp < 70) alarmed = false;
+      if (sp >= 50) { status.textContent = "⚠️ dân mạng đang soi"; status.className = ""; }
+      else { status.textContent = ""; status.className = ""; }
+    }
+    renderAvatar();
+  }
+
+  function renderBuffs() {
+    var bar = document.getElementById("buffBar");
+    bar.innerHTML = "";
+    var m = curMod();
+    if (m.id !== "normal") {
+      var chip = document.createElement("span");
+      chip.className = "buff mod";
+      chip.title = m.desc;
+      chip.textContent = m.emoji + " " + m.name;
+      bar.appendChild(chip);
+    }
+    S.buffs.forEach(function (b) {
+      var left = Math.max(0, Math.ceil((b.until - Date.now()) / 1000));
+      var c = document.createElement("span");
+      c.className = "buff";
+      c.textContent = b.name + " · " + left + "s";
+      bar.appendChild(c);
+    });
+  }
+
+  // ================= Founder avatar scene =================
+  function showEl(id, on) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = on ? "" : "none";
+  }
+
+  function renderAvatar() {
+    showEl("av-villa", count("villa") > 0);
+    showEl("av-yacht", count("yacht") > 0);
+    showEl("av-car", count("merc") > 0);
+    showEl("av-watch", count("watch") > 0);
+    showEl("av-phone", count("iphone") > 0);
+    showEl("av-medal", count("medal") > 0);
+    showEl("av-halo", S.goodUnlocked && isClean());
+    showEl("av-shades", S.stash >= 1e8 && S.suspicion < 80);
+    showEl("av-money1", S.stash >= 1e7 && S.stash < 1e9);
+    showEl("av-money2", S.stash >= 1e9 && S.stash < 33e9);
+    showEl("av-money3", S.stash >= 33e9);
+    var sp = S.suspicion;
+    showEl("av-mouth-happy", sp < 50);
+    showEl("av-mouth-flat", sp >= 50 && sp < 80);
+    showEl("av-mouth-sad", sp >= 80);
+    showEl("av-brows-calm", sp < 50);
+    showEl("av-brows", sp >= 50);
+    showEl("av-blush", sp < 50);
+    showEl("av-sweat", sp >= 80);
+
+    var cap;
+    if (S.gameOver) cap = "“Hành trình nào rồi cũng đến hồi kết.”";
+    else if (sp >= 80) cap = "“Nghi phạm tiềm năng” đang cười gượng…";
+    else if (S.goodUnlocked && isClean() && honestDps() > 0) cap = "Người tử tế sống khoẻ bằng tiền sạch ✨";
+    else if (S.stash >= 1e10) cap = "Đại gia ẩn mình sau nụ cười hiền lành";
+    else if (S.stash >= 1e8) cap = "Doanh nhân “thiện nguyện” thành đạt";
+    else if (S.meals >= 10000) cap = "“Người tốt việc tốt” — gương mặt trang bìa";
+    else cap = "Chàng trai trẻ đầy nhiệt huyết (và hơi đói)";
+    document.getElementById("avCaption").textContent = cap;
+  }
+
+  // ================= Influence map =================
+  // Traced from real geography: x = 44 + (lon - 102°E) * 23, y = 16 + (23.5°N - lat) * 26.5
+  var VN_PATH =
+    "M46 45 " +                                  // A Pa Chải (NW tip)
+    "C58 36 70 36 80 35 C94 32 108 26 120 19 " + // China border up to Lũng Cú (northernmost)
+    "C132 26 142 30 152 35 C160 42 162 56 168 62 L183 69 " + // NE border to Móng Cái
+    "C176 80 164 84 154 88 " +                   // Hạ Long coast
+    "C150 92 152 95 150 98 C146 104 144 107 141 111 C138 114 136 116 134 119 " + // Red River delta
+    "C131 127 130 135 130 143 " +                // Vinh
+    "C132 147 135 152 138 156 C142 162 146 169 150 175 " + // Hà Tĩnh → Đồng Hới
+    "C158 184 166 193 173 201 C178 205 183 209 188 213 " + // Huế → Đà Nẵng
+    "C194 222 199 230 203 239 C206 250 209 262 211 273 " + // Quảng Ngãi → Quy Nhơn
+    "C213 281 214 290 215 298 " +                // Mũi Đại Lãnh (easternmost)
+    "C214 303 212 309 210 314 C208 321 207 328 205 334 " + // Nha Trang → Phan Rang
+    "C199 340 192 345 184 349 C176 354 168 360 161 365 " + // Phan Thiết → Vũng Tàu
+    "C157 370 152 374 148 379 C145 383 141 388 138 392 " + // Mekong coast
+    "C128 399 117 405 107 411 C103 408 102 404 106 400 " + // Cà Mau cape (southern tip)
+    "C109 392 112 383 115 374 C110 371 105 367 101 364 " + // Gulf coast → Hà Tiên
+    "C105 361 110 358 115 355 C122 350 130 344 138 339 C145 333 152 327 159 321 " + // Cambodia border
+    "C163 312 167 303 171 294 C171 282 171 269 171 257 " + // highlands border (tri-border)
+    "C169 247 168 238 166 228 C163 222 160 216 157 210 " + // Laos border south-central
+    "C148 203 140 196 131 188 " +                // Quảng Bình narrows (~50km wide)
+    "C127 179 122 171 118 162 C109 153 99 144 90 135 " + // Laos border north-central
+    "C92 124 95 112 102 101 C88 91 72 82 58 72 " + // Sơn La / Điện Biên bulge
+    "C52 63 48 54 46 45 Z";
+  var MAP_DOTS = [
+    { id: "prov_db", x: 67, y: 72, name: "Điện Biên", anchor: "end" },
+    { id: "prov_lc", x: 89, y: 43, name: "Lào Cai", anchor: "end" },
+    { id: "prov_hg", x: 113, y: 34, name: "Hà Giang" },
+    { id: "prov_sl", x: 88, y: 74, name: "Sơn La" },
+    { id: "prov_kt", x: 182, y: 258, name: "Kon Tum", anchor: "end" },
+    { id: "prov_gl", x: 182, y: 268, name: "Gia Lai" }
+  ];
+
+  function influenceMapSVG() {
+    var s = '<svg viewBox="0 0 250 430" style="max-height:300px; display:block; margin:8px auto 2px;">';
+    s += '<defs>'
+      + '<linearGradient id="oceanG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0e1726"/><stop offset="1" stop-color="#13203a"/></linearGradient>'
+      + '<linearGradient id="landG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27496e"/><stop offset="1" stop-color="#1b3a57"/></linearGradient>'
+      + '<radialGradient id="dotG"><stop offset="0" stop-color="#ffe28a"/><stop offset="1" stop-color="#d9a521"/></radialGradient>'
+      + '</defs>';
+    s += '<rect x="0" y="0" width="250" height="430" rx="12" fill="url(#oceanG)"/>';
+    s += '<path d="M214 130 q7 -4 14 0 M220 142 q7 -4 14 0" stroke="#2c4668" stroke-width="1.4" fill="none"/>';
+    s += '<path d="M46 310 q7 -4 14 0 M40 324 q7 -4 14 0" stroke="#2c4668" stroke-width="1.4" fill="none"/>';
+    s += '<path d="' + VN_PATH + '" fill="url(#landG)" stroke="#5ab0ff" stroke-opacity="0.45" stroke-width="1.6"/>';
+    // Hoàng Sa & Trường Sa
+    s += '<circle cx="228" cy="188" r="1.8" fill="#3d5a7d"/><circle cx="234" cy="194" r="1.4" fill="#3d5a7d"/><circle cx="225" cy="196" r="1.2" fill="#3d5a7d"/>';
+    s += '<text x="240" y="182" font-size="7" fill="#4a6587" text-anchor="end">Hoàng Sa</text>';
+    s += '<circle cx="226" cy="346" r="1.6" fill="#3d5a7d"/><circle cx="233" cy="353" r="1.4" fill="#3d5a7d"/><circle cx="220" cy="355" r="1.2" fill="#3d5a7d"/>';
+    s += '<text x="240" y="340" font-size="7" fill="#4a6587" text-anchor="end">Trường Sa</text>';
+    s += '<text x="127" y="85" font-size="10" fill="#7fd0ff">★</text><text x="137" y="86" font-size="8.5" fill="#7fa6c8">Hà Nội</text>';
+
+    var unlocked = MAP_DOTS.filter(function (d) { return count(d.id) > 0; });
+    if (unlocked.length > 1) {
+      var pts = unlocked.map(function (d) { return d.x + "," + d.y; }).join(" ");
+      s += '<polyline points="' + pts + '" fill="none" stroke="#f5c542" stroke-width="1.4" stroke-dasharray="4 4" opacity="0.7"/>';
+    }
+
+    // only conquered provinces are revealed — the rest stay hidden in the mist
+    MAP_DOTS.forEach(function (d) {
+      if (count(d.id) === 0) return;
+      s += '<circle class="map-influence" cx="' + d.x + '" cy="' + d.y + '" r="15" fill="#f5c542" opacity="0.16"/>';
+      s += '<circle cx="' + d.x + '" cy="' + d.y + '" r="8" fill="none" stroke="#f5c542" stroke-opacity="0.5" stroke-width="1"/>';
+      s += '<circle cx="' + d.x + '" cy="' + d.y + '" r="4.5" fill="url(#dotG)" stroke="#fff3c4" stroke-width="1"/>';
+      var ax = d.anchor === "end" ? d.x - 9 : d.x + 9;
+      s += '<text x="' + ax + '" y="' + (d.y + 3.5) + '" font-size="9.5" font-weight="700" fill="#ffe9a8"' +
+        (d.anchor === "end" ? ' text-anchor="end"' : "") +
+        ' style="paint-order:stroke" stroke="#0e1726" stroke-width="2.5">' + d.name + " ✓</text>";
+    });
+    s += "</svg>";
+    return s;
+  }
+
+  function updateGoodTab() {
+    var tab = document.getElementById("tabGood");
+    tab.style.display = S.goodUnlocked ? "" : "none";
+    if (!S.goodUnlocked && activeTab === "good") {
+      activeTab = "grow";
+      document.querySelectorAll(".shop-tabs button").forEach(function (b) { b.classList.remove("active"); });
+      document.getElementById("tabGrow").classList.add("active");
+    }
+  }
+
+  function renderAll() { renderStats(); renderShop(); renderLegacy(); renderBuffs(); }
+
+  // ================= Save / load =================
+  var SAVE_KEY = "nuoi-anh-clicker-v4";
+
+  // repair any NaN/Infinity that snuck into a save — typeof NaN === "number", so
+  // the type-based defaults can't catch it and one bad field poisons everything
+  function sanitize() {
+    // Number.isFinite, NOT global isFinite: the global coerces, so isFinite(null) === true
+    // and a NaN that was JSON-serialized to null would slip straight through
+    var bad = function (v) { return !Number.isFinite(v); };
+    ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc"]
+      .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
+    if (bad(S.startTime)) S.startTime = Date.now();
+    Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
+    S.buffs = S.buffs.filter(function (b) { return b && !bad(b.mult) && b.mult > 0 && !bad(b.until); });
+    S.suspicion = Math.max(0, Math.min(100, S.suspicion));
+    S.skim = Math.max(0, Math.min(90, S.skim));
+    ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits"]
+      .forEach(function (k) { if (bad(META[k])) META[k] = 0; });
+    Object.keys(META.perks).forEach(function (k) { if (bad(META.perks[k])) delete META.perks[k]; });
+  }
+
+  var wiping = false; // blocks autosave from resurrecting data during a factory reset
+
+  function save() {
+    if (wiping) return;
+    try {
+      sanitize();
+      localStorage.setItem(SAVE_KEY, JSON.stringify({ run: S, meta: META, lastSeen: Date.now() }));
+    } catch (e) {}
+  }
+  function load() {
+    var lastSeen = null;
+    try {
+      var raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem("nuoi-anh-clicker-v3") || localStorage.getItem("nuoi-anh-clicker-v2");
+      if (raw) {
+        var d = JSON.parse(raw);
+        if (d && d.meta) {
+          META = d.meta;
+          ["lifetimeRaised", "totalMeals", "envOpened", "crits"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
+          ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
+          if (typeof META.numFmt !== "string") META.numFmt = "vi";
+          if (!META.endings) META.endings = {};
+          if (d.run && !d.run.gameOver) {
+            S = d.run;
+            if (!Array.isArray(S.buffs)) S.buffs = [];
+            if (typeof S.maxSkim !== "number") S.maxSkim = S.skim || 0;
+            if (typeof S.maxCombo !== "number") S.maxCombo = 0;
+            if (typeof S.autoAcc !== "number") S.autoAcc = 0;
+            if (typeof S.apologyUsed !== "boolean") S.apologyUsed = false;
+            if (!S.modifier) S.modifier = "normal";
+            ["halo", "haloProgress", "cleanTime", "mealAcc"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
+            if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
+          }
+          lastSeen = d.lastSeen || null;
+        }
+      }
+    } catch (e) {}
+    if (!META) META = freshMeta();
+    return lastSeen;
+  }
+
+  function grantOffline(lastSeen) {
+    if (!S || !lastSeen) return;
+    var elapsed = Math.min(8 * 3600, (Date.now() - lastSeen) / 1000);
+    if (elapsed < 120) return;
+    var gain = baseDps() * repMult() * globalMult() * provMult() * elapsed * 0.5;
+    if (gain < 1000) return;
+    earn(gain);
+    META.gotOffline = true;
+    toast("😴 <b>Trong lúc bạn vắng mặt (" + (elapsed / 3600).toFixed(1) + "h)</b><br>Bộ máy vẫn chạy đều: +" + fmt(gain) + " (hiệu suất 50%). Tiền không ngủ.");
+  }
+
+  // ================= Combo & clicking =================
+  var combo = 0, lastClickAt = 0;
+
+  function doDonate(clientX, clientY) {
+    if (S.gameOver || paused) return;
+    var now = Date.now();
+    combo = (now - lastClickAt < 800) ? combo + 1 : 1;
+    lastClickAt = now;
+    S.maxCombo = Math.max(S.maxCombo, combo);
+    var comboMult = 1 + Math.min(combo, 50) * 0.02;
+
+    var crit = Math.random() < 0.05;
+    var amount = clickPower() * comboMult * (crit ? 10 : 1);
+    // self-healing: if some corrupt state zeroes the click, repair and never give 0
+    if (!(amount > 0)) {
+      sanitize();
+      amount = Math.max(1000, clickPower() * comboMult);
+      if (!(amount > 0)) amount = 1000;
+    }
+    earn(amount);
+    S.clicks++;
+    if (crit) { META.crits++; sCrit(); } else { sCoin(); }
+
+    var zone = document.getElementById("clickZone");
+    var rect = zone.getBoundingClientRect();
+    var x = clientX != null ? clientX - rect.left : rect.width / 2 + (Math.random() * 80 - 40);
+    var y = clientY != null ? clientY - rect.top - 20 : rect.height / 2 - 30;
+    spawnFloat(x + (Math.random() * 40 - 20), y, fmt(amount), crit);
+    moneyBurst(x, y + 16, crit ? 7 : 3);
+
+    var cd = document.getElementById("comboDisp");
+    if (combo >= 5) {
+      cd.textContent = "🔥 COMBO x" + combo;
+      cd.classList.remove("on"); void cd.offsetWidth; cd.classList.add("on");
+    }
+    renderStats();
+  }
+
+  setInterval(function () {
+    if (Date.now() - lastClickAt > 1000) {
+      combo = 0;
+      document.getElementById("comboDisp").classList.remove("on");
+    }
+  }, 300);
+
+  // ================= Intro =================
+  var INTRO_LINES = [
+    "Năm 2014. Bạn 23 tuổi, trong ví có đúng 47.000₫.",
+    "Trong một chuyến phượt lên núi, bạn thấy những đứa trẻ ăn cơm trắng chan nước suối.",
+    "Bạn lập một dự án thiện nguyện. Ý định ban đầu… có lẽ là tốt. Thật đấy.",
+    "Nhưng rồi tiền về nhanh quá. Nhanh hơn cả lương tâm kịp lớn.",
+    "Giờ thì, mỗi ngày bạn đứng trước một cái nút và một thanh trượt.",
+    "Bạn sẽ là người hùng — hay chỉ diễn vai người hùng?"
+  ];
+  var introTimer = null;
+
+  function playIntro() {
+    paused = true;
+    document.getElementById("introOverlay").classList.add("show");
+    var el = document.getElementById("introText");
+    var li = 0, ci = 0, out = "";
+    el.innerHTML = '<span class="cursor">▋</span>';
+    introTimer = setInterval(function () {
+      if (li >= INTRO_LINES.length) { clearInterval(introTimer); introTimer = null; el.textContent = out; return; }
+      out += INTRO_LINES[li][ci];
+      ci++;
+      if (ci >= INTRO_LINES[li].length) { out += "\n"; li++; ci = 0; }
+      el.innerHTML = out.replace(/\n/g, "<br>") + '<span class="cursor">▋</span>';
+    }, 26);
+  }
+  function closeIntro() {
+    if (introTimer) { clearInterval(introTimer); introTimer = null; }
+    META.introSeen = true;
+    paused = eventOpen || apologyOpen;
+    document.getElementById("introOverlay").classList.remove("show");
+    save();
+  }
+  document.getElementById("introStartBtn").addEventListener("click", closeIntro);
+  document.getElementById("introSkipBtn").addEventListener("click", closeIntro);
+
+  // ================= Konami =================
+  var KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
+  var kIdx = 0;
+  function konamiCheck(e) {
+    kIdx = (e.code === KONAMI[kIdx]) ? kIdx + 1 : (e.code === KONAMI[0] ? 1 : 0);
+    if (kIdx >= KONAMI.length) {
+      kIdx = 0;
+      META.konami = true;
+      addBuff("🐧 Mã gian lận x77", "income", 77, 30);
+      toast("🐧 <b>MÃ GIAN LẬN KÍCH HOẠT!</b><br>Thu nhập x77 trong 30 giây. Đừng nói với cơ quan thuế.");
+      confetti();
+      sAch();
+      checkAchievements();
+    }
+  }
+
+  // ================= Wiring =================
+  document.getElementById("donateBtn").addEventListener("click", function (e) {
+    // golden ripple from the press point
+    var rect = this.getBoundingClientRect();
+    var r = document.createElement("span");
+    r.className = "ripple";
+    r.style.left = ((e.clientX || rect.left + rect.width / 2) - rect.left - 35) + "px";
+    r.style.top = ((e.clientY || rect.top + rect.height / 2) - rect.top - 35) + "px";
+    this.appendChild(r);
+    setTimeout(function () { r.remove(); }, 600);
+    doDonate(e.clientX, e.clientY);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    konamiCheck(e);
+    if (e.code === "Space") {
+      e.preventDefault();
+      // in the apology minigame, Space = CRY (ignore held-key repeats so mashing can't misfire)
+      if (apologyOpen) {
+        if (!e.repeat) document.getElementById("apCryBtn").click();
+        return;
+      }
+      var tag = document.activeElement && document.activeElement.tagName;
+      if (tag === "INPUT" || tag === "BUTTON" || tag === "TEXTAREA") document.activeElement.blur();
+      doDonate(null, null);
+    }
+  });
+
+  document.getElementById("skimSlider").addEventListener("input", function (e) {
+    S.skim = parseInt(e.target.value, 10);
+    S.maxSkim = Math.max(S.maxSkim, S.skim);
+    document.getElementById("skimPct").textContent = S.skim + "%";
+    if (S.skim >= 50) setTicker("😈 Bạn chỉnh tỷ lệ rút ruột lên " + S.skim + "%. Lương tâm: 'Alo? Có ai ở nhà không?'");
+    renderStats();
+  });
+
+  ["Grow", "Shady", "Lux", "Good", "Map"].forEach(function (t) {
+    document.getElementById("tab" + t).addEventListener("click", function () {
+      activeTab = t.toLowerCase();
+      document.querySelectorAll(".shop-tabs button").forEach(function (b) { b.classList.remove("active"); });
+      this.classList.add("active");
+      renderShop();
+    });
+  });
+
+  document.getElementById("buyMultBtn").addEventListener("click", function () {
+    buyMult = buyMult === 1 ? 10 : buyMult === 10 ? "max" : 1;
+    this.textContent = "Mua x" + (buyMult === "max" ? "Max" : buyMult);
+    renderShop();
+  });
+
+  document.getElementById("shopList").addEventListener("click", function (e) {
+    var item = e.target.closest(".item");
+    if (item && item.dataset.id) buy(item.dataset.id, parseInt(item.dataset.n, 10) || 1);
+  });
+
+  document.getElementById("perkList").addEventListener("click", function (e) {
+    var item = e.target.closest(".item");
+    if (item && item.dataset.perk) buyPerk(item.dataset.perk);
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", startNewRun);
+
+  document.getElementById("resetRunBtn").addEventListener("click", function () {
+    if (confirm("Bắt đầu lại dự án hiện tại? (Quan hệ, đặc quyền và thành tựu được GIỮ NGUYÊN — chỉ run hiện tại bị xoá, không nhận quan hệ.)")) startNewRun();
+  });
+
+  document.getElementById("hardResetBtn").addEventListener("click", function () {
+    if (confirm("XOÁ TOÀN BỘ và chơi lại từ đầu như người mới?\n\nQuan hệ, đặc quyền, thành tựu, kết cục — mất hết, về con số 0. Game sẽ tải lại với đoạn intro mở đầu. Không hoàn tác được!")) {
+      wiping = true;
+      [SAVE_KEY, "nuoi-anh-clicker-v3", "nuoi-anh-clicker-v2"].forEach(function (k) { localStorage.removeItem(k); });
+      location.reload();
+    }
+  });
+
+  document.getElementById("muteBtn").addEventListener("click", function () {
+    META.muted = !META.muted;
+    this.textContent = META.muted ? "🔇" : "🔊";
+    save();
+  });
+
+  document.getElementById("musicBtn").addEventListener("click", function () {
+    META.music = !META.music;
+    this.textContent = META.music ? "🎵 On" : "🎵 Off";
+    if (META.music) ac();
+    save();
+  });
+
+  var NUM_FMT_LABELS = { vi: "🔢 tỷ", sci: "🔢 1e9", letter: "🔢 KMB" };
+  function numFmtLabel() { return NUM_FMT_LABELS[META.numFmt] || NUM_FMT_LABELS.vi; }
+  document.getElementById("numFmtBtn").addEventListener("click", function () {
+    META.numFmt = META.numFmt === "vi" ? "sci" : META.numFmt === "sci" ? "letter" : "vi";
+    this.textContent = numFmtLabel();
+    renderAll();
+    save();
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", function () {
+    save();
+    var data = btoa(unescape(encodeURIComponent(localStorage.getItem(SAVE_KEY))));
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(data).then(function () {
+        toast("💾 <b>Đã sao chép mã save!</b><br>Cất kỹ như cất sổ kế toán thứ hai nhé.");
+      });
+    } else {
+      prompt("Sao chép mã save này:", data);
+    }
+  });
+
+  document.getElementById("importBtn").addEventListener("click", function () {
+    var data = prompt("Dán mã save vào đây:");
+    if (!data) return;
+    try {
+      var json = decodeURIComponent(escape(atob(data.trim())));
+      var d = JSON.parse(json);
+      if (!d || !d.meta) throw new Error("bad");
+      localStorage.setItem(SAVE_KEY, json);
+      location.reload();
+    } catch (e) {
+      toast("❌ <b>Mã save không hợp lệ.</b><br>Giống sao kê của bạn vậy.");
+    }
+  });
+
+  // ================= Boot =================
+  var lastSeen = load();
+  if (!S) S = freshState();
+  sanitize();
+  // boot self-test: if the core math is still broken after repair, the run state is
+  // beyond saving — rebuild the run (meta progress survives) rather than play dead
+  if (!Number.isFinite(clickPower()) || clickPower() <= 0 || !Number.isFinite(incomePerSec())) {
+    S = freshState();
+    setTimeout(function () {
+      toast("🔧 <b>Dữ liệu run bị lỗi và đã được làm mới.</b><br>Quan hệ, đặc quyền và thành tựu vẫn nguyên vẹn.");
+    }, 600);
+  }
+  if (META.goodFound && !S.goodUnlocked) S.goodUnlocked = true;
+  grantOffline(lastSeen);
+  updateGoodTab();
+  document.getElementById("skimSlider").value = S.skim;
+  document.getElementById("skimPct").textContent = S.skim + "%";
+  document.getElementById("muteBtn").textContent = META.muted ? "🔇" : "🔊";
+  document.getElementById("musicBtn").textContent = META.music ? "🎵 On" : "🎵 Off";
+  document.getElementById("numFmtBtn").textContent = numFmtLabel();
+  scheduleEvent();
+  scheduleEnvelope();
+
+  if (!META.introSeen) playIntro();
+
+  var last = Date.now();
+  setInterval(function () {
+    var now = Date.now();
+    var dt = Math.min(2, (now - last) / 1000);
+    last = now;
+    tick(dt);
+    maybeFireEvent();
+    maybeSpawnEnvelope();
+    renderStats();
+  }, 200);
+
+  setInterval(renderShop, 2000);
+  setInterval(renderBuffs, 1000);
+  setInterval(randomNews, 14000);
+  setInterval(maybeDonorBubble, 7000);
+  setInterval(musicNote, 460);
+  setInterval(save, 5000);
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
