@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — gate.sh: mechanical release gates (iteration 17)
+- One exit-code-enforced script runs all release gates: syntax across every script block,
+  fresh player must EARN non-zero money, rich-seed migration must SHOW its wealth (defeats
+  the static-HTML false pass). Mutation-tested by re-injecting the iteration-16 recursion:
+  both gates fail and block the ship. The playbook now mandates `./gate.sh && git commit`.
+
 ## 2026-06-13 — Daily challenge (iteration 16)
 - 🎲 Thử thách hôm nay: one seeded scenario per day for the whole world — deterministic
   modifier, event order, and envelope luck (mulberry32 with state in the save; cosmetic
