@@ -948,6 +948,7 @@
         </span>
       </div>
       <div class="lifetime" id="lifetimeVal"></div>
+      <div class="lifetime" id="recordsLine" style="color: var(--gold);"></div>
       <div class="life-chart-box">
         <canvas id="lifeChart" height="92"></canvas>
         <div class="life-legend"><span class="lg-f">— quỹ</span><span class="lg-s">— túi riêng</span><span class="lg-p">▁ nghi ngờ</span><span id="lifeCross"></span></div>
@@ -1150,7 +1151,8 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [], coach: {} };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [], coach: {},
+             records: { bestRaised: 0, bestStash: 0, fastestSaint: 0, longestDays: 0, bestConns: 0 } };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -1919,6 +1921,19 @@
       m: S.meals, days: days(), L: S.letters.length, kt: S.ktMode, ch: S.challenge ? 1 : 0, c: conns
     });
     if (META.runLog.length > 20) META.runLog.length = 20;
+    var R = META.records, newRec = [];
+    var notFirstRun = META.runs > 1;
+    if (S.totalRaised > R.bestRaised) { if (R.bestRaised > 0) newRec.push("💰 kêu gọi " + fmt(S.totalRaised)); R.bestRaised = S.totalRaised; }
+    if (S.stash > R.bestStash) { if (R.bestStash > 0) newRec.push("🤫 túi riêng " + fmt(S.stash)); R.bestStash = S.stash; }
+    if (days() > R.longestDays) { if (R.longestDays > 0) newRec.push("🗓️ sống " + days() + " ngày"); R.longestDays = days(); }
+    if (conns > R.bestConns) { if (R.bestConns > 0) newRec.push("🤝 +" + conns + " quan hệ"); R.bestConns = conns; }
+    if (outcome === "saint") {
+      var secs = Math.round((Date.now() - S.startTime) / 1000);
+      if (!R.fastestSaint || secs < R.fastestSaint) { if (R.fastestSaint) newRec.push("😇 thánh nhanh " + fmtTime(secs)); R.fastestSaint = secs; }
+    }
+    if (notFirstRun && newRec.length) {
+      setTimeout(function () { toast("🏆 <b>KỶ LỤC MỚI!</b><br>" + newRec.join(" · ")); }, 1500);
+    }
 
     var card = document.getElementById("overlayCard");
     var title = document.getElementById("overTitle");
@@ -2377,6 +2392,15 @@
         '<div class="cost conn-cost">' + (maxed ? "✓ TỐI ĐA" : "🤝 " + c + " quan hệ") + "</div>";
       list.appendChild(div);
     });
+
+    var R = META.records || {};
+    var recs = [];
+    if (R.bestRaised > 0) recs.push("💰 " + fmt(R.bestRaised));
+    if (R.bestStash > 0) recs.push("🤫 " + fmt(R.bestStash));
+    if (R.fastestSaint > 0) recs.push("😇 " + fmtTime(R.fastestSaint));
+    if (R.longestDays > 0) recs.push("🗓️ " + R.longestDays + " ngày");
+    if (R.bestConns > 0) recs.push("🤝 +" + R.bestConns);
+    document.getElementById("recordsLine").innerHTML = recs.length ? "🏆 Kỷ lục: " + recs.join(" · ") : "";
 
     var rl = document.getElementById("runLog");
     if (META.runLog.length === 0) {
@@ -3325,6 +3349,10 @@
     Object.keys(META.perks).forEach(function (k) { if (bad(META.perks[k])) delete META.perks[k]; });
     if (!Array.isArray(META.runLog)) META.runLog = [];
     META.runLog = META.runLog.filter(function (r) { return r && typeof r.o === "string" && !bad(r.r); }).slice(0, 20);
+    if (typeof META.records !== "object" || META.records === null) META.records = {};
+    ["bestRaised", "bestStash", "fastestSaint", "longestDays", "bestConns"].forEach(function (k) {
+      if (bad(META.records[k]) || META.records[k] < 0) META.records[k] = 0;
+    });
   }
 
   var wiping = false; // blocks autosave from resurrecting data during a factory reset
@@ -3351,6 +3379,7 @@
           if (typeof META.lastChallengeDay !== "string") META.lastChallengeDay = "";
           if (!Array.isArray(META.runLog)) META.runLog = [];
           if (typeof META.coach !== "object" || META.coach === null) META.coach = {};
+          if (typeof META.records !== "object" || META.records === null) META.records = { bestRaised: 0, bestStash: 0, fastestSaint: 0, longestDays: 0, bestConns: 0 };
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
             S = d.run;

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-06-13 — Lifetime records (iteration 29)
+- 🏆 Kỷ lục strip in Legacy: best raised, best stash, fastest saint, longest survival, best
+  connection haul — with a "KỶ LỤC MỚI!" toast when one falls.
+
 ## 2026-06-13 — Modifier expansion pack (iteration 28)
 - Four new run modifiers with real mechanical hooks: 📚 Mùa thi đại học (click +30%, income
   -10%), 🍿 Drama tổng (heat +25% but PR -30%), 🏮 Tháng cô hồn (double envelopes, +2%

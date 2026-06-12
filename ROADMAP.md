@@ -2,7 +2,6 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-2. **Lifetime records** — biggest run / fastest saint / longest survival in Legacy.
 
 
 
@@ -12,6 +11,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Lifetime records.
 - Modifier expansion pack (11 total).
 - Moral-state music.
 - Desktop 3-column layout.
