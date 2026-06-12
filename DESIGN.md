@@ -46,7 +46,11 @@ The game's moral force comes from mechanics, not from naming anyone.
 5. **Test before push**: headless Chrome harness (fresh boot + seeded dirty/poisoned saves,
    simulated clicks, JS-error capture in `<title>`). Push to GitHub after meaningful batches —
    Pages redeploys `main` automatically.
-6. **Mobile parity is a release gate**: every UI change is screenshot-verified at 390px
+6. **Obviously-fictional names only**: characters and companies get meta/punny names a reader
+   instantly recognizes as satire ("Cty CP Rất Minh Bạch", donor nicknames) or pure role names
+   ("chị kế toán"). NEVER plausibly-real person or company names. Geographic names (provinces,
+   villages) are allowed. Poetic child names (Mây) are fine.
+7. **Mobile parity is a release gate**: every UI change is screenshot-verified at 390px
    (nothing clipped, touch-sized targets, play→shop→founder→meta order) before it ships.
    Many players will only ever see the phone version.
 

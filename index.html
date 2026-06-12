@@ -1426,12 +1426,12 @@
             S.suspicion += 15; return "Họ chuyển hồ sơ lên 'cấp có thẩm quyền'. Cụm từ đáng sợ nhất tiếng Việt.";
           } }
       ] },
-    { title: "🍵 Chị Hạnh mời cà phê ngược",
+    { title: "🍵 Chị kế toán mời cà phê ngược",
       when: function () { return S.ktStage === 1 && S.totalRaised >= 1e9; },
       desc: "Lần này chị kế toán mời BẠN. Trên bàn là một cuốn sổ tay: chị đã tự cộng lại toàn bộ 'lại quả' ba tháng qua, chính xác đến hàng nghìn.",
       choices: [
         { label: "Mời chị vào hệ thống — cắt 10% lại quả vĩnh viễn", hint: "Lại quả -10%, nhưng sổ sách kín hơn (nghi ngờ từ chiêu trò -10%)",
-          fx: function () { S.ktStage = 2; S.ktMode = "accomplice"; return "Chị Hạnh gập sổ lại: 'Từ giờ để tôi ghi. Tôi ghi thì không ai đọc ra.' Bạn vừa có một đồng phạm giỏi hơn mình."; } },
+          fx: function () { S.ktStage = 2; S.ktMode = "accomplice"; return "Chị kế toán gập sổ lại: 'Từ giờ để tôi ghi. Tôi ghi thì không ai đọc ra.' Bạn vừa có một đồng phạm giỏi hơn mình."; } },
         { label: "Mua sự im lặng một lần nữa (tốn 20% túi riêng)", hint: "Yên ổn, nhưng cuốn sổ vẫn tồn tại",
           fx: function () { S.stash *= 0.8; S.ktStage = 2; return "Chị ấy nhận. Nhưng cuốn sổ không nằm trên bàn nữa — nó nằm ở một nơi an toàn. 'Phòng thân thôi.'"; } },
         { label: "Doạ ngược: 'Chị cũng ký nhiều giấy tờ lắm đấy'", hint: "50/50: chị ấy chùn — hoặc nghi ngờ +18%",
@@ -1441,9 +1441,9 @@
             S.suspicion += 18; return "Chị ấy đứng dậy, để lại tiền cà phê của MÌNH. Cử chỉ đó đáng sợ hơn mọi lời nói.";
           } }
       ] },
-    { title: "⚖️ Lựa chọn của chị Hạnh",
+    { title: "⚖️ Lựa chọn của chị kế toán",
       when: function () { return S.ktStage === 2 && (S.totalRaised >= 3e9 || S.suspicion >= 70); },
-      desc: "Tin đồn thanh tra dày lên. Chị Hạnh đặt một chiếc hộp các-tông lên bàn — chưa đóng nắp. Trong đó có khung ảnh gia đình, và có thể, một bản sao kê thật.",
+      desc: "Tin đồn thanh tra dày lên. Chị kế toán đặt một chiếc hộp các-tông lên bàn — chưa đóng nắp. Trong đó có khung ảnh gia đình, và có thể, một bản sao kê thật.",
       choices: [
         { label: "Để chị ấy đi trong yên lặng", hint: "Nghi ngờ +12%, nhưng bạn giữ lại một phần con người mình",
           fx: function () { S.ktStage = 3; S.ktMode = "left"; S.suspicion += 12; return "Bạn không nói gì. Chị ấy cũng vậy. Cánh cửa đóng nhẹ đến mức đau lòng."; } },
@@ -2511,7 +2511,7 @@
     "🔥 VTV đưa tin: 'Cần làm rõ dòng tiền của các dự án thiện nguyện tự phát'"
   ];
   // ================= Sao kê ledger =================
-  var SHELL_NAMES = ["Cty TNHH MTV Ánh Dương", "DV Tổng hợp Tân Phát", "TM-DV Bình Minh Star", "Cty CP Tư vấn Đại Lộc"];
+  var SHELL_NAMES = ["Cty TNHH Một Thành Viên Của Anh", "Cty CP Rất Minh Bạch", "DV Tổng hợp Không Hỏi Nhiều", "Cty TNHH Sân Sau Số 2"];
   var SCHOOL_NAMES = ["Pa Ủ", "Sín Chải", "Mường Lống", "Tà Xùa", "Háng Đồng", "Nậm Càn"];
   var DISGUISES = ["Chi phí vận hành", "Phí điều phối dự án", "Tư vấn chiến lược", "Chi khác (tạm hạch toán)"];
 
@@ -2591,7 +2591,7 @@
     setTicker(pool[Math.floor(Math.random() * pool.length)]);
   }
 
-  var DONOR_NAMES = ["Ngọc Anh", "Minh Tú", "Hải Yến", "Quốc Bảo", "Thu Hà", "Văn Đức", "Kim Chi", "Hoàng Long", "Mai Phương", "Tuấn Kiệt"];
+  var DONOR_NAMES = ["Trà Sữa Thứ 7", "Giấu Tên", "Mèo Béo 2k", "Deadline Chạy Trốn", "Ẩn Danh 99", "Bàn Phím Chính Nghĩa", "Crush Của Ai Đó", "Ví Mỏng Tim Ấm", "Hội Mê Trà Đá", "Người Qua Đường"];
   var DONOR_MSGS = [
     "vừa nuôi 1 em 🥰", "ủng hộ 150k, chúc các em ăn ngon!", "vừa nuôi 3 em một lúc! 💪",
     "gửi 50k tiền trà sữa cho các em ☕", "đăng ký nuôi dài hạn 12 tháng ❤️", "share bài viết cho 5 người bạn 📢"

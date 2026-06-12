@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 3 + name-safety pass (iteration 20)
+- Sprint: sweep 11/12 green (eternal saint hairline), 5-min bot ZERO errors (now exercising
+  the trial too), 12 intervals (all light), live deploy at parity, full-page 390px regression pass.
+- Name safety (owner directive): the accountant is now 'chị kế toán' throughout (no given
+  name), shell companies are satirically impossible, donors are internet nicknames. The rule
+  is encoded in DESIGN.md and the playbook.
+
 ## 2026-06-13 — Phiên toà (iteration 19)
 - Caught endings open a courtroom sequence before the newspaper: up to five evidence beats
   built from the player's ACTUAL run — disguised ledger entries (with amounts), the life-chart
