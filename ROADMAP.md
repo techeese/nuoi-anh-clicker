@@ -4,8 +4,8 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
-10. **Recurring mobile audit** (last done: 2026-06-13 sprint 7, full-page + achievements
-    grid verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
+10. **Recurring mobile audit** (last done: 2026-06-13 sprint 9, promise line + twin chips
+    verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
     endings newspaper, legacy panel) even when nothing changed; fix everything found.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 

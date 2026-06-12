@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 9 (iteration 50)
+- Sweep: 10/12 (the two eternal hairlines), promise-era balance holding: runsToMax 9.2,
+  saint/greedy 1.30.
+- Bot 5-min, recipe extended for the promise prompt + journal peeks: 70 purchases (record),
+  7 organic journal entries, zero JS errors, no soft-locks.
+- Full-page 390px audit: promise progress line, twin chips (💌 + 📔) styled and comfortable,
+  panel order intact, no overflow. No interval growth this cycle.
+- Compass rotation 46–49 healthy (docs → content → mechanics → UX); full flow reflection
+  next due ~55.
+
 ## 2026-06-13 — Nhật ký dự án: the run journal (iteration 49)
 - A 📔 chip beside Mây's letters opens the run's own diary: every event answered (with the
   choice you made in italics), letters arrived/replied, the silence beat, promises sworn,
