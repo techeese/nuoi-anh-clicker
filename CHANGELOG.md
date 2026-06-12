@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-13 — Moral-state music (iteration 26)
+- The generative ambient shifts with suspicion: bright pentatonic clean → minor shades with a
+  minor-third shimmer at 35% → low, sparse, semitone-haunted notes with tritone accents past
+  70%. The soundtrack knows what you did.
+
 ## 2026-06-13 — Maintenance sprint 4 (iteration 25)
 - Sweep: 21 green checks; only the two known eternal hairlines (saint 13-15m vs 15m floor,
   click ratio 1.29 vs 1.30). Bot 5-min: ZERO errors while hammering the quick-bar at 2.5

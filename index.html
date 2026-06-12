@@ -1117,13 +1117,21 @@
   function sGavel() { beep(150, 0.18, "square", 0.09); beep(120, 0.26, "square", 0.09, 0.28); }
   function sHalo() { [392, 494, 587, 784].forEach(function (f, i) { beep(f, 1.4, "sine", 0.05, i * 0.05); }); }
 
-  // Ambient generative music (pentatonic plucks)
-  var MUSIC_SCALE = [220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33];
+  // Ambient generative music — the soundtrack follows your conscience
+  var MUSIC_CALM = [220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33];   // bright pentatonic
+  var MUSIC_UNEASY = [220, 261.63, 293.66, 329.63, 349.23, 392, 440, 523.25]; // minor shades
+  var MUSIC_DARK = [110, 116.54, 146.83, 164.81, 174.61, 220, 233.08];        // low, semitone-haunted
   function musicNote() {
     if (!META.music || META.muted || document.hidden) return;
-    var f = MUSIC_SCALE[Math.floor(Math.random() * MUSIC_SCALE.length)];
-    beep(f, 1.6, "sine", 0.022);
-    if (Math.random() < 0.3) beep(f * 1.5, 1.8, "sine", 0.012, 0.12);
+    var sp = S ? S.suspicion : 0;
+    var scale = sp >= 70 ? MUSIC_DARK : sp >= 35 ? MUSIC_UNEASY : MUSIC_CALM;
+    // darker conscience: sparser, heavier notes
+    if (sp >= 70 && Math.random() < 0.45) return;
+    var f = scale[Math.floor(Math.random() * scale.length)];
+    beep(f, sp >= 70 ? 2.4 : 1.6, "sine", sp >= 70 ? 0.018 : 0.022);
+    if (sp < 35 && Math.random() < 0.3) beep(f * 1.5, 1.8, "sine", 0.012, 0.12);
+    if (sp >= 35 && sp < 70 && Math.random() < 0.2) beep(f * 1.189, 2.0, "sine", 0.01, 0.15); // minor third shimmer
+    if (sp >= 70 && Math.random() < 0.12) beep(f * 1.414, 2.6, "triangle", 0.012, 0.2);       // tritone unease
     if (Math.random() < 0.15) beep(f / 2, 2.2, "triangle", 0.014, 0.05);
   }
 

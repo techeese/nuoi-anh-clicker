@@ -3,8 +3,6 @@
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 
-2. **Moral-state music** — the generative ambient shifts scale/timbre as suspicion rises
-   (major-pentatonic clean → darker intervals dirty).
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint, newspaper ending verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
@@ -12,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Moral-state music.
 - Desktop 3-column layout.
 - First-run coach hints.
 - Day/night cycle with sleep/insomnia.
