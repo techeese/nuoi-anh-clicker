@@ -364,6 +364,16 @@
   .ending-badge.unlocked { border-color: var(--gold); color: var(--text); box-shadow: 0 0 10px rgba(245, 197, 66, 0.15); }
   .ending-badge .e-emoji { font-size: 1.3rem; display: block; filter: grayscale(1) opacity(0.4); }
   .ending-badge.unlocked .e-emoji { filter: none; }
+  .runlog { margin-top: 10px; }
+  .runlog-title { font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+  .runlog-card {
+    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; font-size: 0.7rem; color: var(--muted); margin-bottom: 5px;
+  }
+  .runlog-card .rl-emo { font-size: 0.95rem; }
+  .runlog-card b { color: var(--text); }
+  .runlog-card .rl-ch { color: var(--blue); font-weight: 700; }
   .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 10px; }
   .ach {
     background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
@@ -887,6 +897,7 @@
         <div class="life-legend"><span class="lg-f">— quỹ</span><span class="lg-s">— túi riêng</span><span class="lg-p">▁ nghi ngờ</span><span id="lifeCross"></span></div>
       </div>
       <div class="endings-row" id="endingsRow"></div>
+      <div class="runlog" id="runLog"></div>
       <div style="font-size:0.73rem; color:var(--muted); line-height:1.45; margin-bottom:8px;">
         Khi một "dự án" kết thúc, bạn nhận <b style="color:var(--purple)">Quan hệ 🤝</b> theo tổng tiền đã kêu gọi.
         Mỗi quan hệ chưa dùng cộng <b>+5% thu nhập</b> — hoặc đem mua đặc quyền vĩnh viễn. Mỗi thành tựu 🏆 cộng <b>+2% thu nhập</b>.
@@ -1075,7 +1086,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "" };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi", lastDailyDay: "", lastChallengeDay: "", runLog: [] };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -1832,6 +1843,12 @@
     META.connections += conns;
     META.runs += 1;
     META.endings[outcome] = true;
+    var dd = new Date();
+    META.runLog.unshift({
+      d: dd.getDate() + "/" + (dd.getMonth() + 1), o: outcome, r: S.totalRaised, s: S.stash,
+      m: S.meals, days: days(), L: S.letters.length, kt: S.ktMode, ch: S.challenge ? 1 : 0, c: conns
+    });
+    if (META.runLog.length > 20) META.runLog.length = 20;
 
     var card = document.getElementById("overlayCard");
     var title = document.getElementById("overTitle");
@@ -1861,6 +1878,7 @@
 
     document.getElementById("finalStats").innerHTML = frontPage(outcome, conns);
 
+    renderLegacy();
     if (outcome === "caught") showTrial();
     else document.getElementById("gameOverOverlay").classList.add("show");
     var sb = document.getElementById("shareBtn");
@@ -2288,6 +2306,27 @@
         '<div class="cost conn-cost">' + (maxed ? "✓ TỐI ĐA" : "🤝 " + c + " quan hệ") + "</div>";
       list.appendChild(div);
     });
+
+    var rl = document.getElementById("runLog");
+    if (META.runLog.length === 0) {
+      rl.innerHTML = "";
+    } else {
+      var EMO = { caught: "🚔", escaped: "🏝️", dissolved: "📦", saint: "😇" };
+      rl.innerHTML = '<div class="runlog-title">🗂️ HỒ SƠ CÁC DỰ ÁN</div>' +
+        META.runLog.slice(0, 8).map(function (r) {
+          return '<div class="runlog-card"><span class="rl-emo">' + (EMO[r.o] || "❔") + "</span>" +
+            "<span>" + r.d + "</span>" +
+            "<span>kêu gọi <b>" + fmt(r.r) + "</b></span>" +
+            "<span>túi riêng <b>" + fmt(r.s) + "</b></span>" +
+            "<span><b>" + (r.m || 0).toLocaleString("vi-VN") + "</b> bữa</span>" +
+            "<span><b>" + r.days + "</b> ngày</span>" +
+            (r.L ? "<span>💌" + r.L + "</span>" : "") +
+            (r.kt === "accomplice" ? "<span>🤝sổ kép</span>" : "") +
+            (r.ch ? '<span class="rl-ch">🎲</span>' : "") +
+            "<span>🤝+" + r.c + "</span></div>";
+        }).join("") +
+        (META.runLog.length > 8 ? '<div style="font-size:0.65rem;color:var(--muted);text-align:center;">… và ' + (META.runLog.length - 8) + ' hồ sơ cũ hơn</div>' : "");
+    }
 
     var grid = document.getElementById("achGrid");
     grid.innerHTML = "";
@@ -3198,6 +3237,8 @@
     ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"]
       .forEach(function (k) { if (bad(META[k])) META[k] = 0; });
     Object.keys(META.perks).forEach(function (k) { if (bad(META.perks[k])) delete META.perks[k]; });
+    if (!Array.isArray(META.runLog)) META.runLog = [];
+    META.runLog = META.runLog.filter(function (r) { return r && typeof r.o === "string" && !bad(r.r); }).slice(0, 20);
   }
 
   var wiping = false; // blocks autosave from resurrecting data during a factory reset
@@ -3222,6 +3263,7 @@
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
           if (typeof META.lastDailyDay !== "string") META.lastDailyDay = "";
           if (typeof META.lastChallengeDay !== "string") META.lastChallengeDay = "";
+          if (!Array.isArray(META.runLog)) META.runLog = [];
           if (!META.endings) META.endings = {};
           if (d.run && !d.run.gameOver) {
             S = d.run;

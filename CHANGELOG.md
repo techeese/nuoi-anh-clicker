@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Hồ sơ các dự án: run case files (iteration 21)
+- Every finished run is now a permanent case file in Legacy: ending, date, raised, stash,
+  meals, days survived, 💌 letters, accomplice flag, 🎲 challenge badge, connections earned.
+  Your endings become a museum of past lives (capped 20, newest first).
+- First use of the roadmap-drain ideation rule: banked first-run coach + moral-state music.
+
 ## 2026-06-13 — Maintenance sprint 3 + name-safety pass (iteration 20)
 - Sprint: sweep 11/12 green (eternal saint hairline), 5-min bot ZERO errors (now exercising
   the trial too), 12 intervals (all light), live deploy at parity, full-page 390px regression pass.
