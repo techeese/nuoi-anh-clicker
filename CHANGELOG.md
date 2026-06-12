@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — The accountant arc (iteration 15)
+- Chị Hạnh — the accountant who knows everything — is now a three-stage chained arc on the
+  dirty path (the mirror of Mây on the clean one): her resignation letter, the reverse coffee
+  where she's done the math on your kickbacks, and the cardboard box on the table.
+- She can become your accomplice (kickbacks -10%, scheme heat -10% — she writes the books now),
+  stay bought, or walk to the journalists. The ending newspaper testifies accordingly.
+- First event-CHAIN system (ktStage/ktMode); +1 achievement (Cùng một con thuyền).
+
 ## 2026-06-13 — Đường đời: the run life-lines chart (iteration 14)
 - Canvas chart in Legacy: fund (green) vs stash (gold) on log scale, suspicion as a red
   heartbeat area beneath — and a ◆ marker at the exact sample where the stash crossed above

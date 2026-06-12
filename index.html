@@ -1027,7 +1027,8 @@
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
-      letters: [], maySilenced: false, hist: []
+      letters: [], maySilenced: false, hist: [],
+      ktStage: 0, ktMode: ""
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -1261,6 +1262,8 @@
       check: function () { return META.avatarClicks >= 15; } },
     { id: "mayfriend", name: "Người bạn qua thư", desc: "Nhận đủ 4 lá thư của bé Mây trong một dự án",
       check: function () { return S.letters.length >= 4; } },
+    { id: "accomplice", name: "Cùng một con thuyền", desc: "Biến chị kế toán thành đồng phạm",
+      check: function () { return S.ktMode === "accomplice"; } },
     { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
       check: function () { return META.goodFound; } },
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
@@ -1300,15 +1303,16 @@
           fx: function () { return "MC tiếc nuối. Mẹ bạn còn tiếc hơn: 'Con người ta lên TV ầm ầm kìa.'"; } }
       ] },
     { title: "💼 Kế toán xin nghỉ việc đột ngột",
-      when: function () { return !isClean(); },
+      when: function () { return !isClean() && S.ktStage === 0; },
       desc: "Chị kế toán — người duy nhất hiểu toàn bộ 'hệ thống' — đặt lá đơn lên bàn, mắt không nhìn bạn.",
       choices: [
         { label: "Tăng lương gấp đôi giữ chân (tốn 15% túi riêng)", hint: "Không có gì xảy ra… tạm thời",
-          fx: function () { S.stash *= 0.85; return "Chị ấy ở lại, nhận lương mới, và bắt đầu gửi email cho chính mình lúc nửa đêm. Để làm gì nhỉ?"; } },
+          fx: function () { S.stash *= 0.85; S.ktStage = 1; S.ktMode = "paid"; return "Chị ấy ở lại, nhận lương mới, và bắt đầu gửi email cho chính mình lúc nửa đêm. Để làm gì nhỉ?"; } },
         { label: "Để chị ấy đi, thuê người 'kín tiếng'", hint: "Nghi ngờ +8%",
-          fx: function () { S.suspicion += 8; return "Người mới hỏi ít, làm nhanh. Còn chị cũ… dạo này hay cà phê với một phóng viên."; } },
+          fx: function () { S.suspicion += 8; S.ktStage = 3; S.ktMode = "left"; return "Người mới hỏi ít, làm nhanh. Còn chị cũ… dạo này hay cà phê với một phóng viên."; } },
         { label: "Hỏi thẳng: 'Chị muốn gì?'", hint: "50/50: yên ổn hoặc nghi ngờ +14%",
           fx: function () {
+            S.ktStage = 1; S.ktMode = "scared";
             if (Math.random() < 0.5) return "'Tôi muốn ngủ ngon.' Hai người nhìn nhau rất lâu. Chị ấy ở lại — với điều kiện không đụng sổ nữa.";
             S.suspicion += 14; return "Câu hỏi sai. Hoá ra chị ấy chỉ định về quê — GIỜ thì chị ấy thấy có gì đó đáng nói.";
           } }
@@ -1359,6 +1363,36 @@
             if (Math.random() < 0.5) return "Nhân viên ngân hàng gật gù trước sơ đồ 14 mũi tên của bạn. Cho qua.";
             S.suspicion += 15; return "Họ chuyển hồ sơ lên 'cấp có thẩm quyền'. Cụm từ đáng sợ nhất tiếng Việt.";
           } }
+      ] },
+    { title: "🍵 Chị Hạnh mời cà phê ngược",
+      when: function () { return S.ktStage === 1 && S.totalRaised >= 1e9; },
+      desc: "Lần này chị kế toán mời BẠN. Trên bàn là một cuốn sổ tay: chị đã tự cộng lại toàn bộ 'lại quả' ba tháng qua, chính xác đến hàng nghìn.",
+      choices: [
+        { label: "Mời chị vào hệ thống — cắt 10% lại quả vĩnh viễn", hint: "Lại quả -10%, nhưng sổ sách kín hơn (nghi ngờ từ chiêu trò -10%)",
+          fx: function () { S.ktStage = 2; S.ktMode = "accomplice"; return "Chị Hạnh gập sổ lại: 'Từ giờ để tôi ghi. Tôi ghi thì không ai đọc ra.' Bạn vừa có một đồng phạm giỏi hơn mình."; } },
+        { label: "Mua sự im lặng một lần nữa (tốn 20% túi riêng)", hint: "Yên ổn, nhưng cuốn sổ vẫn tồn tại",
+          fx: function () { S.stash *= 0.8; S.ktStage = 2; return "Chị ấy nhận. Nhưng cuốn sổ không nằm trên bàn nữa — nó nằm ở một nơi an toàn. 'Phòng thân thôi.'"; } },
+        { label: "Doạ ngược: 'Chị cũng ký nhiều giấy tờ lắm đấy'", hint: "50/50: chị ấy chùn — hoặc nghi ngờ +18%",
+          fx: function () {
+            S.ktStage = 2;
+            if (Math.random() < 0.5) return "Tay chị ấy run nhẹ khi cầm ly. Cả hai đều hiểu: giờ là cùng một con thuyền.";
+            S.suspicion += 18; return "Chị ấy đứng dậy, để lại tiền cà phê của MÌNH. Cử chỉ đó đáng sợ hơn mọi lời nói.";
+          } }
+      ] },
+    { title: "⚖️ Lựa chọn của chị Hạnh",
+      when: function () { return S.ktStage === 2 && (S.totalRaised >= 3e9 || S.suspicion >= 70); },
+      desc: "Tin đồn thanh tra dày lên. Chị Hạnh đặt một chiếc hộp các-tông lên bàn — chưa đóng nắp. Trong đó có khung ảnh gia đình, và có thể, một bản sao kê thật.",
+      choices: [
+        { label: "Để chị ấy đi trong yên lặng", hint: "Nghi ngờ +12%, nhưng bạn giữ lại một phần con người mình",
+          fx: function () { S.ktStage = 3; S.ktMode = "left"; S.suspicion += 12; return "Bạn không nói gì. Chị ấy cũng vậy. Cánh cửa đóng nhẹ đến mức đau lòng."; } },
+        { label: "'Ở lại. Tôi cần chị.' (thành thật)", hint: "Tuỳ vào cách bạn đã đối xử với chị ấy",
+          fx: function () {
+            S.ktStage = 3;
+            if (S.ktMode === "accomplice" || Math.random() < 0.5) { S.suspicion -= 8; return "Chị ấy nhìn cái hộp rất lâu… rồi lấy khung ảnh ra đặt lại lên bàn. 'Lần cuối.'"; }
+            S.ktMode = "left"; S.suspicion += 20; return "'Anh từng cần tôi im lặng. Khác nhau đấy.' Chiếc hộp đóng nắp.";
+          } },
+        { label: "Giữ hộp lại 'kiểm tra tài sản công ty'", hint: "Nghi ngờ +25%, và bạn biết mình vừa trở thành ai",
+          fx: function () { S.ktStage = 3; S.ktMode = "left"; S.suspicion += 25; return "Bạn lục hộp của chị ấy trước mặt chị ấy. Bản sao kê không có ở đó. Nó chưa bao giờ ở đó."; } }
       ] },
     { title: "🕵️ Nhà báo điều tra liên hệ",
       when: function () { return !isClean() || S.suspicion >= 25; },
@@ -1577,7 +1611,7 @@
   function kickbackPerSec() {
     var k = 0;
     ITEMS.forEach(function (it) { if (it.kick && it.dps) k += it.dps * it.kick * count(it.id); });
-    return k * incomeFactor() * buffMult("income");
+    return k * incomeFactor() * buffMult("income") * (S.ktMode === "accomplice" ? 0.9 : 1);
   }
   function incomePerSec() {
     return baseDps() * incomeFactor() * buffMult("income");
@@ -1590,7 +1624,7 @@
     var luxFactor = isClean() ? 0.2 : 1;
     var fronts = 0;
     ITEMS.forEach(function (it) { if (it.launder && count(it.id) > 0) fronts++; });
-    var launderFactor = Math.pow(0.85, fronts);
+    var launderFactor = Math.pow(0.85, fronts) * (S.ktMode === "accomplice" ? 0.9 : 1);
     ITEMS.forEach(function (it) {
       if (it.susp) grow += it.susp * count(it.id) * (it.mult ? luxFactor : it.kick ? launderFactor : 1);
     });
@@ -1812,6 +1846,11 @@
     }
     var provinces = PROVINCES.filter(function (i) { return count(i.id) > 0; }).length;
     if (provinces > 0) body += " Dự án từng phủ sóng " + provinces + " tỉnh thành.";
+    if (outcome === "caught" && S.ktMode === "accomplice") {
+      body += " Kế toán trưởng của dự án bị khởi tố trong cùng vụ án; cuốn sổ tay của bà được cho là chứng cứ quan trọng nhất.";
+    } else if (outcome === "caught" && S.ktMode === "left") {
+      body += " Theo nguồn tin riêng, lời khai then chốt đến từ một kế toán cũ của dự án.";
+    }
     if (S.letters.length >= 2) {
       if (outcome === "saint") body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
       else if (outcome === "caught") body += " Trong số tang vật có một xấp thư viết tay của một học sinh tên Mây — vẫn còn trong ví.";
@@ -2936,7 +2975,7 @@
     // and a NaN that was JSON-serialized to null would slip straight through
     var bad = function (v) { return !Number.isFinite(v); };
     ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
-     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains"]
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage"]
       .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
@@ -2990,6 +3029,8 @@
             if (!Array.isArray(S.letters)) S.letters = [];
             if (typeof S.maySilenced !== "boolean") S.maySilenced = false;
             if (!Array.isArray(S.hist)) S.hist = [];
+            if (typeof S.ktStage !== "number") S.ktStage = 0;
+            if (typeof S.ktMode !== "string") S.ktMode = "";
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
