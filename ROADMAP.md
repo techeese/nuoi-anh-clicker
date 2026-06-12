@@ -3,6 +3,10 @@
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 
+1. **README + screenshot refresh** — the features list predates letters/replies, the
+   journalist arc, end cards, conscience audio, and the archive (~15 iterations stale);
+   retake screenshot.png (flagged by the it.45 flow reflection).
+
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 7, full-page + achievements
     grid verified) — full phone-width walkthrough (shop tabs, overlays, minigame,

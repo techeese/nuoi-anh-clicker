@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 8 + flow reflection (iteration 45)
+- Sweep: 10/12, the two eternal hairlines, optimizer suggestions rejected (sixth time).
+- Bot 5-min: 59 purchases, zero errors, no soft-locks. (letters=0 is correct — a greedy
+  bot dirties itself before Mây's first letter can fire.)
+- Full-page 390px audit on a maximal clean-path seed: letter chip (5), honest split bar,
+  halo'd founder, records, both 📰 case-file chips, golden achievement cells — no overflow.
+- Flow reflection (31–45): grep-anchors + Edit-tool discipline = zero anchor failures in 15
+  iterations; minimal-seed recipe verified and added to the playbook (kills the 25-line
+  seed copy-paste); screenshot scaffolding consolidated; compass gaps flagged → README
+  refresh queued (docs are ~15 iterations stale).
+
 ## 2026-06-13 — End cards from the archive (iteration 44)
 - The archive overlay gains a gold 🖼️ Lưu ảnh button: any case file with a stored snapshot
   can mint its ending card retroactively — old runs become postable images too.
