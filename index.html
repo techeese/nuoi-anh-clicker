@@ -278,6 +278,10 @@
   }
   @keyframes envBob { to { transform: translateY(-10px) rotate(6deg); } }
   @keyframes envIn { from { opacity: 0; transform: scale(0.3); } }
+  .envelope.dark {
+    filter: drop-shadow(0 0 12px rgba(255, 64, 64, 0.85)) brightness(0.72) saturate(0.7);
+    animation-duration: 1.8s, 0.4s; /* it bobs slower — like it's heavier */
+  }
 
   .buff-bar { display: flex; gap: 6px; flex-wrap: wrap; min-height: 4px; margin-top: 4px; }
   .buff {
@@ -2953,17 +2957,38 @@
 
   function maybeSpawnEnvelope() {
     if (S.gameOver || paused || envEl || Date.now() < nextEnvAt) return;
+    var dark = rnd() < 0.12; // the rare one telegraphs itself — opening it is a choice
     var zone = document.getElementById("clickZone");
     envEl = document.createElement("div");
-    envEl.className = "envelope";
+    envEl.className = "envelope" + (dark ? " dark" : "");
     envEl.textContent = "🧧";
     envEl.style.left = (10 + rnd() * 75) + "%";
     envEl.style.top = (5 + rnd() * 60) + "%";
-    envEl.title = "Phong bì vàng! Bấm ngay kẻo mất!";
-    envEl.addEventListener("click", openEnvelope);
+    envEl.title = dark ? "Phong bì lạ, viền đen. Mở hay không là tuỳ bạn." : "Phong bì vàng! Bấm ngay kẻo mất!";
+    envEl.addEventListener("click", dark ? openDarkEnvelope : openEnvelope);
     zone.appendChild(envEl);
     coach("env", "<b>Phong bì vàng!</b> 🧧<br>Bấm ngay kẻo bay mất — bên trong là buff, tiền, hoặc một drama showbiz đúng lúc.");
     setTimeout(function () { if (envEl) { removeEnvelope(); scheduleEnvelope(); } }, 12000);
+  }
+
+  function openDarkEnvelope(e) {
+    e.stopPropagation();
+    removeEnvelope();
+    scheduleEnvelope();
+    META.envOpened++;
+    sWarn();
+    showEvent({
+      title: "🖤 Phong bì đỏ viền đen",
+      desc: "Bên trong: ảnh chụp sổ phụ của một quỹ 'bạn bè', kèm đúng một dòng — 'Anh biết phải làm gì. Người gửi sẽ nhớ ơn.' Không có tên. Có số tài khoản.",
+      choices: [
+        { label: "Chuyển hết cho chị phóng viên", hint: "Nghi ngờ -7%",
+          fx: function () { S.suspicion = Math.max(0, S.suspicion - 7); return "Tuần sau, 'Soi Kỹ Cuối Tuần' có loạt bài mới — lần này không phải về bạn. Dư luận bận hẳn."; } },
+        { label: "'Hợp tác' với người gửi", hint: "Túi riêng +, nghi ngờ +6% — và bàn tay không còn sạch",
+          fx: function () { var g = Math.max(2e5, incomePerSec() * 90); S.stash += g; S.suspicion += 6; S.bargains++; return "Bạn làm 'việc phải làm'. " + fmt(g) + " về túi. Người gửi vẫn không có tên — nhưng giờ họ có bạn."; } },
+        { label: "Đốt. Không đọc lại lần hai.", hint: "Không có gì xảy ra",
+          fx: function () { return "Tro bay. Đêm đó bạn tự hỏi: quỹ 'bạn bè' kia đã nhận bao nhiêu phong bì có tên BẠN ở bên trong?"; } }
+      ]
+    });
   }
 
   function openEnvelope(e) {

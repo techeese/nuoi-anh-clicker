@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Phong bì đỏ viền đen (iteration 54)
+- ~12% of golden envelopes now spawn dark: red-glowing, dimmer, bobbing slower ("like it's
+  heavier"), telegraphing risk before you click. Opening one is a choice, not candy: an
+  anonymous tip about a 'friendly' charity's second ledger — forward it to chị phóng viên
+  (suspicion -7), 'cooperate' with the nameless sender (stash +, suspicion +6, and
+  bargains++ so clean hands are genuinely lost), or burn it unread (nothing — except the
+  question of how many envelopes have YOUR name inside).
+- Ignoring it entirely remains valid: it expires like any envelope. Reuses the event-card
+  machinery, so the journal logs your choice automatically.
+- Verified: gates ×2, forced-dark walk (spawn → choice card → bargains=1 on the dirty
+  path), 390px envelope visual distinct and collision-free.
+
 ## 2026-06-13 — Ending stingers (iteration 53)
 - Each fate now has a musical signature: 😇 saint — pentatonic ascent resolving into a warm
   three-note chord; 🏝️ escape — a quick rising arpeggio and one long high note fading (the
