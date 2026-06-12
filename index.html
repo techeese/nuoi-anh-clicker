@@ -3361,6 +3361,15 @@
     '<path d="M95 3 v-2 M107 16 h3 M104 7 l2 -2 M104 25 l2 2 M95 29 v2" stroke="#e8a33d" stroke-width="3" stroke-linecap="round"/>' +
     '<ellipse cx="38" cy="52" rx="11" ry="5" fill="none" stroke="#c0573f" stroke-width="3.2"/>' +
     '<path d="M30 49 q8 -6 16 0" stroke="#c0573f" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  var DRAW_SCHOOL = '<path d="M28 56 v-20 l16 -12 l16 12 v20 z" fill="none" stroke="#c0573f" stroke-width="3.2" stroke-linejoin="round"/>' +
+    '<path d="M38 56 v-12 h12 v12" fill="none" stroke="#4a6bb5" stroke-width="2.6"/>' +
+    '<path d="M44 16 v8" stroke="#5d9c59" stroke-width="2.6" stroke-linecap="round"/>' +
+    '<path d="M44 16 q7 -3 10 2 l-10 2 z" fill="#d66a9c" stroke="#d66a9c" stroke-width="1.5"/>' +
+    '<circle cx="78" cy="34" r="6" fill="none" stroke="#4a6bb5" stroke-width="2.8"/>' +
+    '<path d="M78 40 v12 M78 44 l-7 5 M78 44 l7 5 M78 52 l-5 8 M78 52 l5 8" stroke="#4a6bb5" stroke-width="2.8" stroke-linecap="round"/>' +
+    '<circle cx="97" cy="42" r="4.5" fill="none" stroke="#e8a33d" stroke-width="2.6"/>' +
+    '<path d="M97 46 v9 M97 49 l-5 3 M97 49 l5 3 M97 55 l-4 6 M97 55 l4 6" stroke="#e8a33d" stroke-width="2.6" stroke-linecap="round"/>' +
+    '<path d="M85 47 h7" stroke="#5d9c59" stroke-width="2.4" stroke-linecap="round"/>';
   var DRAW_CHU = '<circle cx="60" cy="16" r="10" fill="none" stroke="#4a6bb5" stroke-width="3.2"/>' +
     '<path d="M54 16 q2 3 4 0 M64 16 q2 3 4 0" stroke="#4a6bb5" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
     '<path d="M53 21 q7 7 14 0" stroke="#c0573f" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
@@ -3375,7 +3384,9 @@
     { meals: 25000, date: "Điện Biên, sắp thi học kỳ", draw: DRAW_SUN,
       body: "Chú ơi, cô bảo con đứng nhất lớp.\nCon đọc truyện không cần đánh vần nữa.\nCon muốn sau này làm người tốt giống chú.\nChú đừng cười con nha.", sig: "— Mây, lớp 2" },
     { meals: 60000, date: "Điện Biên, cuối năm học", draw: DRAW_CHU,
-      body: "Chú ơi, trường con có giá sách mới,\ncả bản góp gỗ làm đấy.\nThầy hiệu trưởng bảo: có người gieo thì có người gặt.\nCảm ơn chú đã không quên tụi con.", sig: "— Mây, lớp 3" }
+      body: "Chú ơi, trường con có giá sách mới,\ncả bản góp gỗ làm đấy.\nThầy hiệu trưởng bảo: có người gieo thì có người gặt.\nCảm ơn chú đã không quên tụi con.", sig: "— Mây, lớp 3" },
+    { meals: 150000, date: "Điện Biên, hai mùa gặt sau", draw: DRAW_SCHOOL,
+      body: "Chú ơi, lâu rồi con mới viết.\nLớp con giờ có em Suối mới vào lớp 1. Con đang dạy em ấy viết chữ.\nEm hỏi chú là ai. Con bảo: là người mình chưa gặp mà mình tin.\nSau này con muốn làm cô giáo. Cô giáo thì không giàu.\nNhưng mà no, chú ạ.", sig: "— Mây, lớp 5 (chữ em Suối: 'chau chao chu')" }
   ];
 
   // Reaction openers: letter N starts with Mây reacting to how you answered letter N-1.
@@ -3383,12 +3394,14 @@
   var REACT_WARM = [
     "Chú viết thư cho con thật hả?! Mẹ con đọc cho cả nhà nghe, ai cũng cười.",
     "Thư chú con để trong hộp bút. Cô bảo chữ chú xấu hơn chữ con đó.",
-    "Con đọc lại thư chú mỗi lần sắp thi. Đỡ run lắm chú ạ."
+    "Con đọc lại thư chú mỗi lần sắp thi. Đỡ run lắm chú ạ.",
+    "Em Suối cứ hỏi chú là ai mà viết thư cho chị. Con cho em xem cả xấp thư luôn."
   ];
   var REACT_FORMAL = [
     "Con cảm ơn món quà chú gửi ạ. Cái thiệp in đẹp lắm.",
     "Quà chú gửi con vẫn để dành. Chắc chú bận lắm.",
-    "Con cảm ơn quà của chú. Mà chú ơi, chú có đọc thư con không?"
+    "Con cảm ơn quà của chú. Mà chú ơi, chú có đọc thư con không?",
+    "Em Suối thích cái thiệp in lắm. Em tưởng chú là một công ty."
   ];
 
   var letterReadIdx = -1;
@@ -3657,10 +3670,10 @@
     if (!Array.isArray(S.ledger)) S.ledger = [];
     S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
     if (!Array.isArray(S.letters)) S.letters = [];
-    S.letters = S.letters.filter(function (i) { return Number.isInteger(i) && i >= 0 && i < 4; });
+    S.letters = S.letters.filter(function (i) { return Number.isInteger(i) && i >= 0 && i < 5; });
     if (!Array.isArray(S.mayReplies)) S.mayReplies = [];
     // map, NOT filter: this array is index-aligned with letters; JSON turns sparse slots into null
-    S.mayReplies = S.mayReplies.slice(0, 4).map(function (r) { return r === "w" || r === "f" ? r : null; });
+    S.mayReplies = S.mayReplies.slice(0, 5).map(function (r) { return r === "w" || r === "f" ? r : null; });
     if (!Array.isArray(S.hist)) S.hist = [];
     S.hist = S.hist.filter(function (h) { return h && Number.isFinite(h.f) && Number.isFinite(h.s) && Number.isFinite(h.p); }).slice(-240);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
@@ -3748,7 +3761,7 @@
     var hrs = elapsed >= 3600 ? (elapsed / 3600).toFixed(1) + " giờ" : Math.round(elapsed / 60) + " phút";
     var mealsAway = Math.floor(gain * (1 - S.skim / 100) * 0.2 / MEAL_COST);
     var cooled = Math.round(suspBefore - S.suspicion);
-    var nextL = S.letters.length < 4 ? LETTERS[S.letters.length] : null;
+    var nextL = S.letters.length < LETTERS.length ? LETTERS[S.letters.length] : null;
     var letterWaiting = nextL && isClean() && (S.meals + mealsAway >= nextL.meals);
 
     document.getElementById("awayDesc").textContent =

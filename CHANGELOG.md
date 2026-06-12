@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Mây's fifth letter: em Suối (iteration 43)
+- A late-game letter at 150.000 bữa cơm: Mây (now lớp 5) is teaching first-grader Suối to
+  write, answers "chú là ai" with "người mình chưa gặp mà mình tin", and signs off with the
+  series' quietest line — "Cô giáo thì không giàu. Nhưng mà no, chú ạ." Suối's scrawl rides
+  the signature. New crayon drawing: schoolhouse + big-and-small stick figures.
+- New reaction openers for reply 4: warm → Mây shows Suối the whole stack of letters;
+  formal → "Em tưởng chú là một công ty."
+- Letter-count plumbing un-hardcoded (sanitize bound, mayReplies slice, away-report check —
+  three scattered `4` literals; landmine logged).
+- Verified: gates ×2, trigger + both reaction variants asserted (5 letters persist, reply
+  row live), 390px capture of the longest letter fits cleanly.
+
 ## 2026-06-13 — Shareable end card (iteration 42)
 - New 🖼️ "Lưu ảnh kết cục" button on every ending: renders a 1000×524 canvas card from the
   run snapshot — ending emoji + colored headline (🚔 SỤP ĐỔ / 🏝️ BIẾN MẤT / 📦 GIẢI THỂ /

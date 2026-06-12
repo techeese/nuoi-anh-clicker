@@ -12,6 +12,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Mây's fifth letter (em Suối, 150k meals, reaction pair, school drawing).
 - Shareable end card (canvas image per ending, share/download).
 - Stash drip (passive kickbacks rise visibly out of the túi riêng box).
 - Achievements for letters/journalist/archive (5 new, both moral paths).
