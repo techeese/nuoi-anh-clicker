@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-06-13 — Desktop 3-column layout (iteration 24)
+- ≥1280px: play column + shop pinned sticky side by side, founder & legacy stacked in column
+  three — the entire core game fits one viewport with zero scrolling; only the museum scrolls.
+
 ## 2026-06-13 — Quick action bar + density pass (iteration 23)
 - Owner directive: less scrolling, more game. A sticky bottom quick-bar (mini donate button,
   fund/stash, live suspicion meter) appears exactly when the real button leaves the viewport —

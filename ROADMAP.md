@@ -2,8 +2,6 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **Desktop 3-column layout** (>1280px): main | shop | founder+legacy side by side —近 zero
-   page scroll on desktop. (Follow-up to the quick-bar iteration.)
 
 2. **Moral-state music** — the generative ambient shifts scale/timbre as suspicion rises
    (major-pentatonic clean → darker intervals dirty).
@@ -14,6 +12,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Desktop 3-column layout.
 - First-run coach hints.
 - Day/night cycle with sleep/insomnia.
 - Daily seeded challenge + share results.

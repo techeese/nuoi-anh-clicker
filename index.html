@@ -66,6 +66,18 @@
     max-width: 1120px; margin: 0 auto; padding: 12px;
   }
   button { touch-action: manipulation; }
+
+  /* desktop 3-column: play and shop pinned, only the museum scrolls */
+  @media (min-width: 1280px) {
+    .wrap { grid-template-columns: 410px 350px minmax(0, 1fr); max-width: 1460px; align-items: start; }
+    .left-col { display: contents !important; }
+    #mainPanel { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 12px; }
+    #shopPanel { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 12px; }
+    .avatar-panel { grid-column: 3; grid-row: 1; }
+    #legacyPanel { grid-column: 3; grid-row: 2; }
+    .shop-list { max-height: calc(100vh - 230px); }
+  }
+
   @media (max-width: 900px) {
     .wrap { grid-template-columns: 1fr; gap: 12px; padding: 10px; }
     /* dissolve the left column so panels become siblings, then order for the phone:
