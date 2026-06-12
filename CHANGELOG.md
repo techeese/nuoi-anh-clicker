@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — PWA: install the charity (iteration 10)
+- The game is now installable: web manifest, drawn app icon (the steaming rice bowl in a gold
+  ring), theme color, apple-touch-icon.
+- Network-first service worker with cache fallback: deploys land immediately when online,
+  and the game keeps working fully offline — fitting, for an idle game about absence.
+
 ## 2026-06-13 — Retention hooks: the return moment + morning wave (iteration 9)
 - Research-grounded (idle-genre retention literature): the return moment and a daily hook are
   the two highest-leverage levers for a parody idle game without dark patterns.

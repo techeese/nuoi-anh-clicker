@@ -15,6 +15,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- PWA: manifest + icon + offline service worker.
 - Retention: welcome-back report + daily morning wave.
 - Bé Mây's letters (4 stages + silence beat + ending tie-ins).
 - Founder speech bubbles.
