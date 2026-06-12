@@ -57,6 +57,14 @@ The game's moral force comes from mechanics, not from naming anyone.
 | `sim.js` | (legacy) standalone strategy simulator |
 | `clear-save.html` | factory-reset helper |
 
+## Improvement compass (12 areas the loop rotates through)
+
+1. **Mechanics depth** · 2. **Content** (events/items/achievements) · 3. **Narrative arc** ·
+4. **Graphics & juice** · 5. **Audio** · 6. **UX & onboarding** · 7. **Balance & economy** ·
+8. **Retention & meta** · 9. **Tech quality** · 10. **Testing & tooling** ·
+11. **Docs & presentation** · 12. **Distribution** (Pages/PWA).
+Broken things always win; otherwise prefer areas untouched in the last 3 iterations.
+
 ## Voice & aesthetic
 
 Glassmorphism dark UI, gold accents, hand-drawn SVG (founder avatar scene, Vietnam influence
