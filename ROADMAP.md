@@ -4,9 +4,6 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 1. **Stash drip** — passive kickback income (schemes) is still invisible moment-to-moment;
    a periodic grey drip toward the túi riêng readout would extend the visible-cut language.
-2. **Audio: the sound of conscience** — moral-state SFX layer (clean clicks ring bright,
-   heavy-skim clicks dull and detuned; soft low thud for the sinking cut floatie). Audio is
-   the longest-untouched compass area.
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 6, full-page + legacy + bust
@@ -15,6 +12,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- The sound of conscience (moral click tone + pocket thud + descending scheme chime).
 - 'Người quay đầu' redemption beat (reformTime streak + her fourth visit).
 - Nhà báo điều tra 3-stage arc (bribes photographed, finale prints the meal-math).
 - Đồng tiền đi đâu split bar (skim slider shows the 🍚/🏗/🤫 routing live).

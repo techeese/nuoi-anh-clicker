@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-06-13 — The sound of conscience (iteration 38)
+- Clicks now sound like what you are: clean hands ring a bright 650–1000Hz sine; as the skim
+  slider rises the same coin lowers, dulls and loses its sparkle (330–390Hz triangle past
+  ~55%). Nobody is told — most players will feel it before they see it.
+- The sinking cut floatie lands with a soft low pocket-thud (~110Hz, quiet under the coin).
+- Honest purchases keep their rising two-note chime; schemes get the same two notes
+  descending (sBuyShady).
+- Tooling find: the documented bot recipe's buy step was a silent no-op (`.shop-list
+  button` matches nothing — items are DIVs and #perkList shadows #shopList). Recipe fixed
+  in the playbook; harnesses now assert bought > 0.
+- Verified: gates ×2, tone-curve math table in node, unmuted dirty-save harness (skim 60,
+  4 shady buys, 8 clicks/s) with zero JS errors. No UI change.
+
 ## 2026-06-13 — 'Người quay đầu': the redemption beat (iteration 37)
 - New reform mechanic: S.reformTime tracks the current streak with skim at 0 AND no scheme
   kickbacks — relapse resets it to zero. (cleanTime can't serve: it only accrues for the

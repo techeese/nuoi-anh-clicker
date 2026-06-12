@@ -1174,9 +1174,19 @@
     o.connect(g); g.connect(ctx.destination);
     o.start(t); o.stop(t + dur + 0.05);
   }
-  function sCoin() { beep((combo >= 25 ? 900 : 650) + Math.random() * 350, 0.08, "sine", 0.05); }
+  // the sound of conscience: clean clicks ring bright; heavy skim lowers, dulls and
+  // de-sparkles the same coin — nobody is told, most players will feel it before they see it
+  function sCoin() {
+    var dull = Math.min(1, S.skim / 70);
+    var base = (combo >= 25 ? 900 : 650) - 320 * dull;
+    var jitter = 60 + (1 - dull) * 290;
+    beep(base + Math.random() * jitter, 0.08 - 0.02 * dull, dull > 0.55 ? "triangle" : "sine", 0.05);
+  }
+  function sPocket() { beep(110 + Math.random() * 28, 0.13, "triangle", 0.035); }
   function sCrit() { beep(880, 0.12, "square", 0.06); beep(1320, 0.18, "square", 0.05, 0.06); }
   function sBuy() { beep(420, 0.09, "triangle", 0.07); beep(630, 0.12, "triangle", 0.07, 0.08); }
+  // honest purchases rise; schemes descend — same two notes, opposite direction
+  function sBuyShady() { beep(330, 0.1, "triangle", 0.07); beep(233, 0.16, "triangle", 0.07, 0.09); }
   function sAch() { [660, 830, 990, 1320].forEach(function (f, i) { beep(f, 0.14, "triangle", 0.07, i * 0.09); }); }
   function sAlarm() { [620, 520, 620, 520].forEach(function (f, i) { beep(f, 0.16, "sawtooth", 0.05, i * 0.18); }); }
   function sEnv() { [520, 780, 1040, 1560].forEach(function (f, i) { beep(f, 0.1, "sine", 0.06, i * 0.06); }); }
@@ -2482,7 +2492,7 @@
     else if (it.currency === "halo") S.halo -= c;
     else S.stash -= c;
     S.owned[id] = count(id) + n;
-    sBuy();
+    if (it.kick) sBuyShady(); else sBuy();
 
     // setting up a scheme is the risky moment: one-time heat spike per purchase
     if (it.kick) {
@@ -2973,6 +2983,7 @@
     el.textContent = "−" + text + " " + SKIM_TAGS[Math.floor(Math.random() * SKIM_TAGS.length)];
     zone.appendChild(el);
     setTimeout(function () { el.remove(); }, 1100);
+    sPocket(); // the cut lands somewhere soft and low
   }
 
   // ================= Đường đời — run life-lines chart =================
