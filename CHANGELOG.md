@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — The wall of letters (iteration 52)
+- Mây's letters now hang on a string in the founder scene — one small cream paper per
+  letter received, pinned in the top-left sky. The clean path finally has visual parity
+  with the car and villa that tell the dirty story.
+- The cruelest pixel in the game: when the mail goes silent (maySilenced), a dashed empty
+  outline appears at the next slot — the letter that never came stays on the wall.
+- Pure scene SVG + renderAvatar toggles, zero state changes. Verified: gates ×2, four
+  seeded states (3 letters / 2+silenced / dirty hidden / clean auto-delivery), 390px scene
+  crop legible and collision-free.
+
 ## 2026-06-13 — Bưu thiếp từ hòn đảo: the escape epilogue (iteration 51)
 - The escape "win" finally has a cost you can read: if Mây ever wrote to you (≥2 letters),
   the ending now appends a postcard — one year later, a thrice-forwarded envelope reaches

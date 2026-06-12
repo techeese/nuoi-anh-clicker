@@ -872,6 +872,17 @@
         <rect x="0" y="156" width="440" height="44" fill="url(#groundG)"/>
         <ellipse cx="220" cy="158" rx="230" ry="5" fill="#2c3148" opacity="0.6"/>
 
+        <!-- MAY'S LETTERS on a string: the clean path made visible in the scene -->
+        <g id="av-letters" style="display:none">
+          <path d="M12 22 Q58 31 104 25" stroke="#7b87b8" stroke-width="1.2" fill="none" opacity="0.7"/>
+          <g id="av-let1" transform="rotate(-5 22 32)"><rect x="16" y="25" width="12" height="15" rx="1" fill="#f3eeda"/><path d="M18 30 h8 M18 33 h8 M18 36 h5" stroke="#8a93b8" stroke-width="0.9" fill="none"/></g>
+          <g id="av-let2" transform="rotate(4 40 33)"><rect x="34" y="26" width="12" height="15" rx="1" fill="#f3eeda"/><path d="M36 31 h8 M36 34 h8 M36 37 h5" stroke="#8a93b8" stroke-width="0.9" fill="none"/></g>
+          <g id="av-let3" transform="rotate(-3 58 34)"><rect x="52" y="27" width="12" height="15" rx="1" fill="#f3eeda"/><path d="M54 32 h8 M54 35 h8 M54 38 h5" stroke="#8a93b8" stroke-width="0.9" fill="none"/></g>
+          <g id="av-let4" transform="rotate(5 76 34)"><rect x="70" y="27" width="12" height="15" rx="1" fill="#f3eeda"/><path d="M72 32 h8 M72 35 h8 M72 38 h5" stroke="#8a93b8" stroke-width="0.9" fill="none"/></g>
+          <g id="av-let5" transform="rotate(-4 94 33)"><rect x="88" y="26" width="12" height="15" rx="1" fill="#f3eeda"/><path d="M90 31 h8 M90 34 h8 M90 37 h5" stroke="#8a93b8" stroke-width="0.9" fill="none"/></g>
+          <g id="av-letEmpty" style="display:none"><rect x="16" y="25" width="12" height="15" rx="1" fill="none" stroke="#5c627a" stroke-width="1" stroke-dasharray="2.2 2"/></g>
+        </g>
+
         <!-- VILLA -->
         <g id="av-villa" style="display:none" filter="url(#soft)">
           <rect x="28" y="96" width="88" height="60" rx="3" fill="#cdbf9d"/>
@@ -3451,6 +3462,12 @@
     showEl("av-phone", count("iphone") > 0);
     showEl("av-medal", count("medal") > 0);
     showEl("av-halo", S.goodUnlocked && isClean());
+    var nL = S.letters.length;
+    showEl("av-letters", nL > 0);
+    for (var li = 1; li <= 5; li++) showEl("av-let" + li, li <= nL);
+    var emptySlot = S.maySilenced && nL > 0 && nL < 5; // the letter that never came
+    showEl("av-letEmpty", emptySlot);
+    if (emptySlot) document.getElementById("av-letEmpty").setAttribute("transform", "translate(" + (nL * 18) + " 0)");
     showEl("av-shades", S.stash >= 1e8 && S.suspicion < 80);
     showEl("av-money1", S.stash >= 1e7 && S.stash < 1e9);
     showEl("av-money2", S.stash >= 1e9 && S.stash < 33e9);
