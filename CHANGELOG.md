@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Đường đời: the run life-lines chart (iteration 14)
+- Canvas chart in Legacy: fund (green) vs stash (gold) on log scale, suspicion as a red
+  heartbeat area beneath — and a ◆ marker at the exact sample where the stash crossed above
+  the fund: the moment greed won, drawn on your own timeline.
+- 5s sampling with adaptive thinning (window doubles when full); save-compatible.
+
 ## 2026-06-13 — Maintenance sprint 2 (iteration 13)
 - Sweep: 11/12 green (saint-duration hairline only, as ever). Bot 5-min: zero errors, with the
   bot now also handling letter/away overlays. Mobile audit: apology minigame verified at 390px.

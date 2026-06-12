@@ -2,7 +2,6 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-5. **Stats panel** — lifetime + run graphs (canvas sparkline of fund/stash/suspicion over time).
 6. **Day/night cycle** in the avatar scene tied to real clock; founder sleeps at night
    (auto-income visualization).
 7. **Run seeds / challenge mode** — shareable seeded runs with fixed modifier + envelope RNG.
@@ -12,6 +11,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Đường đời life-lines chart.
 - Soundscape cues.
 - Next-milestone forecast line.
 - PWA: manifest + icon + offline service worker.

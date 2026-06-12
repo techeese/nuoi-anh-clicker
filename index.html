@@ -348,6 +348,11 @@
   .lg-shade .lg-txt::after { content: " 🕳"; opacity: 0.5; }
   @keyframes lgIn { from { opacity: 0; transform: translateY(-6px); } }
 
+  .life-chart-box { margin-bottom: 10px; }
+  #lifeChart { width: 100%; height: 92px; display: block; border-radius: 8px; background: rgba(13, 15, 24, 0.6); }
+  .life-legend { display: flex; gap: 12px; font-size: 0.64rem; color: var(--muted); margin-top: 3px; }
+  .life-legend .lg-f { color: var(--green); } .life-legend .lg-s { color: var(--gold); } .life-legend .lg-p { color: var(--red); }
+
   .legacy-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   .conn-display { color: var(--purple); font-weight: 800; font-size: 1.05rem; }
   .lifetime { font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
@@ -845,6 +850,10 @@
         <span class="conn-display" id="connVal">🤝 0 quan hệ</span>
       </div>
       <div class="lifetime" id="lifetimeVal"></div>
+      <div class="life-chart-box">
+        <canvas id="lifeChart" height="92"></canvas>
+        <div class="life-legend"><span class="lg-f">— quỹ</span><span class="lg-s">— túi riêng</span><span class="lg-p">▁ nghi ngờ</span><span id="lifeCross"></span></div>
+      </div>
       <div class="endings-row" id="endingsRow"></div>
       <div style="font-size:0.73rem; color:var(--muted); line-height:1.45; margin-bottom:8px;">
         Khi một "dự án" kết thúc, bạn nhận <b style="color:var(--purple)">Quan hệ 🤝</b> theo tổng tiền đã kêu gọi.
@@ -1018,7 +1027,7 @@
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
-      letters: [], maySilenced: false
+      letters: [], maySilenced: false, hist: []
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -2454,6 +2463,72 @@
     setTimeout(function () { el.remove(); }, crit ? 1300 : 900);
   }
 
+  // ================= Đường đời — run life-lines chart =================
+  var lastHistAt = 0;
+  function sampleHist() {
+    if (S.gameOver || paused) return;
+    var now = Date.now();
+    if (now - lastHistAt < 5000) return;
+    lastHistAt = now;
+    S.hist.push({ t: now, f: S.fund, s: S.stash, p: S.suspicion });
+    if (S.hist.length > 240) {
+      S.hist = S.hist.filter(function (_, i) { return i % 2 === 0; }); // halve: window keeps growing
+    }
+  }
+
+  function renderChart() {
+    var cv = document.getElementById("lifeChart");
+    if (!cv || !cv.offsetParent) return;
+    var W = cv.clientWidth * 2, H = 184;
+    if (cv.width !== W) cv.width = W;
+    cv.height = H;
+    var ctx = cv.getContext("2d");
+    ctx.clearRect(0, 0, W, H);
+    var h = S.hist;
+    if (h.length < 3) return;
+
+    var logV = function (v) { return Math.log10(Math.max(1e3, v)); };
+    var maxL = 3.5;
+    for (var i = 0; i < h.length; i++) maxL = Math.max(maxL, logV(h[i].f), logV(h[i].s));
+    var x = function (i) { return (i / (h.length - 1)) * W; };
+    var yMoney = function (v) { return H - 14 - (logV(v) - 3) / (maxL - 3) * (H - 28); };
+
+    // suspicion heartbeat: translucent red area from the floor
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (i = 0; i < h.length; i++) ctx.lineTo(x(i), H - (h[i].p / 100) * (H * 0.45));
+    ctx.lineTo(W, H); ctx.closePath();
+    ctx.fillStyle = "rgba(255, 92, 108, 0.16)"; ctx.fill();
+    ctx.beginPath();
+    for (i = 0; i < h.length; i++) { var yy = H - (h[i].p / 100) * (H * 0.45); i ? ctx.lineTo(x(i), yy) : ctx.moveTo(0, yy); }
+    ctx.strokeStyle = "rgba(255, 92, 108, 0.55)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // money lines with glow
+    function line(key, color) {
+      ctx.beginPath();
+      for (var j = 0; j < h.length; j++) { var y = yMoney(h[j][key]); j ? ctx.lineTo(x(j), y) : ctx.moveTo(0, y); }
+      ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+      ctx.shadowColor = color; ctx.shadowBlur = 7;
+      ctx.stroke(); ctx.shadowBlur = 0;
+    }
+    line("f", "#4cd97b");
+    line("s", "#f5c542");
+
+    // the moment greed wins: stash crosses above fund
+    var crossed = false;
+    for (i = 1; i < h.length; i++) {
+      if (h[i - 1].s <= h[i - 1].f && h[i].s > h[i].f && h[i].s > 1e5) {
+        crossed = true;
+        var cx = x(i), cy = yMoney(h[i].s);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - 7); ctx.lineTo(cx + 6, cy); ctx.lineTo(cx, cy + 7); ctx.lineTo(cx - 6, cy);
+        ctx.closePath();
+        ctx.fillStyle = "#ff5c6c"; ctx.fill();
+      }
+    }
+    document.getElementById("lifeCross").textContent = crossed ? "◆ khoảnh khắc túi riêng vượt quỹ" : "";
+  }
+
   // ================= Next-milestone forecast =================
   function nextMilestone() {
     var inc = incomePerSec(), kick = kickbackPerSec();
@@ -2870,6 +2945,8 @@
     S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
     if (!Array.isArray(S.letters)) S.letters = [];
     S.letters = S.letters.filter(function (i) { return Number.isInteger(i) && i >= 0 && i < 4; });
+    if (!Array.isArray(S.hist)) S.hist = [];
+    S.hist = S.hist.filter(function (h) { return h && Number.isFinite(h.f) && Number.isFinite(h.s) && Number.isFinite(h.p); }).slice(-240);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
     S.skim = Math.max(0, Math.min(90, S.skim));
     ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"]
@@ -2912,6 +2989,7 @@
             if (!Array.isArray(S.ledger)) S.ledger = [];
             if (!Array.isArray(S.letters)) S.letters = [];
             if (typeof S.maySilenced !== "boolean") S.maySilenced = false;
+            if (!Array.isArray(S.hist)) S.hist = [];
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
@@ -3226,12 +3304,15 @@
     maybeFireEvent();
     maybeSpawnEnvelope();
     ledgerPulse();
+    sampleHist();
     renderStats();
   }, 200);
 
   setInterval(renderShop, 2000);
   setInterval(renderBuffs, 1000);
   setInterval(renderForecast, 1000);
+  setInterval(renderChart, 5000);
+  setTimeout(renderChart, 1500);
   setInterval(randomNews, 14000);
   setInterval(maybeDonorBubble, 7000);
   setInterval(musicNote, 460);
