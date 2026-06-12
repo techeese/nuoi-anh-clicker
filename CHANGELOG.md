@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Newspaper archive in case files (iteration 32)
+- Every ending's front page is now saved with the run log: tap a 🗂️ case-file card with a 📰
+  chip to reprint that run's full newspaper (headline, numbers, kế toán line, Mây's letters)
+  in an archive overlay — "Lưu trữ" dateline replaces "Số đặc biệt".
+- `frontPage()` refactored to render from a run snapshot instead of live state; run-log
+  entries now carry the extra fields (clicks, fund, max combo, safes, provinces, warm
+  replies). Pre-archive entries stay as plain stat rows — graceful, not clickable.
+- Verified: gates green, mixed old/new-format archive walk (8 asserts), natural-bust harness
+  proves endRun stores the snapshot and the paper renders from it, 390px + 1240px shots.
+
 ## 2026-06-13 — Writing back to Mây (iteration 31)
 - Each letter now offers a reply choice: ✍️ handwrite a few honest lines (paper-toned button,
   Mây's world) or 🎁 have the assistant send a gift + printed card (dark corporate button,

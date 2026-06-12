@@ -394,6 +394,16 @@
   .runlog-card .rl-emo { font-size: 0.95rem; }
   .runlog-card b { color: var(--text); }
   .runlog-card .rl-ch { color: var(--blue); font-weight: 700; }
+  .runlog-card.has-np { cursor: pointer; transition: border-color 0.15s; }
+  .runlog-card.has-np:hover { border-color: var(--gold); }
+  .rl-np { margin-left: auto; }
+  .arch-wrap { display: flex; flex-direction: column; align-items: center; max-width: 540px; width: 94%; max-height: 92vh; }
+  #archivePaper { width: 100%; overflow-y: auto; }
+  #archiveClose {
+    margin-top: 14px; padding: 11px 26px; font-size: 0.9rem; font-weight: 800;
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; font-family: inherit;
+  }
   .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 10px; }
   .ach {
     background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
@@ -1066,6 +1076,14 @@
       <button class="reply-btn formal" id="replyFormal">🎁 Nhờ trợ lý gửi quà kèm thiệp in sẵn</button>
     </div>
     <button id="letterBtn">Cất vào ví 💌</button>
+  </div>
+</div>
+
+<!-- Newspaper archive: re-read any ending's front page from the case files -->
+<div class="overlay" id="archiveOverlay">
+  <div class="arch-wrap">
+    <div id="archivePaper"></div>
+    <button id="archiveClose">Gấp hồ sơ lại 🗂️</button>
   </div>
 </div>
 
@@ -1936,10 +1954,14 @@
     META.runs += 1;
     META.endings[outcome] = true;
     var dd = new Date();
-    META.runLog.unshift({
+    var snap = {
       d: dd.getDate() + "/" + (dd.getMonth() + 1), o: outcome, r: S.totalRaised, s: S.stash,
-      m: S.meals, days: days(), L: S.letters.length, kt: S.ktMode, ch: S.challenge ? 1 : 0, c: conns
-    });
+      m: S.meals, days: days(), L: S.letters.length, kt: S.ktMode, ch: S.challenge ? 1 : 0, c: conns,
+      cl: S.clicks, fu: S.fund, mc: S.maxCombo, sf: count("safe"),
+      pv: PROVINCES.filter(function (i) { return count(i.id) > 0; }).length,
+      W: (S.mayReplies || []).filter(function (x) { return x === "w"; }).length
+    };
+    META.runLog.unshift(snap);
     if (META.runLog.length > 20) META.runLog.length = 20;
     var R = META.records, newRec = [];
     var notFirstRun = META.runs > 1;
@@ -1981,7 +2003,7 @@
       sAlarm();
     }
 
-    document.getElementById("finalStats").innerHTML = frontPage(outcome, conns);
+    document.getElementById("finalStats").innerHTML = frontPage(snap, true);
 
     renderLegacy();
     if (outcome === "caught") showTrial();
@@ -2002,8 +2024,11 @@
     save();
   }
 
-  // every ending deserves journalism: a front page written from the player's own numbers
-  function frontPage(outcome, conns) {
+  // every ending deserves journalism: a front page written from the player's own numbers.
+  // D is a run snapshot (the same object stored in META.runLog) so old papers stay readable
+  // from the case files long after the run that printed them.
+  function frontPage(D, atEnd) {
+    var outcome = D.o;
     var paper = {
       caught: {
         head: "SỤP ĐỔ MỘT 'TƯỢNG ĐÀI THIỆN NGUYỆN'",
@@ -2027,50 +2052,48 @@
       }
     }[outcome];
 
-    var body = "Theo số liệu chúng tôi có được, dự án đã kêu gọi tổng cộng <b>" + fmt(S.totalRaised) +
-      "</b> từ cộng đồng, nấu <b>" + S.meals.toLocaleString("vi-VN") + "</b> bữa cơm cho trẻ em vùng cao" +
-      " trong suốt " + days() + " ngày hoạt động với " + S.clicks.toLocaleString("vi-VN") + " lượt kêu gọi. ";
+    var body = "Theo số liệu chúng tôi có được, dự án đã kêu gọi tổng cộng <b>" + fmt(D.r || 0) +
+      "</b> từ cộng đồng, nấu <b>" + (D.m || 0).toLocaleString("vi-VN") + "</b> bữa cơm cho trẻ em vùng cao" +
+      " trong suốt " + (D.days || 0) + " ngày hoạt động với " + (D.cl || 0).toLocaleString("vi-VN") + " lượt kêu gọi. ";
     if (outcome === "caught") {
-      body += "Cơ quan chức năng xác định khoảng <b>" + fmt(S.stash) + "</b> đã 'đi lạc' vào tài khoản cá nhân" +
-        (count("safe") > 0 ? ", trong đó một phần đáng kể đã 'bốc hơi' qua các két sắt nước ngoài một cách khó hiểu." : " và đã bị thu giữ toàn bộ.");
-      if (S.maxCombo >= 30) body += " Đáng chú ý, đối tượng từng kêu gọi " + S.maxCombo + " lần liên tiếp không nghỉ.";
+      body += "Cơ quan chức năng xác định khoảng <b>" + fmt(D.s || 0) + "</b> đã 'đi lạc' vào tài khoản cá nhân" +
+        (D.sf > 0 ? ", trong đó một phần đáng kể đã 'bốc hơi' qua các két sắt nước ngoài một cách khó hiểu." : " và đã bị thu giữ toàn bộ.");
+      if (D.mc >= 30) body += " Đáng chú ý, đối tượng từng kêu gọi " + D.mc + " lần liên tiếp không nghỉ.";
     } else if (outcome === "escaped") {
-      body += "Ước tính <b>" + fmt(S.stash) + "</b> đã rời khỏi hệ thống ngân hàng trong nước từ trước đó nhiều tuần. " +
+      body += "Ước tính <b>" + fmt(D.s || 0) + "</b> đã rời khỏi hệ thống ngân hàng trong nước từ trước đó nhiều tuần. " +
         "Interpol cho biết 'đang phối hợp xác minh'.";
     } else if (outcome === "saint") {
       body += "Kiểm toán độc lập xác nhận chênh lệch sổ sách: <b>0₫</b>. Tài sản cá nhân của founder — toàn bộ từ nhuận bút, " +
-        "diễn thuyết và hợp đồng đại sứ — là <b>" + fmt(S.stash) + "</b>, hợp pháp đến từng đồng.";
+        "diễn thuyết và hợp đồng đại sứ — là <b>" + fmt(D.s || 0) + "</b>, hợp pháp đến từng đồng.";
     } else {
-      body += "Số dư quỹ tại thời điểm giải thể là <b>" + fmt(S.fund) + "</b>. Khoản này, theo thông cáo, 'sẽ được xử lý đúng quy định'.";
+      body += "Số dư quỹ tại thời điểm giải thể là <b>" + fmt(D.fu || 0) + "</b>. Khoản này, theo thông cáo, 'sẽ được xử lý đúng quy định'.";
     }
-    var provinces = PROVINCES.filter(function (i) { return count(i.id) > 0; }).length;
-    if (provinces > 0) body += " Dự án từng phủ sóng " + provinces + " tỉnh thành.";
-    if (outcome === "caught" && S.ktMode === "accomplice") {
+    if (D.pv > 0) body += " Dự án từng phủ sóng " + D.pv + " tỉnh thành.";
+    if (outcome === "caught" && D.kt === "accomplice") {
       body += " Kế toán trưởng của dự án bị khởi tố trong cùng vụ án; cuốn sổ tay của bà được cho là chứng cứ quan trọng nhất.";
-    } else if (outcome === "caught" && S.ktMode === "left") {
+    } else if (outcome === "caught" && D.kt === "left") {
       body += " Theo nguồn tin riêng, lời khai then chốt đến từ một kế toán cũ của dự án.";
     }
-    if (S.letters.length >= 2) {
-      var warmReplies = (S.mayReplies || []).filter(function (r) { return r === "w"; }).length;
+    if (D.L >= 2) {
       if (outcome === "saint") {
         body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
-        if (warmReplies >= 2) body += " Em mang theo một xấp thư — cả thư em gửi đi lẫn thư được viết tay trả lời, từng lá một.";
+        if (D.W >= 2) body += " Em mang theo một xấp thư — cả thư em gửi đi lẫn thư được viết tay trả lời, từng lá một.";
       } else if (outcome === "caught") {
         body += " Trong số tang vật có một xấp thư viết tay của một học sinh tên Mây — vẫn còn trong ví.";
-        if (warmReplies >= 2) body += " Kèm theo đó là những lá thư trả lời viết tay — dấu vết của một người từng rất khác.";
+        if (D.W >= 2) body += " Kèm theo đó là những lá thư trả lời viết tay — dấu vết của một người từng rất khác.";
       }
     }
 
     return '<div class="newspaper">' +
       '<div class="np-masthead">📰 NHẬT BÁO BUỔI SÁNG</div>' +
-      '<div class="np-date"><span>Số đặc biệt</span><span>Ngày thứ ' + days() + ' của dự án</span><span>2.000₫</span></div>' +
+      '<div class="np-date"><span>' + (atEnd ? 'Số đặc biệt' : 'Lưu trữ · ' + (D.d || '')) + '</span><span>Ngày thứ ' + (D.days || 0) + ' của dự án</span><span>2.000₫</span></div>' +
       '<div class="np-headline">' + paper.head + '</div>' +
       '<div class="np-sub">' + paper.sub + '</div>' +
       '<div class="np-cols">' + body + '</div>' +
       '<div class="np-quote">' + paper.quote + '</div>' +
       '</div>' +
-      '<div class="np-conn">🤝 Quan hệ nhận được: +' + conns + ' (tổng: ' + META.connections + ')</div>' +
-      (S.challenge ?
+      '<div class="np-conn">🤝 Quan hệ nhận được: +' + D.c + (atEnd ? ' (tổng: ' + META.connections + ')' : '') + '</div>' +
+      (atEnd && D.ch ?
         '<div style="text-align:center; margin-top:10px;"><button id="shareBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📋 Sao chép kết quả thử thách</button></div>' : '');
   }
 
@@ -2434,8 +2457,9 @@
     } else {
       var EMO = { caught: "🚔", escaped: "🏝️", dissolved: "📦", saint: "😇" };
       rl.innerHTML = '<div class="runlog-title">🗂️ HỒ SƠ CÁC DỰ ÁN</div>' +
-        META.runLog.slice(0, 8).map(function (r) {
-          return '<div class="runlog-card"><span class="rl-emo">' + (EMO[r.o] || "❔") + "</span>" +
+        META.runLog.slice(0, 8).map(function (r, ri) {
+          var hasNp = typeof r.cl === "number"; // pre-archive entries can't reprint their paper
+          return '<div class="runlog-card' + (hasNp ? ' has-np" data-np="' + ri : "") + '"><span class="rl-emo">' + (EMO[r.o] || "❔") + "</span>" +
             "<span>" + r.d + "</span>" +
             "<span>kêu gọi <b>" + fmt(r.r) + "</b></span>" +
             "<span>túi riêng <b>" + fmt(r.s) + "</b></span>" +
@@ -2444,7 +2468,8 @@
             (r.L ? "<span>💌" + r.L + "</span>" : "") +
             (r.kt === "accomplice" ? "<span>🤝sổ kép</span>" : "") +
             (r.ch ? '<span class="rl-ch">🎲</span>' : "") +
-            "<span>🤝+" + r.c + "</span></div>";
+            "<span>🤝+" + r.c + "</span>" +
+            (hasNp ? '<span class="rl-np">📰</span>' : "") + "</div>";
         }).join("") +
         (META.runLog.length > 8 ? '<div style="font-size:0.65rem;color:var(--muted);text-align:center;">… và ' + (META.runLog.length - 8) + ' hồ sơ cũ hơn</div>' : "");
     }
@@ -3199,6 +3224,22 @@
     chip.style.display = S.letters.length ? "block" : "none";
     chip.textContent = "💌 Thư của Mây (" + S.letters.length + ")";
   }
+
+  // case files reprint their front page (delegated: renderLegacy rebuilds the cards)
+  document.getElementById("runLog").addEventListener("click", function (e) {
+    var card = e.target.closest ? e.target.closest(".runlog-card.has-np") : null;
+    if (!card) return;
+    var r = META.runLog[+card.getAttribute("data-np")];
+    if (!r || typeof r.cl !== "number") return;
+    document.getElementById("archivePaper").innerHTML = frontPage(r, false);
+    document.getElementById("archiveOverlay").classList.add("show");
+    paused = true;
+    sLetter();
+  });
+  document.getElementById("archiveClose").addEventListener("click", function () {
+    document.getElementById("archiveOverlay").classList.remove("show");
+    paused = eventOpen || apologyOpen;
+  });
 
   function checkLetters() {
     if (S.gameOver || paused) return;

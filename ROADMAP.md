@@ -2,15 +2,13 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **Newspaper archive in case files** — each ending's front page is saved with the run log
-   and can be re-read from the Legacy panel (currently endings vanish on prestige).
-
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint, newspaper ending verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
     endings newspaper, legacy panel) even when nothing changed; fix everything found.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Newspaper archive in case files (snapshot-driven frontPage + archive overlay).
 - Writing back to Mây (reply choices + reactions + ending tie-ins).
 - Lifetime records.
 - Modifier expansion pack (11 total).
