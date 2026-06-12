@@ -2027,6 +2027,9 @@
   function hasRelicPassport() {
     return !!(META.endings && META.endings.escaped && META.achievements && META.achievements.twoenvelopes);
   }
+  function hasRelicNotebook() {
+    return !!(META.endings && META.endings.dissolved && META.achievements && META.achievements.accomplice);
+  }
   // a second passport means the way out is already familiar: escape needs 10% less
   function escapeAt() { return ESCAPE_AT * (hasRelicPassport() ? 0.9 : 1); }
   function honestDps() {
@@ -2768,7 +2771,7 @@
     // setting up a scheme is the risky moment: one-time heat spike per purchase
     if (it.kick) {
       if (count(id) === n) jot("😈 Khởi động '" + it.name + "'."); // first of its kind this run
-      S.suspicion += 3 * n;
+      S.suspicion += (hasRelicNotebook() ? 2 : 3) * n; // chị ấy ghi sổ khéo hơn
       clampSusp();
       setTicker("🕳️ Một giao dịch lạ vừa chạy qua hệ thống… chắc không ai để ý đâu.");
       coach("scheme", "<b>Chào mừng đến mặt tối.</b><br>Chiêu trò trả 💰 'lại quả' thẳng vào túi (xem sao kê!), nhưng mỗi lần mua là một cú nhói 🚨 +3% — và nhiệt tích tụ theo giây. Quản lý nhiệt là cả một nghệ thuật.");
@@ -2847,7 +2850,10 @@
         "Đạt kết cục 😇 Người tử tế VÀ được viết bài 'Người quay đầu' để mở. Không bán bằng quan hệ.") +
       relicCard("🛂", "Hộ chiếu thứ hai", hasRelicPassport(),
         "Đường ra đã quen: 'đi công tác nước ngoài' chỉ còn cần " + fmt(ESCAPE_AT * 0.9) + ".",
-        "Từng 🏝️ Tẩu thoát VÀ đạt 'Hai chiếc phong bì' để mở. Không bán bằng quan hệ.");
+        "Từng 🏝️ Tẩu thoát VÀ đạt 'Hai chiếc phong bì' để mở. Không bán bằng quan hệ.") +
+      relicCard("🤎", "Cuốn sổ nâu", hasRelicNotebook(),
+        "Chị kế toán giữ liên lạc: mỗi phi vụ mới chỉ gây +2% nghi ngờ thay vì +3%.",
+        "Biến chị kế toán thành đồng phạm VÀ 📦 Giải thể êm đẹp để mở. Không bán bằng quan hệ.");
 
     var rl = document.getElementById("runLog");
     if (META.runLog.length === 0) {

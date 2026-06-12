@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Kỷ vật: Cuốn sổ nâu (iteration 63)
+- The third relic completes the recurring-cast trilogy: earned by making chị kế toán an
+  accomplice AND dissolving quietly (you closed the books together). Effect: she keeps in
+  touch — each new scheme's one-time heat spike drops from +3%/unit to +2%/unit.
+- Dissolve, previously the blandest ending, now anchors a unique reward path. Baseline
+  sweep untouched per relic precedent; spikes are one-time, saving a greedy run ~10-15
+  total heat points — well inside the bust-band slack.
+- Verified: gates ×2, paired spike measurement (+2.0 vs +3.0 exact), three relic cards.
+
 ## 2026-06-13 — Tái xuất: the rebirth remembers (iteration 62)
 - Each new project's birth announcement now knows how the last one died: caught → "ra trại
   sớm nhờ cải tạo tốt — tên mới, áo mới, nụ cười cũ"; escaped → "vừa về nước sau chuyến
