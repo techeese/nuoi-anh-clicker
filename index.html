@@ -2008,10 +2008,15 @@
   function isClean() {
     return S.maxSkim <= 5 && S.bargains === 0 && SHADY_INCOME.every(function (id) { return count(id) === 0; });
   }
-  // relic: earned by DEEDS across runs (saint ending + the redemption piece), never bought
+  // relics: earned by DEEDS across runs, never bought
   function hasRelicMay() {
     return !!(META.endings && META.endings.saint && META.achievements && META.achievements.redeemed);
   }
+  function hasRelicPassport() {
+    return !!(META.endings && META.endings.escaped && META.achievements && META.achievements.twoenvelopes);
+  }
+  // a second passport means the way out is already familiar: escape needs 10% less
+  function escapeAt() { return ESCAPE_AT * (hasRelicPassport() ? 0.9 : 1); }
   function honestDps() {
     var d = 0;
     ITEMS.forEach(function (it) { if (it.hdps) d += it.hdps * count(it.id); });
@@ -2701,15 +2706,16 @@
           '<div class="cost conn-cost">🤝 +' + connectionsEarned("dissolved") + " quan hệ nếu giải thể ngay</div>";
         list.appendChild(dis);
       }
-      if (S.stash >= ESCAPE_AT * 0.5) {
+      if (S.stash >= escapeAt() * 0.5) {
         var esc = document.createElement("div");
-        var ready = S.stash >= ESCAPE_AT;
+        var ready = S.stash >= escapeAt();
         esc.className = "item" + (ready ? "" : " disabled");
         esc.dataset.id = "__escape";
         esc.innerHTML =
           '<div class="top"><span class="name">🛫 "Đi công tác nước ngoài" <span class="safe-tag">KẾT THÚC RUN</span></span></div>' +
-          '<div class="desc">Vé một chiều đến nơi không có hiệp định dẫn độ. Cần 33 tỷ₫ trong túi riêng. Nhận 150% quan hệ.</div>' +
-          '<div class="cost stash-cost">🤫 ' + fmt(ESCAPE_AT) + "</div>";
+          '<div class="desc">Vé một chiều đến nơi không có hiệp định dẫn độ. Cần ' + fmt(escapeAt()) + ' trong túi riêng. Nhận 150% quan hệ.' +
+          (hasRelicPassport() ? " <b style='color:var(--gold)'>🛂 Hộ chiếu thứ hai: -10%.</b>" : "") + '</div>' +
+          '<div class="cost stash-cost">🤫 ' + fmt(escapeAt()) + "</div>";
         list.appendChild(esc);
       }
     }
@@ -2717,7 +2723,7 @@
 
   function buy(id, n) {
     if (S.gameOver) return;
-    if (id === "__escape") { if (S.stash >= ESCAPE_AT) endRun("escaped"); return; }
+    if (id === "__escape") { if (S.stash >= escapeAt()) endRun("escaped"); return; }
     if (id === "__dissolve") { if (S.totalRaised >= DISSOLVE_AT && S.suspicion < 60) endRun("dissolved"); return; }
     if (id === "__saint") { if (S.totalRaised >= SAINT_AT && S.maxSkim <= 5) endRun("saint"); return; }
 
@@ -2809,15 +2815,19 @@
     document.getElementById("recordsLine").innerHTML = recs.length ? "🏆 Kỷ lục: " + recs.join(" · ") : "";
 
     // relics: earned by deeds, not bought with connections
-    var relicUn = hasRelicMay();
+    var relicCard = function (emoji, name, unlocked, descOn, descOff) {
+      return '<div class="relic' + (unlocked ? " unlocked" : "") + '">' +
+        '<span class="relic-emoji">' + emoji + '</span><div>' +
+        '<div class="relic-name">KỶ VẬT: ' + name + '</div>' +
+        '<div class="relic-desc">' + (unlocked ? descOn : descOff) + "</div></div></div>";
+    };
     document.getElementById("relicRow").innerHTML =
-      '<div class="relic' + (relicUn ? " unlocked" : "") + '">' +
-      '<span class="relic-emoji">📓</span><div>' +
-      '<div class="relic-name">KỶ VẬT: Vở tập viết của Mây</div>' +
-      '<div class="relic-desc">' + (relicUn
-        ? "Tình bạn không cần làm quen lại từ đầu: thư của Mây đến sớm hơn 20% trong mọi dự án."
-        : "Đạt kết cục 😇 Người tử tế VÀ được viết bài 'Người quay đầu' để mở. Không bán bằng quan hệ.") +
-      "</div></div></div>";
+      relicCard("📓", "Vở tập viết của Mây", hasRelicMay(),
+        "Tình bạn không cần làm quen lại từ đầu: thư của Mây đến sớm hơn 20% trong mọi dự án.",
+        "Đạt kết cục 😇 Người tử tế VÀ được viết bài 'Người quay đầu' để mở. Không bán bằng quan hệ.") +
+      relicCard("🛂", "Hộ chiếu thứ hai", hasRelicPassport(),
+        "Đường ra đã quen: 'đi công tác nước ngoài' chỉ còn cần " + fmt(ESCAPE_AT * 0.9) + ".",
+        "Từng 🏝️ Tẩu thoát VÀ đạt 'Hai chiếc phong bì' để mở. Không bán bằng quan hệ.");
 
     var rl = document.getElementById("runLog");
     if (META.runLog.length === 0) {
@@ -3363,7 +3373,7 @@
     // endings, once meaningfully close
     if (S.totalRaised >= DISSOLVE_AT * 0.4) consider("📦 đủ mức giải thể", DISSOLVE_AT - S.totalRaised, inc);
     if (isClean() && S.maxSkim <= 5 && S.totalRaised >= SAINT_AT * 0.4) consider("😇 mốc 2 tỷ", SAINT_AT - S.totalRaised, inc);
-    if (!isClean() && S.stash >= ESCAPE_AT * 0.25) consider("🛫 đủ 33 tỷ để 'đi công tác'", ESCAPE_AT - S.stash, stashRate);
+    if (!isClean() && S.stash >= escapeAt() * 0.25) consider("🛫 đủ tiền để 'đi công tác'", escapeAt() - S.stash, stashRate);
     return best;
   }
 

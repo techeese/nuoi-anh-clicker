@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Kỷ vật: Hộ chiếu thứ hai (iteration 58)
+- The dirty relic twin, restoring path symmetry: earned by 🏝️ Tẩu thoát + 'Hai chiếc phong
+  bì' (escape once, bribe the journalist twice). Effect: "đường ra đã quen" — the escape
+  threshold drops 10% (33 tỷ → 29,7 tỷ) in all future runs, shown live in the escape item's
+  description and price.
+- Balance: the no-relic baseline the sweep models is untouched; relic-holders escape ~10%
+  sooner (≈34m), comfortably inside the 25–45m design band by direct arithmetic.
+- Verified: gates ×2, threshold pair-test at 30,5 tỷ stash (passport escapes, baseline
+  can't), both relic cards render with correct locked/unlocked states at 390px.
+
 ## 2026-06-13 — Kỷ vật: Vở tập viết của Mây (iteration 57)
 - First relic: a meta-perk earned by DEEDS, never bought — requires the 😇 saint ending AND
   the 'Người quay đầu' redemption piece across your career. Effect: Mây's letters arrive
