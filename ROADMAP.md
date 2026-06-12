@@ -2,9 +2,8 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **Shareable end card** — canvas-rendered run summary image (ending, headline, key stats)
-   the player can save/share; extends the challenge share-text into something visual
-   (banked from it.41 ideation).
+1. **End card from the archive** — reuse endCardCanvas(D) for a small 🖼️ button inside the
+   archive overlay (snapshot already has everything; ~20-line follow-up to it.42).
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 7, full-page + achievements
@@ -13,6 +12,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Shareable end card (canvas image per ending, share/download).
 - Stash drip (passive kickbacks rise visibly out of the túi riêng box).
 - Achievements for letters/journalist/archive (5 new, both moral paths).
 - The sound of conscience (moral click tone + pocket thud + descending scheme chime).

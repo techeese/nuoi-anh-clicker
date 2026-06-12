@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Shareable end card (iteration 42)
+- New 🖼️ "Lưu ảnh kết cục" button on every ending: renders a 1000×524 canvas card from the
+  run snapshot — ending emoji + colored headline (🚔 SỤP ĐỔ / 🏝️ BIẾN MẤT / 📦 GIẢI THỂ /
+  😇 NGƯỜI TỬ TẾ), key numbers, "💌 thư của Mây vẫn trong ví" when ≥2 warm replies, and the
+  parody disclaimer baked into the image footer.
+- navigator.share with files on mobile, download fallback elsewhere.
+- Verified: gates ×2, toBlob-intercept harness (1000×524 confirmed, no draw errors after a
+  harness-side DOM-wipe false alarm), card visual inspected, 390px ending overlay clean.
+
 ## 2026-06-13 — Stash drip (iteration 41)
 - Passive kickback income is now visible moment-to-moment: every 4 seconds a small dirty-gold
   "+X₫ 🤫" rises out of the túi riêng stat box while schemes pay. Completes the visible-money

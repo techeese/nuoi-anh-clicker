@@ -2126,6 +2126,8 @@
     }
 
     document.getElementById("finalStats").innerHTML = frontPage(snap, true);
+    var cbtn = document.getElementById("cardBtn");
+    if (cbtn) cbtn.addEventListener("click", function () { saveEndCard(snap); });
 
     renderLegacy();
     if (outcome === "caught") showTrial();
@@ -2222,8 +2224,59 @@
       '<div class="np-quote">' + paper.quote + '</div>' +
       '</div>' +
       '<div class="np-conn">🤝 Quan hệ nhận được: +' + D.c + (atEnd ? ' (tổng: ' + META.connections + ')' : '') + '</div>' +
-      (atEnd && D.ch ?
-        '<div style="text-align:center; margin-top:10px;"><button id="shareBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📋 Sao chép kết quả thử thách</button></div>' : '');
+      (atEnd ?
+        '<div style="text-align:center; margin-top:10px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">' +
+        '<button id="cardBtn" style="background:rgba(245,197,66,0.1); border:1px solid var(--gold); color:var(--gold); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">🖼️ Lưu ảnh kết cục</button>' +
+        (D.ch ? '<button id="shareBtn" style="background:rgba(90,176,255,0.1); border:1px solid var(--blue); color:var(--blue); border-radius:8px; padding:8px 16px; font-size:0.8rem; font-weight:700; cursor:pointer; font-family:inherit;">📋 Sao chép kết quả thử thách</button>' : '') +
+        '</div>' : '');
+  }
+
+  // shareable end card: the run's fate as a single image worth posting
+  var CARD_LOOK = {
+    caught: ["🚔", "SỤP ĐỔ MỘT 'TƯỢNG ĐÀI'", "#ff5c6c"],
+    escaped: ["🏝️", "BIẾN MẤT BÍ ẨN", "#f5c542"],
+    dissolved: ["📦", "GIẢI THỂ ÊM ĐẸP", "#f5c542"],
+    saint: ["😇", "NGƯỜI TỬ TẾ CÓ THẬT", "#4cd97b"]
+  };
+  function endCardCanvas(D) {
+    var cv = document.createElement("canvas");
+    cv.width = 1000; cv.height = 524;
+    var x = cv.getContext("2d");
+    var grad = x.createLinearGradient(0, 0, 0, 524);
+    grad.addColorStop(0, "#14161f"); grad.addColorStop(1, "#1e2230");
+    x.fillStyle = grad; x.fillRect(0, 0, 1000, 524);
+    x.strokeStyle = "#f5c542"; x.lineWidth = 5; x.strokeRect(16, 16, 968, 492);
+    x.textAlign = "center";
+    x.fillStyle = "#9aa1b5"; x.font = "700 26px 'Be Vietnam Pro', sans-serif";
+    x.fillText("🍚 NUÔI ANH — The Charity Tycoon", 500, 72);
+    var look = CARD_LOOK[D.o] || CARD_LOOK.dissolved;
+    x.font = "92px sans-serif";
+    x.fillText(look[0], 500, 196);
+    x.fillStyle = look[2]; x.font = "800 46px 'Be Vietnam Pro', sans-serif";
+    x.fillText(look[1], 500, 268);
+    x.fillStyle = "#e8e9ee"; x.font = "600 30px 'Be Vietnam Pro', sans-serif";
+    x.fillText("Kêu gọi " + fmt(D.r || 0) + " · " + (D.m || 0).toLocaleString("vi-VN") + " bữa cơm · " + (D.days || 0) + " ngày", 500, 338);
+    x.fillStyle = "#9aa1b5"; x.font = "26px 'Be Vietnam Pro', sans-serif";
+    x.fillText("🤝 +" + (D.c || 0) + " quan hệ" + (D.W >= 2 ? " · 💌 thư của Mây vẫn trong ví" : ""), 500, 386);
+    x.fillStyle = "#6b7185"; x.font = "20px 'Be Vietnam Pro', sans-serif";
+    x.fillText("techeese.github.io/nuoi-anh-clicker · trò chơi châm biếm — mọi nhân vật đều hư cấu", 500, 470);
+    return cv;
+  }
+  function downloadBlob(blob) {
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "nuoi-anh-ket-cuc.png";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+  }
+  function saveEndCard(D) {
+    endCardCanvas(D).toBlob(function (blob) {
+      if (!blob) return;
+      var file = new File([blob], "nuoi-anh-ket-cuc.png", { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+        navigator.share({ files: [file], title: "Nuôi Anh — The Charity Tycoon" }).catch(function () { downloadBlob(blob); });
+      } else downloadBlob(blob);
+    });
   }
 
   function todayStr() {
