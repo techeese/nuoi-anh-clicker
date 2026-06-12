@@ -2,6 +2,9 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
+1. **Desktop 3-column layout** (>1280px): main | shop | founder+legacy side by side —近 zero
+   page scroll on desktop. (Follow-up to the quick-bar iteration.)
+
 2. **Moral-state music** — the generative ambient shifts scale/timbre as suspicion rises
    (major-pentatonic clean → darker intervals dirty).
 

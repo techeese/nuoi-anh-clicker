@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Quick action bar + density pass (iteration 23)
+- Owner directive: less scrolling, more game. A sticky bottom quick-bar (mini donate button,
+  fund/stash, live suspicion meter) appears exactly when the real button leaves the viewport —
+  clicking, watching money, and watching danger never require scrolling back up, on both
+  mobile and desktop. IntersectionObserver with a scroll fallback.
+- Density pass: tighter stats/click-zone/ticker/ledger paddings; main panel ~100px shorter.
+
 ## 2026-06-13 — Fun-first directive + first-run coach (iteration 22)
 - Charter gains "Fun is the first quality bar" (owner directive): juice, decisions, humor,
   pacing — fun outranks elegance in every pick.

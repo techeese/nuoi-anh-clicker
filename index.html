@@ -112,16 +112,16 @@
     min-height: 1em;
   }
   .forecast b { color: var(--gold); font-weight: 700; }
-  .stat { background: var(--panel-2); border-radius: 10px; padding: 10px 12px; }
+  .stat { background: var(--panel-2); border-radius: 10px; padding: 8px 10px; }
   .stat .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
   .stat .value { font-size: 1.25rem; font-weight: 800; margin-top: 2px; }
   .stat .sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
   .fund .value { color: var(--green); }
   .stash .value { color: var(--gold); }
 
-  .click-zone { text-align: center; padding: 12px 0 18px; position: relative; }
+  .click-zone { text-align: center; padding: 6px 0 10px; position: relative; }
   #donateBtn {
-    width: 205px; height: 205px; border-radius: 50%;
+    width: 188px; height: 188px; border-radius: 50%;
     border: none; background: transparent; padding: 0;
     position: relative; cursor: pointer; font-family: inherit;
     user-select: none; -webkit-user-select: none;
@@ -253,7 +253,7 @@
   }
   .buff.mod { background: rgba(184, 140, 255, 0.1); border-color: var(--purple); color: var(--purple); }
 
-  .skim-box { margin-top: 8px; }
+  .skim-box { margin-top: 5px; }
   .skim-box .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
   .skim-box .pct { color: var(--red); font-weight: 800; font-size: 1.1rem; }
   input[type=range] { width: 100%; accent-color: var(--red); cursor: pointer; }
@@ -304,7 +304,7 @@
 
   .ticker {
     background: rgba(17, 19, 28, 0.8); border: 1px solid var(--border); border-radius: 10px;
-    font-size: 0.79rem; color: var(--muted); margin-top: 12px;
+    font-size: 0.79rem; color: var(--muted); margin-top: 8px;
     min-height: 38px; display: flex; align-items: stretch; overflow: hidden;
   }
   .ticker .live-badge {
@@ -334,7 +334,7 @@
     cursor: pointer; font-family: inherit;
   }
   #saoKeBtn:disabled { opacity: 0.4; cursor: default; }
-  #lgRows { max-height: 108px; overflow: hidden; padding: 4px 0; }
+  #lgRows { max-height: 82px; overflow: hidden; padding: 3px 0; }
   .lg-row {
     display: flex; justify-content: space-between; gap: 8px; padding: 1.5px 10px;
     font-size: 0.68rem; font-family: "SF Mono", Menlo, Consolas, monospace;
@@ -459,6 +459,33 @@
   }
   .ap-hint { font-size: 0.75rem; color: var(--muted); }
 
+  /* quick action bar — the game never leaves your thumb */
+  .quickbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(17, 19, 28, 0.94);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    animation: qbIn 0.25s ease-out;
+  }
+  @keyframes qbIn { from { transform: translateY(100%); } }
+  #qbClick {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    border: 2.5px solid var(--gold);
+    background: radial-gradient(circle at 35% 30%, #343c5c, #1b1f2e);
+    font-size: 1.35rem; cursor: pointer;
+    box-shadow: 0 0 16px rgba(245, 197, 66, 0.35);
+    transition: transform 0.06s;
+  }
+  #qbClick:active { transform: scale(0.88); }
+  .qb-stat { font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
+  .qb-stat b { color: var(--text); font-size: 0.8rem; }
+  .qb-susp { flex: 1 1 0; width: 0; min-width: 36px; height: 8px; background: #11131c; border-radius: 4px; overflow: hidden; }
+  #qbSuspFill { height: 100%; width: 0; background: linear-gradient(90deg, #4cd97b, #f5c542 55%, #ff5c6c); }
+  .qb-pct { font-size: 0.7rem; color: var(--muted); }
+  body.qb-on { padding-bottom: 76px; }
+
   #toasts { position: fixed; top: 14px; right: 14px; z-index: 400; display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
   .toast {
     background: rgba(30, 34, 48, 0.95); border: 1px solid var(--gold); border-radius: 10px;
@@ -567,6 +594,14 @@
 <div id="vignette"></div>
 <div id="toasts"></div>
 
+<div id="quickBar" class="quickbar" style="display:none">
+  <button id="qbClick" aria-label="Kêu gọi quyên góp">🍚</button>
+  <span class="qb-stat">💚 <b id="qbFund">0₫</b></span>
+  <span class="qb-stat">🤫 <b id="qbStash">0₫</b></span>
+  <div class="qb-susp"><div id="qbSuspFill"></div></div>
+  <span class="qb-pct" id="qbSuspPct">0%</span>
+</div>
+
 <header>
   <h1>🍚 NUÔI ANH — The Charity Tycoon</h1>
   <div class="subtitle">Trò chơi châm biếm / A satirical parody game. Mọi nhân vật đều là hư cấu.</div>
@@ -652,7 +687,7 @@
         <div class="skim-hint">Phần trăm tiền quyên góp âm thầm chảy vào túi riêng. Rút nhẹ tay thì gần như vô hình — rút đậm thì nghi ngờ bùng nổ theo cấp số. Nghe nói người giữ tay sạch đủ lâu sẽ thấy những điều người khác không thấy.</div>
       </div>
 
-      <div style="margin-top: 14px;">
+      <div style="margin-top: 8px;">
         <div class="row" style="display:flex; justify-content:space-between;">
           <strong>🚨 Mức độ nghi ngờ / Public Suspicion</strong>
           <span id="suspPct">0%</span>
@@ -2876,6 +2911,11 @@
     }
     renderAvatar();
 
+    document.getElementById("qbFund").textContent = fmt(S.fund);
+    document.getElementById("qbStash").textContent = fmt(S.stash);
+    document.getElementById("qbSuspFill").style.width = S.suspicion + "%";
+    document.getElementById("qbSuspPct").textContent = Math.floor(S.suspicion) + "%";
+
     var dBtn = document.getElementById("dailyBtn");
     if (META.lastChallengeDay === todayStr()) { dBtn.disabled = true; dBtn.textContent = "✓ Đã nhận thử thách"; dBtn.style.opacity = 0.45; }
 
@@ -3431,6 +3471,33 @@
   }
 
   // ================= Wiring =================
+  // quick bar: appears exactly when the real button scrolls away
+  (function () {
+    var qb = document.getElementById("quickBar");
+    var btn = document.getElementById("donateBtn");
+    function setBar(mainVisible) {
+      qb.style.display = mainVisible ? "none" : "flex";
+      document.body.classList.toggle("qb-on", !mainVisible);
+    }
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        setBar(entries[0].isIntersecting);
+      }, { threshold: 0.05 }).observe(btn);
+    }
+    // scroll fallback — IO can lag in some embedders, and the bar must never strand
+    var qbTick = 0;
+    window.addEventListener("scroll", function () {
+      var now = Date.now();
+      if (now - qbTick < 150) return;
+      qbTick = now;
+      var r = btn.getBoundingClientRect();
+      setBar(r.bottom > 0 && r.top < window.innerHeight);
+    }, { passive: true });
+    document.getElementById("qbClick").addEventListener("click", function () {
+      doDonate(null, null);
+    });
+  })();
+
   document.getElementById("donateBtn").addEventListener("click", function (e) {
     // golden ripple from the press point
     var rect = this.getBoundingClientRect();
