@@ -1254,7 +1254,7 @@
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
-      nbStage: 0, nbMode: "",
+      nbStage: 0, nbMode: "", crossDone: false,
       challenge: "", rngState: 0
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
@@ -1698,6 +1698,28 @@
             var extra = S.nbMode === "bribed2" ? " Kỳ cuối đăng kèm ảnh hai chiếc phong bì. Bạn không đọc nữa." : "";
             S.suspicion += 8;
             return "Bạn không trả lời. Thanh trượt nhích thêm một nấc. Ở đâu đó, một cuốn sổ tay lại dày thêm một dòng." + extra;
+          } }
+      ] },
+    { title: "☕ Cà phê của hai người phụ nữ",
+      when: function () { return S.ktMode === "left" && S.nbStage >= 1 && S.nbStage <= 2 && !S.crossDone; },
+      desc: "Ảnh chụp lén lan trong nhóm kín: chị kế toán cũ và chị phóng viên ngồi cùng một quán cà phê. Trên bàn, giữa hai ly bạc xỉu — một cuốn sổ tay màu nâu. Bạn biết rất rõ cuốn sổ đó.",
+      choices: [
+        { label: "Đề nghị mua lại cuốn sổ (tốn 30% túi riêng)", hint: "50/50: nghi ngờ -10% hoặc +12%",
+          fx: function () {
+            S.stash *= 0.7; S.crossDone = true;
+            if (rnd() < 0.5) { S.suspicion -= 10; return "Cuốn sổ đổi chủ trong im lặng. Nhưng lúc đưa nó, chị phóng viên cười một nụ cười mà bạn sẽ còn nghĩ về rất lâu."; }
+            S.suspicion += 12; return "Bạn cầm về một cuốn sổ photo đóng gáy đẹp. Bản gốc đã được scan từ tuần trước. Tiền thì không được hoàn.";
+          } },
+        { label: "Tung tin chị kế toán 'biển thủ' trước", hint: "40/60: nghi ngờ -8% hoặc +16%",
+          fx: function () {
+            S.crossDone = true;
+            if (rnd() < 0.4) { S.suspicion -= 8; return "Dư luận bắt đầu nghi ngờ lời khai của chị ấy. Bẩn. Nhưng hiệu quả. Bạn tự nhủ sẽ không nhìn lại."; }
+            S.suspicion += 16; return "Chị ấy đáp trả bằng đúng một tấm ảnh: bảng lương 'tăng gấp đôi' năm xưa — kèm chữ ký của bạn. Phản đòn không cần lời.";
+          } },
+        { label: "Không làm gì. Có những việc không nên làm.", hint: "Nghi ngờ +6%, và một đêm ngủ ngon",
+          fx: function () {
+            S.crossDone = true; S.suspicion += 6;
+            return "Bạn tắt điện thoại. Điều gì đến sẽ đến. Đêm đó, lạ thay, bạn ngủ ngon hơn mọi đêm trong tháng.";
           } }
       ] },
     { title: "📰 'Người quay đầu'",
@@ -3748,6 +3770,7 @@
             if (typeof S.ktMode !== "string") S.ktMode = "";
             if (typeof S.nbStage !== "number") S.nbStage = 0;
             if (typeof S.nbMode !== "string") S.nbMode = "";
+            if (typeof S.crossDone !== "boolean") S.crossDone = false;
             if (typeof S.challenge !== "string") S.challenge = "";
             if (typeof S.rngState !== "number") S.rngState = 0;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;

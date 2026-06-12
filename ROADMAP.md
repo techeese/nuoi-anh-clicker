@@ -10,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Cà phê của hai người phụ nữ (kế toán × phóng viên crossover event).
 - README + repo presentation refresh (features, screenshot, description, topics).
 - End cards from the archive (retroactive 🖼️ for any stored case file).
 - Mây's fifth letter (em Suối, 150k meals, reaction pair, school drawing).

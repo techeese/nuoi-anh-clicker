@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — Cà phê của hai người phụ nữ (iteration 47)
+- The two arcs finally meet: if you let chị kế toán walk AND the journalist is on your
+  trail, a leaked photo shows them sharing coffee — with the brown notebook on the table.
+  Choices: buy the notebook back (30% of stash, 50/50 it's a photocopy — "tiền thì không
+  được hoàn"), smear the accountant first (40/60, backfire is her posting your signed
+  double-salary slip), or do nothing and sleep well for once (+6 heat, one dignity beat).
+- Fires once per run (S.crossDone flag with migration); consequences only exist for players
+  who actually burned her — the charter's honest-events rule across arc boundaries.
+- Verified: gates ×2, both ends of the choice spectrum walked (stash ×0.7 exact + flag set;
+  do-nothing leaves stash untouched).
+
 ## 2026-06-13 — README + repo presentation refresh (iteration 46)
 - Features section rewritten around what actually defines the game now: the visible-money
   language, bé Mây's letters & replies, the chị phóng viên arc, newspaper endings →
