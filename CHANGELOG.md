@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — The ticker knows your story (iteration 59)
+- Eight conditional news lines join the chyron pool, each existing only in timelines where
+  it's true: the journalist teasing her next issue mid-arc, 'Người quay đầu' landing in a
+  reading-comprehension exam, the ex-accountant's blog, the silenced teacher asking for a
+  forwarding address ("Thư các em bị trả về"), a poll counting down your promise, passport
+  gossip for relic holders, the letter-writing trend, the suspiciously beautiful books.
+- Fresh players see an unchanged pool; states make their own news. Cosmetic Math.random,
+  no draw-count impact.
+- Verified: gates ×2, fast-rotation harness surfaced all five seeded conditionals.
+
 ## 2026-06-13 — Kỷ vật: Hộ chiếu thứ hai (iteration 58)
 - The dirty relic twin, restoring path symmetry: earned by 🏝️ Tẩu thoát + 'Hai chiếc phong
   bì' (escape once, bribe the journalist twice). Effect: "đường ra đã quen" — the escape

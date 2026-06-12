@@ -3180,9 +3180,22 @@
     void el.offsetWidth;
     el.style.animation = "tickerScroll " + dur + "s linear infinite";
   }
+  // the ambient channel knows YOUR story: lines that only exist in your timeline
+  function newsExtras() {
+    var ex = [];
+    if (S.nbStage >= 1 && S.nbStage <= 2) ex.push("📰 'Soi Kỹ Cuối Tuần' úp mở: 'Kỳ sau sẽ có tên một dự án rất quen.' #ĐoánXem");
+    if (S.nbMode === "redeemed") ex.push("📰 Bài 'Người quay đầu' được một trường đưa vào đề đọc hiểu. Học sinh: 'Đề dễ khóc.'");
+    if (S.ktMode === "accomplice") ex.push("🧾 Một kiểm toán viên giấu tên: 'Sổ sách dự án đó đẹp đến mức… đáng ngờ.'");
+    if (S.ktMode === "left") ex.push("☕ Cựu kế toán một quỹ từ thiện mở blog 'Chuyện Nghề Giữ Sổ'. Bài nào cũng kín bình luận.");
+    if (S.maySilenced) ex.push("🏫 Cô giáo vùng cao đăng: 'Nhà hảo tâm nào đổi địa chỉ không ạ? Thư các em bị trả về.'");
+    if (S.promise && S.promise !== "none" && PROMISES[S.promise]) ex.push("⏳ Dân mạng lập poll: 'Founder có giữ lời hứa " + PROMISES[S.promise].label + " không?' — 62% chọn 'chờ xem'.");
+    if (hasRelicPassport()) ex.push("🛂 Tin bên lề: một 'doanh nhân' từng xuất ngoại gấp nay quay lại làm thiện nguyện. Dư luận: 'Lần này chắc khác.'");
+    if (S.letters.length >= 3) ex.push("💌 Trào lưu trẻ vùng cao viết thư tay cảm ơn lan rộng. Bưu điện huyện: 'quá tải dễ thương'.");
+    return ex;
+  }
   function randomNews() {
     if (paused) return;
-    var pool = S.suspicion >= 70 ? NEWS_HOT : S.suspicion >= 35 ? NEWS_SUS : NEWS_CALM;
+    var pool = (S.suspicion >= 70 ? NEWS_HOT : S.suspicion >= 35 ? NEWS_SUS : NEWS_CALM).concat(newsExtras());
     setTicker(pool[Math.floor(Math.random() * pool.length)]);
   }
 
