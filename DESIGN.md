@@ -1,0 +1,65 @@
+# Nuôi Anh — Design Charter
+
+> The north star for every change. If an improvement fights this document, the improvement loses.
+
+## What this game is
+
+A **satirical Vietnamese idle/clicker game** inspired by the public scandal around a famous
+charity project (Dec 2025 – Jun 2026 news cycle). The player runs a fictional charity that
+feeds mountain children — and decides, minute by minute, whether to run it honestly or to
+quietly become the villain the news warned about.
+
+**Everything is parody.** All characters are fictional; the footer disclaimer stays forever.
+The game's moral force comes from mechanics, not from naming anyone.
+
+## The core loop
+
+1. **Click + generators** raise donations. The kitchen takes 20% off the top — kids eat first.
+2. The **skim slider** and **shady schemes** divert money to the personal stash ("lại quả"
+   kickbacks pay 25–70% of scheme income straight to the pocket).
+3. **Suspicion** is the price of sin: superlinear in skim, per-scheme heat, purchase spikes —
+   cooled by audits, medals, PR, laundering fronts. 100% = busted (one livestream-apology save).
+4. Runs end in one of 4 ways: **caught / dissolve / escape (33 tỷ stash) / saint (secret)** —
+   each pays meta-currency (**connections 🤝**) for permanent perks across runs.
+
+## The moral architecture (the actual point)
+
+- **Evil must be tempting**: fastest personal wealth, exclusive tools (laundering, Swiss safes),
+  a stash that converts to connections — at escalating, *legible* risk (live suspicion rate).
+  Target: greedy ≈ 0.6–1.6× saint in connections/hour. Tempting, never dominant.
+- **Clean must be secretly rewarded**: the hidden good path (10 clean minutes + 2,000 real meals)
+  unlocks halo ✨ currency and legitimate fame income. The saint ending pays 2×.
+- **Events must be honest**: consequences only for crimes actually committed (`when` predicates);
+  clean players get their own deck — including devil's-bargain offers, because temptation is
+  the theme.
+- **The kitchen is sacred**: meals cook off the top of every donation. The only way to starve
+  the children is the player's own greed. That's the satire.
+
+## Hard rules
+
+1. **Single self-contained `index.html`** — no build step, no dependencies beyond Google Fonts.
+2. **Vietnamese-first** text with light English hints; satire dry, never cruel; no real names.
+3. **Never break saves**: every new state field gets `freshState()` default + `load()` migration
+   + `sanitize()` entry (use `Number.isFinite`, never bare `isFinite` — NaN serializes to null).
+4. **Balance changes go through the toolchain**: mirror mechanics in `engine.js`, run
+   `node sweep.js`, keep the 12 reasonableness targets green before shipping numbers.
+5. **Test before push**: headless Chrome harness (fresh boot + seeded dirty/poisoned saves,
+   simulated clicks, JS-error capture in `<title>`). Push to GitHub after meaningful batches —
+   Pages redeploys `main` automatically.
+
+## Toolchain map
+
+| File | Purpose |
+|---|---|
+| `index.html` | the entire game |
+| `engine.js` | config-driven replica of game math for simulation |
+| `sweep.js` | coordinate-descent auto-tuner vs. 12 design targets |
+| `sim.js` | (legacy) standalone strategy simulator |
+| `clear-save.html` | factory-reset helper |
+
+## Voice & aesthetic
+
+Glassmorphism dark UI, gold accents, hand-drawn SVG (founder avatar scene, Vietnam influence
+map, steaming rice-bowl button). Synthesized WebAudio, no asset files. News ticker speaks in
+Vietnamese internet-culture register (#SaoKêĐâu). The founder caption arc tells the story:
+nhiệt huyết → thành đạt → "nghi phạm tiềm năng".

@@ -34,11 +34,15 @@ function buildItems(cfg) {
     { id: "tvshow", tab: "grow", base: 45000000 * cs, growth: 1.28 + ga, dps: 300000 },
     { id: "app", tab: "grow", base: 600000000 * cs, growth: 1.3 + ga, dps: 2000000 },
     { id: "empire", tab: "grow", base: 9000000000 * cs, growth: 1.32 + ga, dps: 15000000 },
-    { id: "dupcode", tab: "shady", base: 240000 * cs, growth: 1.28 + ga, dps: 12000, susp: 0.3 },
-    { id: "ghostkid", tab: "shady", base: 3200000 * cs, growth: 1.3 + ga, dps: 80000, susp: 0.8 },
-    { id: "fakebill", tab: "shady", base: 24000000 * cs, growth: 1.32 + ga, dps: 400000, susp: 1.5 },
-    { id: "shellco", tab: "shady", base: 250000000 * cs, growth: 1.34 + ga, dps: 2500000, susp: 3 },
-    { id: "pyramid", tab: "shady", base: 4000000000 * cs, growth: 1.36 + ga, dps: 20000000, susp: 6 },
+    { id: "dupcode", tab: "shady", base: 240000 * cs, growth: 1.28 + ga, dps: 12000, susp: 0.05, kick: 0.25 },
+    { id: "ghostkid", tab: "shady", base: 3200000 * cs, growth: 1.3 + ga, dps: 80000, susp: 0.12, kick: 0.3 },
+    { id: "fakebill", tab: "shady", base: 24000000 * cs, growth: 1.32 + ga, dps: 400000, susp: 0.25, kick: 0.5 },
+    { id: "shellco", tab: "shady", base: 250000000 * cs, growth: 1.34 + ga, dps: 2500000, susp: 0.5, kick: 0.65 },
+    { id: "pyramid", tab: "shady", base: 4000000000 * cs, growth: 1.36 + ga, dps: 20000000, susp: 1.2, kick: 0.7 },
+    { id: "carwash", tab: "shady", base: 80000000, growth: 1, once: true, launder: true, currency: "stash" },
+    { id: "karaoke", tab: "shady", base: 600000000, growth: 1, once: true, launder: true, currency: "stash" },
+    { id: "bds", tab: "shady", base: 4000000000, growth: 1, once: true, launder: true, currency: "stash" },
+    { id: "safe", tab: "shady", base: 1000000000, growth: 8, maxCount: 3, currency: "stash" },
     { id: "pr", tab: "fix", base: 50000, growth: 1.5, heal: 10 },
     { id: "lawyer", tab: "fix", base: 400000, growth: 1.6, heal: 25 },
     { id: "blitz", tab: "fix", base: 2500000, growth: 1.7, heal: 40 },
@@ -101,14 +105,17 @@ class Game {
   honestDps() { let d = 0; for (const it of this.items) if (it.hdps) d += it.hdps * this.count(it.id); return d; }
   boost() { return 1 + (this.count("gov") ? 0.5 : 0); }
   buffMult(type) { let m = 1; for (const b of this.S.buffs) if (b.type === type && b.until > this.S.t) m *= b.mult; return m; }
-  factor() { return this.repMult() * this.provMult() * this.boost(); }
+  factor() { return this.repMult() * this.provMult() * this.boost() * (1 + 0.6 * this.S.skim / 100); }
   income() { return this.baseDps() * this.factor() * this.buffMult("income"); }
   clickPower() { return 1000 * this.repMult() * this.provMult() * this.buffMult("click") * (1 + this.baseDps() / this.cfg.clickDiv); }
   suspRate() {
     const cfg = this.cfg;
     let grow = cfg.skimCoef * Math.pow(this.S.skim / 100, cfg.skimExp);
     const luxF = this.isClean() ? 0.2 : 1;
-    for (const it of this.items) if (it.susp) grow += it.susp * this.count(it.id) * (it.mult ? luxF : 1);
+    let fronts = 0;
+    for (const it of this.items) if (it.launder && this.count(it.id)) fronts++;
+    const lf = Math.pow(0.85, fronts);
+    for (const it of this.items) if (it.susp) grow += it.susp * this.count(it.id) * (it.mult ? luxF : it.kick ? lf : 1);
     let cool = cfg.coolBase;
     for (const it of this.items) if (it.cool) cool += it.cool * this.count(it.id);
     return grow - cool;
@@ -126,7 +133,11 @@ class Game {
     const S = this.S, cfg = this.cfg;
     S.t += dt;
     const inc = this.income();
-    this.earn(inc * dt);
+    let kick = 0;
+    for (const it of this.items) if (it.kick && it.dps) kick += it.dps * it.kick * this.count(it.id);
+    kick *= this.factor() * this.buffMult("income");
+    S.stash += kick * dt; S.raised += kick * dt;
+    this.earn((inc - kick) * dt);
     if (this.strat.cps > 0) this.earn(this.clickPower() * 1.45 * 1.8 * this.strat.cps * dt);
     const m = Math.floor(S.mealAcc);
     if (m > 0) {
@@ -200,7 +211,21 @@ class Game {
         const pb = c / (it.dps * f);
         if (pb < bestPb) { bestPb = pb; best = it; }
       }
-      if (best) { S.fund -= this.unitCost(best); S.owned[best.id] = this.count(best.id) + 1; bought = true; }
+      if (best) {
+        S.fund -= this.unitCost(best); S.owned[best.id] = this.count(best.id) + 1; bought = true;
+        if (best.kick) S.susp = Math.min(100, S.susp + 3); // setup heat spike
+      }
+    }
+    if (st.shady) {
+      for (const id of ["carwash", "karaoke", "bds"]) {
+        const it = this.byId[id];
+        if (!this.count(id) && S.stash >= it.base * 1.3) { S.stash -= it.base; S.owned[id] = 1; }
+      }
+      const sf = this.byId.safe;
+      if (this.count("safe") < 3) {
+        const c = this.unitCost(sf);
+        if (S.stash >= c * 2) { S.stash -= c; S.owned.safe = this.count("safe") + 1; }
+      }
     }
     if ((st.shady || st.skim > 25) && this.suspRate() > 0.1) {
       const it = this.byId.audit, c = this.unitCost(it);
@@ -219,7 +244,9 @@ class Game {
     S.ended = outcome;
     const base = S.raised > 5e7 ? Math.floor(cfg.connCoef * Math.log10(S.raised / 5e7)) : 0;
     const factor = { escaped: 1.5, saint: 2.0, dissolved: 1.0, caught: 0.6 }[outcome];
-    S.conns = Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor));
+    let stashBonus = S.stash > 2e8 ? Math.floor(4 * Math.log10(S.stash / 2e8)) : 0;
+    if (outcome === "caught") stashBonus = Math.floor(stashBonus * this.count("safe") / 3);
+    S.conns = Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor) + stashBonus);
     return outcome;
   }
 
@@ -310,7 +337,7 @@ function evaluate(cfg, seeds) {
     ["max greed busts fast (<=8m)", m.maxGreedBust, 0, 480, 1],
     ["max greed nearly always busts", m.maxGreedCaught, 0.9, 1.0, 1],
     ["good path found (25m clean) >=70%", m.goodFoundStay, 0.7, 1.0, 3],
-    ["saint/greedy conns ratio 1-3x", m.saintCph / Math.max(0.01, m.greedyCph), 1.0, 3.0, 2],
+    ["evil competitive: saint/greedy 0.6-1.6x", m.saintCph / Math.max(0.01, m.greedyCph), 0.6, 1.6, 2],
     ["marathon weaker than saint", m.marathonCph / Math.max(0.01, m.saintCph), 0, 0.8, 2],
     ["runs to max perks 8-15", m.runsToMax, 8, 15, 3],
     ["active adds 30-70% over idle", m.clickRatio, 1.3, 1.7, 2],
