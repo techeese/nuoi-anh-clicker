@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-13 — Đồng tiền đi đâu: live split bar under the skim slider (iteration 34)
+- A stacked bar + one-line legend now shows where every 100k₫ of donations goes as you drag:
+  🍚 bếp (green) · 🏗 dự án (blue) · 🤫 túi (hatched grey). At 55% skim the hatched segment
+  visibly swallows the bar — the moral cost of the slider is legible at the moment of choice.
+- Clean players see the honest 20/80 kitchen split (teaches the economy); the pocket segment
+  and legend entry only exist when skim > 0. Recomputed only on skim change (no frame churn).
+- Verified: gates green, 6-assert slider-drag harness (0% and 50% positions, legend text),
+  390px one-line legend + visible bar, 1240px clean.
+
 ## 2026-06-13 — The visible cut (iteration 33)
 - When skim > 0, every click now splits on screen: the main floatie shows only what the
   charity actually receives (+net, gold), while the skimmed slice sinks below the table as a

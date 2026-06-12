@@ -284,6 +284,16 @@
   .skim-box .pct { color: var(--red); font-weight: 800; font-size: 1.1rem; }
   input[type=range] { width: 100%; accent-color: var(--red); cursor: pointer; }
   .skim-hint { font-size: 0.73rem; color: var(--muted); margin-top: 4px; }
+  .skim-split {
+    display: flex; height: 12px; border-radius: 6px; overflow: hidden;
+    margin-top: 7px; border: 1px solid var(--border);
+  }
+  .ss-seg { transition: width 0.25s ease; min-width: 0; }
+  .ss-kitchen { background: var(--green); }
+  .ss-org { background: #4a6f9c; }
+  .ss-pocket { background: #55576a; background-image: repeating-linear-gradient(135deg, transparent 0 5px, rgba(0,0,0,0.28) 5px 10px); }
+  .skim-legend { font-size: 0.7rem; color: var(--muted); margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .skim-legend b { color: var(--text); font-weight: 700; }
 
   .meter { height: 18px; background: #11131c; border-radius: 9px; overflow: hidden; border: 1px solid var(--border); margin-top: 6px; }
   .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #4cd97b, #f5c542 55%, #ff5c6c); transition: width 0.3s ease; }
@@ -736,6 +746,12 @@
           <span class="pct" id="skimPct">0%</span>
         </div>
         <input type="range" id="skimSlider" min="0" max="90" value="0" step="5">
+        <div class="skim-split" id="skimSplit">
+          <div class="ss-seg ss-kitchen" id="ssKitchen"></div>
+          <div class="ss-seg ss-org" id="ssOrg"></div>
+          <div class="ss-seg ss-pocket" id="ssPocket"></div>
+        </div>
+        <div class="skim-legend" id="skimLegend"></div>
         <div class="skim-hint">Phần trăm tiền quyên góp âm thầm chảy vào túi riêng. Rút nhẹ tay thì gần như vô hình — rút đậm thì nghi ngờ bùng nổ theo cấp số. Nghe nói người giữ tay sạch đủ lâu sẽ thấy những điều người khác không thấy.</div>
       </div>
 
@@ -2990,7 +3006,26 @@
   // ================= Render =================
   var alarmed = false;
 
+  // where every 100.000₫ of donations goes — recomputed only when the slider moves
+  var lastSplitSkim = -1;
+  function renderSkimSplit() {
+    if (S.skim === lastSplitSkim) return;
+    lastSplitSkim = S.skim;
+    var pocket = S.skim;
+    var kitchen = (100 - pocket) * 0.2;
+    var org = (100 - pocket) * 0.8;
+    document.getElementById("ssKitchen").style.width = kitchen + "%";
+    document.getElementById("ssOrg").style.width = org + "%";
+    document.getElementById("ssPocket").style.width = pocket + "%";
+    var money = function (p) { return Math.round(p) + "k"; };
+    document.getElementById("skimLegend").innerHTML =
+      "Mỗi 100k → <b style='color:var(--green)'>🍚 bếp " + money(kitchen) + "</b>" +
+      " · <span>🏗 dự án " + money(org) + "</span>" +
+      (pocket > 0 ? " · <b style='color:#9fa2b8'>🤫 túi " + money(pocket) + "</b>" : "");
+  }
+
   function renderStats() {
+    renderSkimSplit();
     document.getElementById("fundVal").textContent = fmt(S.fund);
     document.getElementById("stashVal").textContent = fmt(S.stash);
     document.getElementById("mealsVal").textContent = S.meals.toLocaleString("vi-VN");
