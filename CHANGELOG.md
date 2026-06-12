@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 5 + flow reflection (iteration 30)
+- Sweep 21 greens (the two eternal hairlines only). Bot 5-min: zero errors, organically hit
+  FEVER at 9 clicks/s. Single file at 208KB. Live deploy at parity. Legacy mobile audit pass.
+- Flow reflection: changelog updates now PREPEND after the header (the per-iteration marker
+  chain was fragile); grep-the-anchor-first discipline added to the landmine log.
+
 ## 2026-06-13 — Lifetime records (iteration 29)
 - 🏆 Kỷ lục strip in Legacy: best raised, best stash, fastest saint, longest survival, best
   connection haul — with a "KỶ LỤC MỚI!" toast when one falls.
