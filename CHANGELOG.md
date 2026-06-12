@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-13 — FEVER mode (iteration 27)
+- Sustain a 25+ click combo: golden edge-glow pulse, crit chance 5%→12%, coins ring higher,
+  "🔥🔥 FEVER" display. Pure fun for the core verb; challenge-deterministic (same draw count).
+  +1 achievement (Lên đồng). Ideation banked: modifier expansion pack, lifetime records.
+
 ## 2026-06-13 — Moral-state music (iteration 26)
 - The generative ambient shifts with suspicion: bright pentatonic clean → minor shades with a
   minor-third shimmer at 35% → low, sparse, semitone-haunted notes with tritone accents past

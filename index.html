@@ -38,6 +38,14 @@
   @keyframes drift1 { to { transform: translate(90px, 70px) scale(1.18); } }
   @keyframes drift2 { to { transform: translate(-70px, -90px) scale(1.12); } }
 
+  #feverGlow {
+    position: fixed; inset: 0; pointer-events: none; z-index: 49;
+    opacity: 0; transition: opacity 0.4s;
+    box-shadow: inset 0 0 120px 30px rgba(245, 197, 66, 0.4);
+  }
+  #feverGlow.on { opacity: 1; animation: feverPulse 0.8s infinite; }
+  @keyframes feverPulse { 50% { opacity: 0.55; } }
+
   #vignette {
     position: fixed; inset: 0; pointer-events: none; z-index: 50;
     opacity: 0; transition: opacity 0.6s;
@@ -604,6 +612,7 @@
 
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <div id="vignette"></div>
+<div id="feverGlow"></div>
 <div id="toasts"></div>
 
 <div id="quickBar" class="quickbar" style="display:none">
@@ -1104,7 +1113,7 @@
     o.connect(g); g.connect(ctx.destination);
     o.start(t); o.stop(t + dur + 0.05);
   }
-  function sCoin() { beep(650 + Math.random() * 350, 0.08, "sine", 0.05); }
+  function sCoin() { beep((combo >= 25 ? 900 : 650) + Math.random() * 350, 0.08, "sine", 0.05); }
   function sCrit() { beep(880, 0.12, "square", 0.06); beep(1320, 0.18, "square", 0.05, 0.06); }
   function sBuy() { beep(420, 0.09, "triangle", 0.07); beep(630, 0.12, "triangle", 0.07, 0.08); }
   function sAch() { [660, 830, 990, 1320].forEach(function (f, i) { beep(f, 0.14, "triangle", 0.07, i * 0.09); }); }
@@ -1392,6 +1401,8 @@
       check: function () { return S.letters.length >= 4; } },
     { id: "accomplice", name: "Cùng một con thuyền", desc: "Biến chị kế toán thành đồng phạm",
       check: function () { return S.ktMode === "accomplice"; } },
+    { id: "fever", name: "Lên đồng", desc: "Đạt trạng thái FEVER (combo 25+) — ngón tay bốc cháy",
+      check: function () { return S.maxCombo >= 25; } },
     { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
       check: function () { return META.goodFound; } },
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
@@ -3405,7 +3416,8 @@
     S.maxCombo = Math.max(S.maxCombo, combo);
     var comboMult = 1 + Math.min(combo, 50) * 0.02;
 
-    var crit = rnd() < 0.05;
+    var fever = combo >= 25;
+    var crit = rnd() < (fever ? 0.12 : 0.05); // same draw count: challenge-deterministic
     var amount = clickPower() * comboMult * (crit ? 10 : 1);
     // self-healing: if some corrupt state zeroes the click, repair and never give 0
     if (!(amount > 0)) {
@@ -3426,9 +3438,10 @@
 
     var cd = document.getElementById("comboDisp");
     if (combo >= 5) {
-      cd.textContent = "🔥 COMBO x" + combo;
+      cd.textContent = fever ? "🔥🔥 FEVER x" + combo : "🔥 COMBO x" + combo;
       cd.classList.remove("on"); void cd.offsetWidth; cd.classList.add("on");
     }
+    document.getElementById("feverGlow").classList.toggle("on", fever);
     renderStats();
   }
 
@@ -3436,6 +3449,7 @@
     if (Date.now() - lastClickAt > 1000) {
       combo = 0;
       document.getElementById("comboDisp").classList.remove("on");
+      document.getElementById("feverGlow").classList.remove("on");
     }
   }, 300);
 

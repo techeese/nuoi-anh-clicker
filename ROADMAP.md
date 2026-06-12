@@ -2,6 +2,10 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
+1. **Modifier expansion pack** — 4 new "thời cuộc" run modifiers (Mùa thi, Drama tổng,
+   Tháng cô hồn, Nghị định mới) for run variety.
+2. **Lifetime records** — biggest run / fastest saint / longest survival in Legacy.
+
 
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
