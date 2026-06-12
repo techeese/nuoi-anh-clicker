@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 10 + flow reflection (iteration 55)
+- Sweep: stable, same two eternal hairlines, balance unchanged since the promise era.
+- Bot 5-min: 70 buys, 4 envelopes, 6 journal entries, zero errors, no soft-locks.
+- Full-page 390px audit: halo + four letter pins + twin chips + promise line all healthy.
+- Flow reflection 46–55: 9 feature iterations, zero reverts, zero incidents; both false
+  alarms were harness-side. Ad-hoc showEvent reuse promoted to a playbook recipe; minimal
+  seeds fully adopted; compass completed a full rotation this cycle.
+
 ## 2026-06-13 — Phong bì đỏ viền đen (iteration 54)
 - ~12% of golden envelopes now spawn dark: red-glowing, dimmer, bobbing slower ("like it's
   heavier"), telegraphing risk before you click. Opening one is a choice, not candy: an
