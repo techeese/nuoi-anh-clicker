@@ -827,7 +827,8 @@
       startTime: Date.now(), owned: {}, buffs: [],
       wasNear95: false, gameOver: false,
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
-      halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0
+      halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
+      bargains: 0, recentEvents: []
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -875,20 +876,32 @@
       base: 12600000000, growth: 1.36, dps: 15000000, currency: "fund" },
 
     { id: "dupcode", tab: "shady", name: "Mã nuôi em trùng lặp", emoji: "👯",
-      desc: "Một em bé, năm nhà hảo tâm cùng 'nuôi'. +12.000₫/giây nhưng nghi ngờ +0,3%/giây.",
-      base: 336000, growth: 1.32, dps: 12000, susp: 0.3, currency: "fund" },
+      desc: "Một em bé, năm nhà hảo tâm cùng 'nuôi'. +3.000₫/giây vào TÚI RIÊNG, +9.000₫/giây làm đẹp sổ quỹ. Nghi ngờ +0,05%/giây.",
+      base: 336000, growth: 1.32, dps: 12000, susp: 0.05, kick: 0.25, currency: "fund" },
     { id: "ghostkid", tab: "shady", name: "Em bé 'ảo'", emoji: "👻",
-      desc: "Hồ sơ em nhỏ không tồn tại, ảnh lấy trên mạng. +80.000₫/giây, nghi ngờ +0,8%/giây.",
-      base: 4480000, growth: 1.34, dps: 80000, susp: 0.8, currency: "fund" },
+      desc: "Hồ sơ em nhỏ không tồn tại, ảnh lấy trên mạng. +24.000₫/giây vào túi riêng, phần còn lại nuôi 'em bé' trên giấy. Nghi ngờ +0,12%/giây.",
+      base: 4480000, growth: 1.34, dps: 80000, susp: 0.12, kick: 0.3, currency: "fund" },
     { id: "fakebill", tab: "shady", name: "Hoá đơn khống", emoji: "🧾",
-      desc: "Bếp ăn báo giá 10 triệu, thực nấu 1 triệu. +400.000₫/giây, nghi ngờ +1,5%/giây.",
-      base: 33600000, growth: 1.36, dps: 400000, susp: 1.5, currency: "fund" },
+      desc: "Bếp báo giá 10 triệu, thực nấu 1 triệu — phần chênh là của bạn. +200.000₫/giây vào túi riêng. Nghi ngờ +0,25%/giây.",
+      base: 33600000, growth: 1.36, dps: 400000, susp: 0.25, kick: 0.5, currency: "fund" },
     { id: "shellco", tab: "shady", name: "Công ty sân sau", emoji: "🏢",
-      desc: "Quỹ 'thuê dịch vụ' từ công ty của… chính bạn. +2.500.000₫/giây, nghi ngờ +3%/giây.",
-      base: 350000000, growth: 1.38, dps: 2500000, susp: 3, currency: "fund" },
+      desc: "Quỹ 'thuê dịch vụ' từ công ty của… chính bạn. +1.625.000₫/giây chảy thẳng về túi riêng. Nghi ngờ +0,5%/giây.",
+      base: 350000000, growth: 1.38, dps: 2500000, susp: 0.5, kick: 0.65, currency: "fund" },
     { id: "pyramid", tab: "shady", name: "Ma trận quỹ đa cấp", emoji: "🕳️",
-      desc: "Quỹ con nuôi quỹ cháu, tiền chạy lòng vòng đến chóng mặt. +20.000.000₫/giây, nghi ngờ +6%/giây.",
-      base: 5600000000, growth: 1.4, dps: 20000000, susp: 6, currency: "fund" },
+      desc: "Quỹ con nuôi quỹ cháu, tiền chạy lòng vòng rồi… về túi bạn: +14.000.000₫/giây. Nghi ngờ +1,2%/giây. Cú chốt sự nghiệp.",
+      base: 5600000000, growth: 1.4, dps: 20000000, susp: 1.2, kick: 0.7, currency: "fund" },
+    { id: "carwash", tab: "shady", name: "Tiệm rửa xe 5 sao", emoji: "🚿", once: true, dirtyOnly: true,
+      desc: "Tiền bẩn đi vào, hoá đơn rửa xe đi ra. Nghi ngờ từ các chiêu trò giảm 15%.",
+      base: 80000000, growth: 1, launder: true, currency: "stash" },
+    { id: "karaoke", tab: "shady", name: "Chuỗi karaoke gia đình", emoji: "🎤", once: true, dirtyOnly: true,
+      desc: "Doanh thu 'hát hò' cao bất thường vào 3 giờ sáng. Nghi ngờ từ các chiêu trò giảm thêm 15%.",
+      base: 600000000, growth: 1, launder: true, currency: "stash" },
+    { id: "bds", tab: "shady", name: "BĐS quy hoạch treo", emoji: "🏗️", once: true, dirtyOnly: true,
+      desc: "Mảnh đất 'sắp lên thành phố' suốt 10 năm. Nghi ngờ từ các chiêu trò giảm thêm 15%.",
+      base: 4000000000, growth: 1, launder: true, currency: "stash" },
+    { id: "safe", tab: "shady", name: "Két sắt Thuỵ Sỹ", emoji: "🔐", dirtyOnly: true, maxCount: 3,
+      desc: "Nếu bị bắt, mỗi két bảo toàn 1/3 số quan hệ quy đổi từ túi riêng. Tối đa 3 két.",
+      base: 1000000000, growth: 8, safe: true, currency: "stash" },
     { id: "pr", tab: "shady", name: "Bài PR 'minh bạch'", emoji: "📰",
       desc: "Thuê báo viết bài 'sao kê rõ ràng, tấm lòng vàng'. Giảm ngay 10% nghi ngờ.",
       base: 50000, growth: 1.5, instant: { susp: -10 }, currency: "stash", consumable: true },
@@ -1046,7 +1059,55 @@
 
   // ================= Random events =================
   var EVENTS = [
+    { title: "🤝 Quan chức gợi ý 'cơ chế đặc biệt'",
+      when: function () { return isClean() && S.totalRaised >= 1e8; },
+      desc: "Một vị 'có ảnh hưởng' mời bạn cà phê: 'Dự án tốt đấy. Trích 10% làm phí-điều-phối qua công ty em rể anh, đổi lại em được bảo trợ đặc biệt. Ai cũng làm vậy cả.'",
+      choices: [
+        { label: "Gật đầu. Ai cũng làm vậy mà.", hint: "Túi riêng + lớn, thu nhập x1.3 trong 5 phút — nhưng bạn không còn trong sạch",
+          fx: function () {
+            S.bargains++;
+            var g = Math.max(5e7, incomePerSec() * 90);
+            S.stash += g;
+            addBuff("🤝 'Bảo trợ đặc biệt' x1.3", "income", 1.3, 300);
+            return "Cái bắt tay rất êm. " + fmt(g) + " về túi. Đêm đó bạn ngủ ngon — đó mới là điều đáng sợ.";
+          } },
+        { label: "Cười trừ, từ chối khéo", hint: "Không có gì xảy ra",
+          fx: function () { return "Vị kia nhún vai: 'Tuỳ em. Cơ hội không gõ cửa hai lần đâu.' Ly cà phê bỗng đắng hơn."; } },
+        { label: "Từ chối và kể với một nhà báo quen", hint: "Nghi ngờ -8%, nhưng bị 'làm khó' thủ tục",
+          fx: function () { S.suspicion -= 8; addBuff("🧱 Bị 'làm khó' thủ tục", "income", 0.85, 180); return "Bài báo ẩn danh gây xôn xao. Dư luận tin bạn hơn. Giấy tờ của bạn từ nay đi 'đường vòng'."; } }
+      ] },
+    { title: "🏢 Tập đoàn mời hợp tác CSR",
+      when: function () { return isClean() && S.totalRaised >= 2e7; },
+      desc: "Một tập đoàn lớn muốn đồng hành: tiền tươi, đổi lại logo của họ phải 'hiện diện đậm nét' trong mọi hoạt động.",
+      choices: [
+        { label: "Nhận — các em cần bữa cơm, không cần sĩ diện", hint: "Quỹ + lớn, nghi ngờ +3%",
+          fx: function () { var g = Math.max(2e6, incomePerSec() * 120); S.fund += g; S.suspicion += 3; return "Quỹ nhận " + fmt(g) + ". Ảnh trao quà giờ có 4 cái logo. Vài người lẩm bẩm 'thương mại hoá'."; } },
+        { label: "Từ chối — giữ dự án thuần cộng đồng", hint: "Nghi ngờ -5%",
+          fx: function () { S.suspicion -= 5; return "'Dự án nghèo mà sạch.' Câu chuyện từ chối tiền tỷ được share khắp nơi."; } }
+      ] },
+    { title: "🎓 Nhóm sinh viên xin làm tình nguyện",
+      when: function () { return isClean(); },
+      desc: "Mười sinh viên năm nhất, mắt sáng rực, xin tham gia không lương: 'Tụi em muốn làm điều tử tế.'",
+      choices: [
+        { label: "Nhận cả nhóm", hint: "Sức trẻ: thu nhập x1.2 trong 3 phút",
+          fx: function () { addBuff("🎓 Sức trẻ x1.2", "income", 1.2, 180); return "Mười bạn trẻ chia nhau đăng bài. Mạng xã hội ngập tin tốt."; } },
+        { label: "Chỉ nhận một bạn xinh nhất làm 'gương mặt đại diện'", hint: "Quỹ + nhỏ, nghi ngờ +2%",
+          fx: function () { var g = Math.max(5e5, incomePerSec() * 30); S.fund += g; S.suspicion += 2; return "Ảnh đại diện mới kéo thêm donate. Chín bạn còn lại về, hơi buồn."; } }
+      ] },
+    { title: "🏦 Ngân hàng hỏi về 'dòng tiền bất thường'",
+      when: function () { return SHADY_INCOME.some(function (id) { return count(id) > 0; }); },
+      desc: "Bộ phận tuân thủ của ngân hàng gửi email: một số giao dịch của quỹ 'có cấu trúc đáng chú ý'. Họ muốn làm rõ trong tuần này.",
+      choices: [
+        { label: "Chuyển bớt qua 'kênh an toàn' (tốn 10% túi riêng)", hint: "Nghi ngờ -10%",
+          fx: function () { S.stash *= 0.9; S.suspicion -= 10; return "Tiền lặng lẽ đổi địa chỉ. Email được trả lời bằng một bộ hồ sơ dày 200 trang không ai đọc nổi."; } },
+        { label: "Giải trình vòng vo", hint: "50/50: cho qua hoặc nghi ngờ +15%",
+          fx: function () {
+            if (Math.random() < 0.5) return "Nhân viên ngân hàng gật gù trước sơ đồ 14 mũi tên của bạn. Cho qua.";
+            S.suspicion += 15; return "Họ chuyển hồ sơ lên 'cấp có thẩm quyền'. Cụm từ đáng sợ nhất tiếng Việt.";
+          } }
+      ] },
     { title: "🕵️ Nhà báo điều tra liên hệ",
+      when: function () { return !isClean() || S.suspicion >= 25; },
       desc: "Một phóng viên nhắn tin: 'Em có vài câu hỏi về dòng tiền của dự án, anh sắp xếp trả lời giúp em nhé.'",
       choices: [
         { label: "Mời đi 'cà phê' (tốn 15% túi riêng)", hint: "Nghi ngờ -15%",
@@ -1068,6 +1129,7 @@
           fx: function () { var g = incomePerSec() * 150 + 500000; S.stash += g; S.suspicion += 12; return "Túi riêng dày thêm " + fmt(g) + ". Kế toán: 'Em không thấy gì hết.'"; } }
       ] },
     { title: "😰 Tình nguyện viên phát hiện sổ sách",
+      when: function () { return S.maxSkim > 5 || count("fakebill") > 0 || count("shellco") > 0; },
       desc: "Một TNV kỳ cựu vô tình thấy hai cuốn sổ kế toán… không giống nhau. Cậu ấy đang rất hoang mang.",
       choices: [
         { label: "Thăng chức + tăng 'phụ cấp' (tốn 10% túi riêng)", hint: "Không tăng nghi ngờ",
@@ -1081,14 +1143,19 @@
           } }
       ] },
     { title: "📋 Tin đồn thanh tra",
+      when: function () { return S.totalRaised >= 5e7; },
       desc: "Trong nhóm kín, có người rỉ tai: 'Sắp có đoàn vào kiểm tra các quỹ từ thiện lớn đấy.'",
       choices: [
         { label: "Đại tu sổ sách (tốn 20% quỹ)", hint: "Nghi ngờ -20%",
+          when: function () { return !isClean(); },
           fx: function () { S.fund *= 0.8; S.suspicion -= 20; return "Sổ sách giờ đẹp như mơ. Đẹp hơn cả sự thật."; } },
-        { label: "Kệ, chắc tin vịt", hint: "70% không sao, 30% nghi ngờ +20%",
+        { label: "Mở cửa mời đoàn vào, pha trà", hint: "Nghi ngờ -15%, biên bản đẹp: thu nhập x1.2 trong 2 phút",
+          when: function () { return isClean(); },
+          fx: function () { S.suspicion -= 15; addBuff("📋 Biên bản đẹp như giấy khen", "income", 1.2, 120); return "Đoàn ra về với biên bản sạch bong và ba hộp trà. Tiếng lành đồn xa."; } },
+        { label: "Kệ, chắc tin vịt", hint: "Hên xui — tuỳ bạn sạch đến đâu",
           fx: function () {
-            if (Math.random() < 0.7) return "Đúng là tin vịt. Hú hồn.";
-            S.suspicion += 20; return "Không phải tin vịt. Đoàn kiểm tra ghé thăm đột xuất.";
+            if (Math.random() < (isClean() ? 0.9 : 0.7)) return "Đúng là tin vịt. Hú hồn.";
+            S.suspicion += isClean() ? 5 : 20; return "Không phải tin vịt. Đoàn kiểm tra ghé thăm đột xuất.";
           } }
       ] },
     { title: "🥹 Em nhỏ cảm ơn trên sóng",
@@ -1100,6 +1167,7 @@
           fx: function () { var g = incomePerSec() * 150 + 200000; S.fund += g; S.suspicion += 5; return "Chiến dịch 'Một bữa cơm, vạn yêu thương' thu về " + fmt(g) + ". Hơi lố, nhưng hiệu quả."; } }
       ] },
     { title: "🪙 'Chuyên gia' mời đầu tư coin",
+      when: function () { return S.stash >= 1e6; },
       desc: "Bạn cũ thời đại học giờ là 'chuyên gia tài chính' rủ bỏ túi riêng vào đồng coin CharityMoon: 'Uy tín, x2 trong tuần.'",
       choices: [
         { label: "Tất tay 30% túi riêng", hint: "50/50: x2 hoặc mất sạch khoản đó",
@@ -1112,6 +1180,7 @@
           fx: function () { return "Bạn lịch sự từ chối. Một quyết định hiếm hoi mà lương tâm và lý trí cùng đồng ý."; } }
       ] },
     { title: "👯 Hai nhà hảo tâm phát hiện nuôi cùng một em",
+      when: function () { return count("dupcode") > 0; },
       desc: "Họ so mã hỗ trợ trong group và phát hiện trùng nhau. Topic đang nóng dần lên…",
       choices: [
         { label: "Hoàn tiền + tặng quà xin lỗi (tốn 5% quỹ)", hint: "Nghi ngờ -10%",
@@ -1128,6 +1197,7 @@
           fx: function () { S.suspicion -= 5; return "Ảnh bắt tay đăng khắp nơi. Uy tín của họ che bớt cho bạn."; } }
       ] },
     { title: "🧒 Fan cứng đòi đi thăm em bé đã nuôi 2 năm",
+      when: function () { return count("ghostkid") > 0 || count("dupcode") > 0; },
       desc: "Chị nhà hảo tâm nhiệt tình nhất muốn lên tận bản thăm 'con nuôi'. Vấn đề là… mã của chị thuộc nhóm 'linh hoạt'.",
       choices: [
         { label: "Dàn dựng buổi gặp 'thế thân' (tốn 10% quỹ)", hint: "Không tăng nghi ngờ",
@@ -1141,6 +1211,7 @@
           fx: function () { S.fund *= 0.95; S.suspicion -= 12; return "Hoá ra làm thật cũng… không tệ? Chị ấy đăng 47 tấm ảnh, ai cũng cảm động."; } }
       ] },
     { title: "🌙 Mất ngủ vì lương tâm",
+      when: function () { return !isClean() && S.stash >= 5e7; },
       desc: "3 giờ sáng. Bạn nhìn trần nhà. Đâu đó trên núi, có những đứa trẻ ăn cơm trắng với muối. Còn bạn vừa đặt cọc xe mới.",
       choices: [
         { label: "Làm một đợt từ thiện THẬT (tốn 10% quỹ)", hint: "Bữa cơm + nhiều, nghi ngờ -8%",
@@ -1221,7 +1292,7 @@
   // The clean path: never skimmed above 5%, never bought shady income schemes
   var SHADY_INCOME = ["dupcode", "ghostkid", "fakebill", "shellco", "pyramid"];
   function isClean() {
-    return S.maxSkim <= 5 && SHADY_INCOME.every(function (id) { return count(id) === 0; });
+    return S.maxSkim <= 5 && S.bargains === 0 && SHADY_INCOME.every(function (id) { return count(id) === 0; });
   }
   function honestDps() {
     var d = 0;
@@ -1244,7 +1315,15 @@
   function incomeFactor() {
     var boost = 1;
     ITEMS.forEach(function (it) { if (it.incomeBoost) boost += it.incomeBoost * count(it.id); });
+    // a founder with 'personal motivation' pushes the machine harder: skim boosts gross income
+    boost *= 1 + 0.6 * (S.skim / 100);
     return repMult() * globalMult() * provMult() * (curMod().income || 1) * boost;
+  }
+  // 'lại quả' — the slice of shady-scheme income that flows straight into the stash
+  function kickbackPerSec() {
+    var k = 0;
+    ITEMS.forEach(function (it) { if (it.kick && it.dps) k += it.dps * it.kick * count(it.id); });
+    return k * incomeFactor() * buffMult("income");
   }
   function incomePerSec() {
     return baseDps() * incomeFactor() * buffMult("income");
@@ -1255,8 +1334,11 @@
     var grow = 1.6 * Math.pow(S.skim / 100, 1.5);
     // luxury bought with clean money barely raises eyebrows
     var luxFactor = isClean() ? 0.2 : 1;
+    var fronts = 0;
+    ITEMS.forEach(function (it) { if (it.launder && count(it.id) > 0) fronts++; });
+    var launderFactor = Math.pow(0.85, fronts);
     ITEMS.forEach(function (it) {
-      if (it.susp) grow += it.susp * count(it.id) * (it.mult ? luxFactor : 1);
+      if (it.susp) grow += it.susp * count(it.id) * (it.mult ? luxFactor : it.kick ? launderFactor : 1);
     });
     grow *= (1 - 0.08 * perkLvl("umbrella")) * (curMod().susp || 1);
     var cool = 0.15;
@@ -1285,7 +1367,14 @@
 
   function tick(dt) {
     if (S.gameOver || paused) return;
-    earn(incomePerSec() * dt);
+    var kbps = kickbackPerSec();
+    if (kbps > 0) {
+      var kb = kbps * dt;
+      S.stash += kb;                 // crime pays YOU, bypassing skim and the kitchen
+      S.totalRaised += kb;           // donors did give it — the books look great
+      META.lifetimeRaised += kb;
+    }
+    earn((incomePerSec() - kbps) * dt);
 
     // auto-clicker perk
     var acl = perkLvl("autoclick");
@@ -1367,7 +1456,11 @@
   function connectionsEarned(outcome) {
     var base = S.totalRaised > 5e7 ? Math.floor(8 * Math.log10(S.totalRaised / 5e7)) : 0;
     var factor = outcome === "escaped" ? 1.5 : outcome === "saint" ? 2.0 : outcome === "dissolved" ? 1.0 : 0.6;
-    return Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor));
+    // the stash is the score: personal wealth converts to connections at run end…
+    var stashBonus = S.stash > 2e8 ? Math.floor(4 * Math.log10(S.stash / 2e8)) : 0;
+    // …but gets confiscated if you're caught — unless squirrelled away in Swiss safes
+    if (outcome === "caught") stashBonus = Math.floor(stashBonus * count("safe") / 3);
+    return Math.max(outcome === "caught" ? 0 : 1, Math.floor(base * factor) + stashBonus);
   }
 
   function endRun(outcome) {
@@ -1481,9 +1574,10 @@
     var hiddenItems = 0;
     // progressive disclosure: owned items + only the NEXT one; the rest stay a mystery.
     // Damage-control consumables are always visible — even a skim-only player needs them.
+    tabItems = tabItems.filter(function (it) { return !it.dirtyOnly || !isClean(); });
     if (activeTab === "grow" || activeTab === "shady" || activeTab === "lux" || activeTab === "map") {
-      var prog = tabItems.filter(function (it) { return !it.consumable; });
-      var always = tabItems.filter(function (it) { return it.consumable; });
+      var prog = tabItems.filter(function (it) { return !it.consumable && !it.dirtyOnly; });
+      var always = tabItems.filter(function (it) { return it.consumable || it.dirtyOnly; });
       var nextIdx = 0;
       while (nextIdx < prog.length && count(prog[nextIdx].id) > 0) nextIdx++;
       hiddenItems = Math.max(0, prog.length - (nextIdx + 1));
@@ -1498,7 +1592,7 @@
 
     tabItems.forEach(function (it) {
       var wallet = it.currency === "fund" ? S.fund : it.currency === "halo" ? S.halo : S.stash;
-      var ownedOnce = it.once && count(it.id) > 0;
+      var ownedOnce = (it.once && count(it.id) > 0) || (it.maxCount && count(it.id) >= it.maxCount);
       var n = 1;
       if (!it.once && !it.consumable) {
         if (buyMult === 10) n = 10;
@@ -1603,7 +1697,9 @@
     var it = itemById[id];
     if (!it) return;
     if (it.once && count(id) > 0) return;
+    if (it.maxCount && count(id) >= it.maxCount) return;
     if (it.tab === "good" && !isClean()) return;
+    if (it.dirtyOnly && isClean()) return;
     n = it.once || it.consumable ? 1 : (n || 1);
 
     var c = bulkCost(it, n);
@@ -1615,6 +1711,13 @@
     else S.stash -= c;
     S.owned[id] = count(id) + n;
     sBuy();
+
+    // setting up a scheme is the risky moment: one-time heat spike per purchase
+    if (it.kick) {
+      S.suspicion += 3 * n;
+      clampSusp();
+      setTicker("🕳️ Một giao dịch lạ vừa chạy qua hệ thống… chắc không ai để ý đâu.");
+    }
 
     if (it.instant && it.instant.susp) {
       S.suspicion += it.instant.susp;
@@ -1701,7 +1804,16 @@
     if (S.gameOver || paused) return;
     if (Date.now() < nextEventAt) return;
     if (S.totalRaised < 50000) { nextEventAt = Date.now() + 20000; return; }
-    showEvent(EVENTS[Math.floor(Math.random() * EVENTS.length)]);
+    // only events that make sense for THIS player's state, no repeats from the last 2
+    var pool = EVENTS.filter(function (ev) {
+      return (!ev.when || ev.when()) && S.recentEvents.indexOf(ev.title) === -1;
+    });
+    if (!pool.length) pool = EVENTS.filter(function (ev) { return !ev.when || ev.when(); });
+    if (!pool.length) { nextEventAt = Date.now() + 30000; return; }
+    var pick = pool[Math.floor(Math.random() * pool.length)];
+    S.recentEvents.push(pick.title);
+    if (S.recentEvents.length > 2) S.recentEvents.shift();
+    showEvent(pick);
   }
 
   function showEvent(ev) {
@@ -1710,7 +1822,9 @@
     document.getElementById("eventDesc").textContent = ev.desc;
     var box = document.getElementById("eventChoices");
     box.innerHTML = "";
-    ev.choices.forEach(function (ch) {
+    var visible = ev.choices.filter(function (ch) { return !ch.when || ch.when(); });
+    if (!visible.length) visible = ev.choices;
+    visible.forEach(function (ch) {
       var b = document.createElement("button");
       b.innerHTML = ch.label + "<small>" + ch.hint + "</small>";
       b.addEventListener("click", function () {
@@ -1978,11 +2092,14 @@
     document.getElementById("globalMultVal").textContent = "hệ số chung x" + (globalMult() * provMult()).toFixed(2) + " (🤝+🏆+🗺️)";
 
     var inc = incomePerSec();
-    document.getElementById("incomeVal").textContent = "+" + fmt(inc * (1 - S.skim / 100) * 0.8) + "/giây (bếp nhận 20%)";
+    var kInc = kickbackPerSec();
+    document.getElementById("incomeVal").textContent = "+" + fmt((inc - kInc) * (1 - S.skim / 100) * 0.8) + "/giây (bếp nhận 20%)";
     var hInc = honestDps() * globalMult();
-    document.getElementById("skimIncomeVal").textContent = hInc > 0
-      ? "lương sạch: +" + fmt(hInc) + "/giây · rút: +" + fmt(inc * (S.skim / 100)) + "/giây"
-      : "đang rút: +" + fmt(inc * (S.skim / 100)) + "/giây";
+    var parts = [];
+    if (kInc > 0) parts.push("lại quả: +" + fmt(kInc) + "/giây");
+    if (hInc > 0) parts.push("lương sạch: +" + fmt(hInc) + "/giây");
+    parts.push("rút: +" + fmt(inc * (S.skim / 100)) + "/giây");
+    document.getElementById("skimIncomeVal").textContent = parts.join(" · ");
 
     var sp = Math.floor(S.suspicion);
     document.getElementById("suspPct").textContent = sp + "%";
@@ -2169,7 +2286,7 @@
     // and a NaN that was JSON-serialized to null would slip straight through
     var bad = function (v) { return !Number.isFinite(v); };
     ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
-     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc"]
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains"]
       .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
@@ -2210,7 +2327,8 @@
             if (typeof S.autoAcc !== "number") S.autoAcc = 0;
             if (typeof S.apologyUsed !== "boolean") S.apologyUsed = false;
             if (!S.modifier) S.modifier = "normal";
-            ["halo", "haloProgress", "cleanTime", "mealAcc"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
+            ["halo", "haloProgress", "cleanTime", "mealAcc", "bargains"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
+            if (!Array.isArray(S.recentEvents)) S.recentEvents = [];
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
