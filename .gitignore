@@ -1,3 +1,9 @@
 node_modules/
 .DS_Store
 test-*.html
+t-*.html
+inner*.html
+wrap390.html
+wrapx.html
+shot*.html
+dbg.html
