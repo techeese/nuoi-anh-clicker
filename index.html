@@ -1179,7 +1179,11 @@
     { id: "chill", name: "Dân mạng hiền hoà", emoji: "🧘", desc: "Một năm ai cũng tử tế lạ thường: nghi ngờ tăng chậm hơn 30%.", susp: 0.7 },
     { id: "paparazzi", name: "Phóng viên rảnh rỗi", emoji: "📸", desc: "Bị soi gắt: nghi ngờ +35%. Nhưng drama kéo tương tác: click +50%.", susp: 1.35, click: 1.5 },
     { id: "viral", name: "Viral bất ngờ", emoji: "🚀", desc: "Một bài đăng nổ tung: bắt đầu với buff thu nhập x5 trong 2 phút." },
-    { id: "lucky", name: "Năm phong thuỷ đẹp", emoji: "🧧", desc: "Thầy bảo hướng bàn làm việc rất tốt: phong bì vàng xuất hiện gấp đôi.", env: 0.5 }
+    { id: "lucky", name: "Năm phong thuỷ đẹp", emoji: "🧧", desc: "Thầy bảo hướng bàn làm việc rất tốt: phong bì vàng xuất hiện gấp đôi.", env: 0.5 },
+    { id: "examseason", name: "Mùa thi đại học", emoji: "📚", desc: "Cả nước thức khuya ôn bài: click mạnh hơn +30%, nhưng ví phụ huynh mỏng đi (thu nhập -10%).", click: 1.3, income: 0.9 },
+    { id: "dramatong", name: "Drama tổng", emoji: "🍿", desc: "Mạng xã hội hỗn loạn: nghi ngờ tăng nhanh +25%, bù lại báo chí đói bài — PR rẻ hơn 30%.", susp: 1.25, prCost: 0.7 },
+    { id: "cohon", name: "Tháng cô hồn", emoji: "🏮", desc: "Phong bì vàng nhiều gấp đôi, nhưng lộc nào cũng có giá: mỗi lần mở +2% nghi ngờ.", env: 0.5, envSusp: 2 },
+    { id: "nghidinh", name: "Nghị định mới", emoji: "📜", desc: "Siết quản lý từ thiện: dư luận tự hạ nhiệt nhanh hơn (+0,1%/giây), nhưng mọi chiêu trò bị soi gắt +25%.", coolBonus: 0.1, schemeSusp: 1.25 }
   ];
   var modById = {};
   MODS.forEach(function (m) { modById[m.id] = m; });
@@ -1687,7 +1691,7 @@
 
   function unitCost(it) {
     var c = it.base * Math.pow(it.growth, count(it.id));
-    if (it.instant) c *= (1 - 0.15 * perkLvl("pr_network"));
+    if (it.instant) c *= (1 - 0.15 * perkLvl("pr_network")) * (curMod().prCost || 1);
     return Math.floor(c);
   }
   function bulkCost(it, n) {
@@ -1763,12 +1767,12 @@
     var luxFactor = isClean() ? 0.2 : 1;
     var fronts = 0;
     ITEMS.forEach(function (it) { if (it.launder && count(it.id) > 0) fronts++; });
-    var launderFactor = Math.pow(0.85, fronts) * (S.ktMode === "accomplice" ? 0.9 : 1);
+    var launderFactor = Math.pow(0.85, fronts) * (S.ktMode === "accomplice" ? 0.9 : 1) * (curMod().schemeSusp || 1);
     ITEMS.forEach(function (it) {
       if (it.susp) grow += it.susp * count(it.id) * (it.mult ? luxFactor : it.kick ? launderFactor : 1);
     });
     grow *= (1 - 0.08 * perkLvl("umbrella")) * (curMod().susp || 1);
-    var cool = 0.15;
+    var cool = 0.15 + (curMod().coolBonus || 0);
     ITEMS.forEach(function (it) { if (it.cool) cool += it.cool * count(it.id); });
     return grow - cool;
   }
@@ -2567,6 +2571,7 @@
     removeEnvelope();
     scheduleEnvelope();
     META.envOpened++;
+    if (curMod().envSusp) { S.suspicion = Math.min(100, S.suspicion + curMod().envSusp); }
     sEnv();
     var roll = rnd();
     if (roll < 0.3) {

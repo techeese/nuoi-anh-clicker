@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Modifier expansion pack (iteration 28)
+- Four new run modifiers with real mechanical hooks: 📚 Mùa thi đại học (click +30%, income
+  -10%), 🍿 Drama tổng (heat +25% but PR -30%), 🏮 Tháng cô hồn (double envelopes, +2%
+  suspicion per open — lộc có giá), 📜 Nghị định mới (natural cooling +0.1%/s, schemes
+  scrutinized +25%). Eleven thời cuộc total; each verified with differential rate readouts.
+
 ## 2026-06-13 — FEVER mode (iteration 27)
 - Sustain a 25+ click combo: golden edge-glow pulse, crit chance 5%→12%, coins ring higher,
   "🔥🔥 FEVER" display. Pure fun for the core verb; challenge-deterministic (same draw count).
