@@ -463,6 +463,23 @@
   .confetti { position: fixed; width: 9px; height: 9px; z-index: 300; pointer-events: none; top: -12px; animation: confFall linear forwards; }
   @keyframes confFall { to { transform: translateY(110vh) rotate(900deg); opacity: 0.7; } }
 
+  /* Phiên toà — the systems testify */
+  .trial-card { border-color: #c9a86a !important; text-align: left !important; }
+  .trial-head { text-align: center; font-size: 1.3rem; color: #c9a86a; margin-bottom: 4px; }
+  .trial-sub { text-align: center; font-size: 0.68rem; color: var(--muted); margin-bottom: 14px; letter-spacing: 1px; }
+  .trial-beats { min-height: 150px; display: flex; flex-direction: column; gap: 9px; }
+  .trial-beat {
+    background: rgba(201, 168, 106, 0.07); border-left: 3px solid #c9a86a;
+    padding: 8px 12px; font-size: 0.82rem; line-height: 1.5; color: var(--text);
+    animation: beatIn 0.5s ease-out;
+  }
+  .trial-beat.may { border-left-color: var(--green); background: rgba(76, 217, 123, 0.06); }
+  @keyframes beatIn { from { opacity: 0; transform: translateX(-14px); } }
+  .trial-verdict {
+    margin-top: 14px; text-align: center; font-weight: 800; font-size: 0.95rem;
+    color: #ff8a96; animation: beatIn 0.5s ease-out;
+  }
+
   /* Bé Mây's letters — warm paper against the dark UI */
   .letter-wrap { display: flex; flex-direction: column; align-items: center; max-width: 460px; width: 94%; }
   .paper {
@@ -909,6 +926,19 @@
   </div>
 </div>
 
+<!-- Phiên toà -->
+<div class="overlay" id="trialOverlay">
+  <div class="card trial-card">
+    <div class="trial-head">⚖️ PHIÊN TOÀ</div>
+    <div class="trial-sub">— TRÒ CHƠI HƯ CẤU · MỌI TÌNH TIẾT ĐỀU LÀ CHÂM BIẾM —</div>
+    <div class="trial-beats" id="trialBeats"></div>
+    <div class="trial-verdict" id="trialVerdict" style="display:none"></div>
+    <div style="text-align:center;">
+      <button id="trialBtn" style="display:none; margin-top:12px; padding:11px 24px; font-size:0.92rem; font-weight:800; background:var(--gold); color:#1b1500; border:none; border-radius:10px; cursor:pointer; font-family:inherit;">Đọc báo sáng hôm sau 📰</button>
+    </div>
+  </div>
+</div>
+
 <!-- Game over -->
 <div class="overlay" id="gameOverOverlay">
   <div class="card" id="overlayCard">
@@ -1026,6 +1056,7 @@
   function sLetter() { [880, 1100, 1320, 1100, 1480].forEach(function (f, i) { beep(f, 0.35, "sine", 0.045, i * 0.18); }); }
   function sMeal() { beep(620, 0.06, "triangle", 0.04); beep(930, 0.1, "sine", 0.04, 0.05); }
   function sMorning() { [523, 659, 784, 1047].forEach(function (f, i) { beep(f, 0.18, "triangle", 0.06, i * 0.08); }); }
+  function sGavel() { beep(150, 0.18, "square", 0.09); beep(120, 0.26, "square", 0.09, 0.28); }
   function sHalo() { [392, 494, 587, 784].forEach(function (f, i) { beep(f, 1.4, "sine", 0.05, i * 0.05); }); }
 
   // Ambient generative music (pentatonic plucks)
@@ -1830,7 +1861,8 @@
 
     document.getElementById("finalStats").innerHTML = frontPage(outcome, conns);
 
-    document.getElementById("gameOverOverlay").classList.add("show");
+    if (outcome === "caught") showTrial();
+    else document.getElementById("gameOverOverlay").classList.add("show");
     var sb = document.getElementById("shareBtn");
     if (sb) {
       var emo = { caught: "🚔", escaped: "🏝️", dissolved: "📦", saint: "😇" }[outcome];
@@ -1939,6 +1971,63 @@
     renderAll();
     save();
   }
+
+  // ================= Phiên toà: the evidence is your own play =================
+  function buildEvidence() {
+    var ev = [];
+    var shades = S.ledger.filter(function (e) { return e.kind === "shade"; }).slice(0, 2);
+    shades.forEach(function (e, i) {
+      ev.push({ t: "Vật chứng " + String.fromCharCode(65 + i) + ": bút toán “" + e.txt + "” — " + fmt(e.amt) + ", không có hoá đơn gốc." });
+    });
+    var crossed = false;
+    for (var i = 1; i < S.hist.length; i++) {
+      if (S.hist[i - 1].s <= S.hist[i - 1].f && S.hist[i].s > S.hist[i].f && S.hist[i].s > 1e5) { crossed = true; break; }
+    }
+    if (crossed) ev.push({ t: "Giám định dòng tiền: tồn tại thời điểm tài sản cá nhân của bị cáo VƯỢT số dư quỹ từ thiện." });
+    if (S.maxSkim > 20) ev.push({ t: "Tỷ lệ trích quỹ về tài khoản cá nhân có thời điểm đạt " + S.maxSkim + "%." });
+    if (S.bargains > 0) ev.push({ t: "Một đoạn ghi âm dài 14 phút về “cơ chế đặc biệt” được nộp cho toà." });
+    if (count("safe") > 0) ev.push({ t: count("safe") + " két sắt tại ngân hàng nước ngoài đang bị yêu cầu phong toả." });
+    if (S.ktMode === "left") ev.push({ t: "Nhân chứng số 1: kế toán cũ của dự án. Bản khai viết tay, 40 trang, không sai một con số." });
+    else if (S.ktMode === "accomplice") ev.push({ t: "Kế toán trưởng nhận tội để hưởng khoan hồng. Cuốn sổ tay được đánh số là vật chứng trung tâm." });
+    if (S.letters.length > 0) ev.push({ t: "Trong ví của bị cáo: " + S.letters.length + " lá thư viết tay từ một học sinh ở Điện Biên. Phòng xử im lặng rất lâu.", may: true });
+    return ev.slice(0, 5);
+  }
+
+  function showTrial() {
+    var beats = buildEvidence();
+    var box = document.getElementById("trialBeats");
+    box.innerHTML = "";
+    document.getElementById("trialVerdict").style.display = "none";
+    document.getElementById("trialBtn").style.display = "none";
+    document.getElementById("trialOverlay").classList.add("show");
+    sGavel();
+    var i = 0;
+    function next() {
+      if (i < beats.length) {
+        var d = document.createElement("div");
+        d.className = "trial-beat" + (beats[i].may ? " may" : "");
+        d.textContent = beats[i].t;
+        box.appendChild(d);
+        i++;
+        setTimeout(next, 1700);
+      } else {
+        var years = Math.min(30, Math.round(3 + Math.log10(Math.max(1, S.stash)) + S.maxSkim / 12));
+        var v = document.getElementById("trialVerdict");
+        v.textContent = "TUYÊN ÁN (hư cấu): " + years + " năm. Được khấu trừ " + S.meals.toLocaleString("vi-VN") + " bữa cơm đã thật sự đến tay các em.";
+        v.style.display = "block";
+        sGavel();
+        document.getElementById("trialBtn").style.display = "inline-block";
+      }
+    }
+    if (!beats.length) {
+      box.innerHTML = '<div class="trial-beat">Hồ sơ mỏng đến bất ngờ. Toà lúng túng.</div>';
+      document.getElementById("trialBtn").style.display = "inline-block";
+    } else next();
+  }
+  document.getElementById("trialBtn").addEventListener("click", function () {
+    document.getElementById("trialOverlay").classList.remove("show");
+    document.getElementById("gameOverOverlay").classList.add("show");
+  });
 
   function startNewRun() {
     S = freshState();

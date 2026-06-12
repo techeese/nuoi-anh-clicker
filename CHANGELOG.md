@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Phiên toà (iteration 19)
+- Caught endings open a courtroom sequence before the newspaper: up to five evidence beats
+  built from the player's ACTUAL run — disguised ledger entries (with amounts), the life-chart
+  greed crossover, peak skim, the bargain recording, foreign safes, chị Hạnh's testimony or
+  numbered notebook, and Mây's letters in the defendant's wallet (the room goes quiet).
+- Verdict scales with the crimes; meals genuinely served are argued as mitigation. Gavel SFX.
+
 ## 2026-06-13 — Day/night cycle (iteration 18)
 - The avatar scene follows the player's real clock: night/dawn/day/dusk skies, sun & moon &
   stars. At night a clean founder sleeps (Zzz) — but past 50% suspicion he's awake at 3 AM,
