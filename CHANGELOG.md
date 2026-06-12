@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 6 (iteration 35)
+- Sweep: 10/12 green, only the two known eternal hairlines (saint 879s vs 900 floor — sim
+  bots play optimally; click ratio 1.29 vs 1.30). Optimizer suggestions rejected again (they
+  chase the hairlines at the cost of real-player pacing).
+- Bot 5-minute playthrough: zero JS errors, no soft-locks, fund growth healthy.
+- Full 390px mobile audit (full-page capture + crops): split bar, run-log 📰 chips, perks,
+  achievements grid, bust-trial ending newspaper — all clean. Panel order intact.
+- Perf: no new intervals since sprint 5; 611 DOM nodes after 60s of heavy skim-clicking
+  (visible-cut floaties clean up properly, no leak).
+- Audit note chased and cleared: hào-quang stat on a dirty save is intended —
+  META.goodFound permanently unlocks good-path visibility across runs (line ~3872).
+
 ## 2026-06-13 — Đồng tiền đi đâu: live split bar under the skim slider (iteration 34)
 - A stacked bar + one-line legend now shows where every 100k₫ of donations goes as you drag:
   🍚 bếp (green) · 🏗 dự án (blue) · 🤫 túi (hatched grey). At 55% skim the hatched segment
