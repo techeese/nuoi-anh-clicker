@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 11 (iteration 60)
+- Sweep: stable (same two eternal hairlines), relic-era balance as designed.
+- Bot 5-min: 63 buys, 4 envelopes, zero errors, no soft-locks; 668 DOM nodes after the
+  full session (no leak).
+- Full-page 390px audit: both relic cards (locked dashed vs unlocked gold with live
+  threshold), promise line, letter pins + empty slot, panel order — all clean.
+
 ## 2026-06-13 — The ticker knows your story (iteration 59)
 - Eight conditional news lines join the chyron pool, each existing only in timelines where
   it's true: the journalist teasing her next issue mid-arc, 'Người quay đầu' landing in a
