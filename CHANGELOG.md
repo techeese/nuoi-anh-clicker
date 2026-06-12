@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — End cards from the archive (iteration 44)
+- The archive overlay gains a gold 🖼️ Lưu ảnh button: any case file with a stored snapshot
+  can mint its ending card retroactively — old runs become postable images too.
+- Verified: gates ×2, archived-saint click-through renders the correct 1000×524 card from
+  the snapshot (green headline, +30 quan hệ, Mây line), 390px two-button row clean.
+
 ## 2026-06-13 — Mây's fifth letter: em Suối (iteration 43)
 - A late-game letter at 150.000 bữa cơm: Mây (now lớp 5) is teaching first-grader Suối to
   write, answers "chú là ai" with "người mình chưa gặp mà mình tin", and signs off with the

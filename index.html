@@ -423,9 +423,15 @@
   .rl-np { margin-left: auto; }
   .arch-wrap { display: flex; flex-direction: column; align-items: center; max-width: 540px; width: 94%; max-height: 92vh; }
   #archivePaper { width: 100%; overflow-y: auto; }
+  .arch-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
   #archiveClose {
-    margin-top: 14px; padding: 11px 26px; font-size: 0.9rem; font-weight: 800;
+    padding: 11px 26px; font-size: 0.9rem; font-weight: 800;
     background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer; font-family: inherit;
+  }
+  #archCardBtn {
+    padding: 11px 18px; font-size: 0.9rem; font-weight: 800;
+    background: rgba(245, 197, 66, 0.1); color: var(--gold); border: 1px solid var(--gold);
     border-radius: 10px; cursor: pointer; font-family: inherit;
   }
   .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-top: 10px; }
@@ -1113,7 +1119,10 @@
 <div class="overlay" id="archiveOverlay">
   <div class="arch-wrap">
     <div id="archivePaper"></div>
-    <button id="archiveClose">Gấp hồ sơ lại 🗂️</button>
+    <div class="arch-btns">
+      <button id="archCardBtn">🖼️ Lưu ảnh</button>
+      <button id="archiveClose">Gấp hồ sơ lại 🗂️</button>
+    </div>
   </div>
 </div>
 
@@ -3457,16 +3466,21 @@
   }
 
   // case files reprint their front page (delegated: renderLegacy rebuilds the cards)
+  var archOpenSnap = null;
   document.getElementById("runLog").addEventListener("click", function (e) {
     var card = e.target.closest ? e.target.closest(".runlog-card.has-np") : null;
     if (!card) return;
     var r = META.runLog[+card.getAttribute("data-np")];
     if (!r || typeof r.cl !== "number") return;
+    archOpenSnap = r;
     document.getElementById("archivePaper").innerHTML = frontPage(r, false);
     document.getElementById("archiveOverlay").classList.add("show");
     paused = true;
     META.archRead = true;
     sLetter();
+  });
+  document.getElementById("archCardBtn").addEventListener("click", function () {
+    if (archOpenSnap) saveEndCard(archOpenSnap);
   });
   document.getElementById("archiveClose").addEventListener("click", function () {
     document.getElementById("archiveOverlay").classList.remove("show");
