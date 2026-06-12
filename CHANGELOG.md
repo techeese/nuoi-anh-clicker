@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Soundscape (iteration 12)
+- Five state-aware cues, all synthesized: a low two-note warning when suspicion crosses 50%
+  (re-arms below 40), a music-box phrase when a letter from Mây arrives, a soft kitchen
+  heartbeat every 1,000th meal (throttled), a bright arpeggio on the morning wave, and a
+  peaceful resolve chord on the saint ending. The moral arc is now audible.
+
 ## 2026-06-13 — Next-milestone forecast (iteration 11)
 - "🎯 Sắp đạt: …" line under the stats: picks the nearest goal by ETA at current income —
   next growth purchase, next province, the next letter from Mây (clean hands), the dissolve/

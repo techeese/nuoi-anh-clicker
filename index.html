@@ -983,6 +983,11 @@
   function sAch() { [660, 830, 990, 1320].forEach(function (f, i) { beep(f, 0.14, "triangle", 0.07, i * 0.09); }); }
   function sAlarm() { [620, 520, 620, 520].forEach(function (f, i) { beep(f, 0.16, "sawtooth", 0.05, i * 0.18); }); }
   function sEnv() { [520, 780, 1040, 1560].forEach(function (f, i) { beep(f, 0.1, "sine", 0.06, i * 0.06); }); }
+  function sWarn() { beep(360, 0.22, "sawtooth", 0.04); beep(300, 0.3, "sawtooth", 0.04, 0.2); }
+  function sLetter() { [880, 1100, 1320, 1100, 1480].forEach(function (f, i) { beep(f, 0.35, "sine", 0.045, i * 0.18); }); }
+  function sMeal() { beep(620, 0.06, "triangle", 0.04); beep(930, 0.1, "sine", 0.04, 0.05); }
+  function sMorning() { [523, 659, 784, 1047].forEach(function (f, i) { beep(f, 0.18, "triangle", 0.06, i * 0.08); }); }
+  function sHalo() { [392, 494, 587, 784].forEach(function (f, i) { beep(f, 1.4, "sine", 0.05, i * 0.05); }); }
 
   // Ambient generative music (pentatonic plucks)
   var MUSIC_SCALE = [220, 246.94, 293.66, 329.63, 392, 440, 493.88, 587.33];
@@ -1604,6 +1609,8 @@
   }
 
   var paused = false; // true while intro/event/minigame open
+  var lastMealChime = 0;
+  var warned50 = false;
 
   function tick(dt) {
     if (S.gameOver || paused) return;
@@ -1627,9 +1634,14 @@
     // meals finish cooking as the kitchen's cut (taken in earn) accumulates
     var mealsToCook = Math.floor(S.mealAcc);
     if (mealsToCook > 0) {
+      var kBefore = Math.floor(S.meals / 1000);
       S.mealAcc -= mealsToCook;
       S.meals += mealsToCook;
       META.totalMeals += mealsToCook;
+      if (Math.floor(S.meals / 1000) > kBefore && Date.now() - lastMealChime > 10000) {
+        lastMealChime = Date.now();
+        sMeal();
+      }
       // clean hands turn real meals into Halo ✨ (only after the path is found)
       if (S.goodUnlocked && isClean()) {
         S.haloProgress += mealsToCook;
@@ -1733,6 +1745,7 @@
     } else if (outcome === "saint") {
       card.classList.add("win-card");
       title.textContent = "😇 NGƯỜI TỬ TẾ CÓ THẬT";
+      sHalo();
       desc.innerHTML = "Bạn chuyển giao toàn bộ dự án cho một tổ chức minh bạch, công khai mọi sổ sách. Báo chí viết về bạn như một phép màu giữa thời đại hoài nghi. Hoá ra… làm người tốt cũng được nhận quan hệ. Gấp đôi.";
       confetti(); confetti();
     } else {
@@ -2524,6 +2537,8 @@
     }
     var status = document.getElementById("suspStatus");
     var vig = document.getElementById("vignette");
+    if (sp >= 50 && !warned50) { sWarn(); warned50 = true; }
+    if (sp < 40) warned50 = false;
     if (sp >= 80) {
       status.textContent = "🚨 SẮP BỊ ĐIỀU TRA!"; status.className = "suspicion-warning";
       vig.classList.add("on");
@@ -2634,7 +2649,7 @@
     document.getElementById("letterDraw").innerHTML = L.draw;
     document.getElementById("letterSig").textContent = L.sig;
     document.getElementById("letterOverlay").classList.add("show");
-    sEnv();
+    sLetter();
   }
   document.getElementById("awayBtn").addEventListener("click", function () {
     document.getElementById("awayOverlay").classList.remove("show");
@@ -3193,6 +3208,7 @@
         addBuff("🌅 Quyên góp sáng sớm x2", "income", 2, 90);
         nextEnvAt = Date.now() + 4000; // a golden envelope rides the morning wave
         setTimeout(function () {
+          sMorning();
           toast("🌅 <b>Chuyến quyên góp sáng sớm!</b><br>Ngày mới, lòng tốt mới: thu nhập x2 trong 90 giây — và hình như có gì lấp lánh sắp bay qua…");
         }, 1200);
       }
