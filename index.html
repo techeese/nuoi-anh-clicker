@@ -972,7 +972,7 @@
   // Challenge mode: deterministic gameplay RNG (mulberry32, state lives in the save).
   // Cosmetic randomness stays on Math.random so music/particles can't desync the seed.
   function rnd() {
-    if (!S || !S.challenge) return rnd();
+    if (!S || !S.challenge) return Math.random();
     S.rngState = (S.rngState + 0x6D2B79F5) | 0;
     var t = Math.imul(S.rngState ^ (S.rngState >>> 15), 1 | S.rngState);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
