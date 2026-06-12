@@ -10,6 +10,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- Con đường chưa đi (road-not-taken teases on first endings).
 - Phong bì đỏ viền đen (dark envelope variant: telegraphed risk, choice card).
 - Ending stingers (a musical signature per fate).
 - The wall of letters (letter pins in the founder scene + the empty slot).

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Con đường chưa đi (iteration 56)
+- First-time endings now whisper about the road not taken, at the exact moment churn is
+  highest. A first dirty ending (good path never found): "Người ta đồn: ai giữ tay sạch đủ
+  lâu sẽ thấy một con đường không có trên bản đồ." A first saint with no dirty endings yet
+  gets the devil's voice: "Thanh trượt kia vẫn đợi — chỉ để xem nó dẫn tới đâu."
+- Only fires once per ending type and only while the other path is unseen; repeat endings
+  stay silent.
+- Verified: gates ×2, three-state harness (first bust → road tease, repeat bust → silent,
+  first saint via __saint action → devil tease).
+
 ## 2026-06-13 — Maintenance sprint 10 + flow reflection (iteration 55)
 - Sweep: stable, same two eternal hairlines, balance unchanged since the promise era.
 - Bot 5-min: 70 buys, 4 envelopes, 6 journal entries, zero errors, no soft-locks.

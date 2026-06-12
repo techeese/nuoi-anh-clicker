@@ -2194,6 +2194,7 @@
     }
     META.connections += conns;
     META.runs += 1;
+    var firstOfType = !META.endings[outcome];
     META.endings[outcome] = true;
     var dd = new Date();
     var snap = {
@@ -2246,6 +2247,18 @@
       title.textContent = "🚔 CÔNG AN VÀO CUỘC!";
       desc.innerHTML = "Mức độ nghi ngờ chạm đỉnh. Cơ quan điều tra khởi tố vụ án, phong toả tài khoản. Cộng đồng mạng: 'Biết ngay mà!!!' May là bạn còn giữ được vài mối quan hệ…";
       sAlarm();
+    }
+
+    // road-not-taken tease: only on the FIRST ending of each type, only while the
+    // other path is still unseen — the moment of highest churn gets the core hook
+    if (firstOfType) {
+      var tease = "";
+      if (outcome !== "saint" && !META.goodFound) {
+        tease = "Người ta đồn: ai giữ tay sạch đủ lâu sẽ thấy một con đường không có trên bản đồ.";
+      } else if (outcome === "saint" && !(META.endings.caught || META.endings.escaped || META.endings.dissolved)) {
+        tease = "Bạn thắng mà chưa từng nếm thử cám dỗ thật sự. Thanh trượt kia vẫn đợi — chỉ để xem nó dẫn tới đâu.";
+      }
+      if (tease) desc.innerHTML += "<br><i style='color:var(--muted)'>" + tease + "</i>";
     }
 
     document.getElementById("finalStats").innerHTML = frontPage(snap, true);
