@@ -2,9 +2,7 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
-1. **Avatar speech bubbles** — clicking the founder triggers state-aware quips (clean: earnest;
-   dirty: nervous deflections; high suspicion: lawyer-approved phrases).
-3. **Bé Mây's letters** — a specific child writes evolving letters across a clean run
+1. **Bé Mây's letters** — a specific child writes evolving letters across a clean run
    (3-4 stages); letters stop if you turn dirty. Emotional spine of the good path.
 4. **Idle-retention research pass** — WebSearch for idle-game retention mechanics
    (offline depth, daily hooks, milestone pacing); mine 2-3 ideas that fit the charter.
@@ -19,6 +17,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. **Performance pass** — renderShop DOM churn (rebuilds every 2s), event listener audit.
 
 ## Done (see CHANGELOG.md)
+- Founder speech bubbles.
 - Sao kê live ledger + publish button.
 - Newspaper endings, PROVINCES NaN fix, mobile layer, content waves, moral economy redesign,
   docs + screenshot, achievements for dirty arc.

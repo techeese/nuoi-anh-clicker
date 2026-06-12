@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Founder speaks (iteration 6)
+- Click the founder: state-aware speech bubbles track his moral arc — earnest when clean,
+  smug deflections when dirty, possessions-themed bragging when rich, nervous at suspicion 50+,
+  lawyer-approved panic at 80+ ("Mọi việc đều đúng quy trình!"). Devil's-bargain takers get
+  haunted lines. +1 achievement (Phỏng vấn độc quyền, 15 clicks).
+- Loop infrastructure: improvement iterations now chain via a Stop hook (flag file
+  .improve-loop-on as kill-switch) instead of a timer.
+
 ## 2026-06-13 — Sao kê ledger + mobile root-cause fix + rename (iteration 5)
 - **🧾 Sao kê ledger**: live bank statement in the main panel — donations, kitchen spends and
   investments appear as transactions; skimmed money and kickbacks show up disguised as

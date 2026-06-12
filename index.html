@@ -450,7 +450,21 @@
   @keyframes confFall { to { transform: translateY(110vh) rotate(900deg); opacity: 0.7; } }
 
   /* Founder avatar scene */
-  .avatar-panel svg { width: 100%; height: auto; display: block; }
+  .avatar-panel { position: relative; }
+  .avatar-panel svg { width: 100%; height: auto; display: block; cursor: pointer; }
+  .speech {
+    position: absolute; z-index: 7; max-width: 72%;
+    background: #fdf6e3; color: #2a2430; border-radius: 12px;
+    padding: 8px 12px; font-size: 0.78rem; line-height: 1.4; font-weight: 600;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    animation: speechIn 0.25s ease-out;
+    pointer-events: none;
+  }
+  .speech::after {
+    content: ""; position: absolute; bottom: -8px; left: 36px;
+    border: 9px solid transparent; border-top-color: #fdf6e3; border-bottom: 0;
+  }
+  @keyframes speechIn { from { opacity: 0; transform: translateY(6px) scale(0.9); } }
   #avCaption { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 6px; font-style: italic; }
   #av-halo { animation: haloGlow 2.4s ease-in-out infinite; }
   @keyframes haloGlow { 50% { opacity: 0.4; } }
@@ -907,7 +921,7 @@
   function freshMeta() {
     return { connections: 0, runs: 0, perks: {}, achievements: {}, endings: {},
              lifetimeRaised: 0, totalMeals: 0, envOpened: 0, crits: 0,
-             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, numFmt: "vi" };
+             gotOffline: false, muted: false, music: false, introSeen: false, konami: false, actor: false, goodFound: false, saoKePub: false, avatarClicks: 0, numFmt: "vi" };
   }
   function perkLvl(id) { return META.perks[id] || 0; }
 
@@ -1149,6 +1163,8 @@
       check: function () { return count("safe") >= 3; } },
     { id: "saoke1", name: "Sao kê đâu? Đây!", desc: "Công khai sao kê lần đầu tiên",
       check: function () { return META.saoKePub; } },
+    { id: "reporter", name: "Phỏng vấn độc quyền", desc: "Gõ cửa founder 15 lần — cuối cùng ông ấy cũng chịu nói",
+      check: function () { return META.avatarClicks >= 15; } },
     { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
       check: function () { return META.goodFound; } },
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
@@ -2455,6 +2471,79 @@
     document.getElementById("avCaption").textContent = cap;
   }
 
+  // ================= Founder speech bubbles =================
+  var QUIPS = {
+    cleanLow: [
+      "Mỗi bữa cơm là một lời hứa.",
+      "Mình chỉ là người chuyển tấm lòng của mọi người thôi.",
+      "Hôm nay lại có thêm vài em được ăn cơm có thịt.",
+      "Mệt. Nhưng mà vui. Kiểu vậy."
+    ],
+    cleanGood: [
+      "Lá thư đó… mình vẫn để trong ví.",
+      "Hoá ra tiền sạch tiêu… ngon hơn thật.",
+      "Ngủ ngon là một loại tài sản. Mình đang rất giàu."
+    ],
+    dirtyLow: [
+      "Vận hành cũng phải có chi phí chứ?",
+      "Mình xứng đáng với một chút 'động viên' mà, đúng không?",
+      "Ai làm không công cả đời bao giờ?",
+      "Đừng nhìn mình như vậy. Ai ở vị trí này cũng thế thôi."
+    ],
+    rich: [
+      "Đồng hồ này á? Bạn tặng. Mình còn không biết giá.",
+      "Biệt thự đứng tên… một người quen.",
+      "Thành công là nhờ 'tư duy tích cực' thôi các bạn."
+    ],
+    bargain: [
+      "Ai cũng làm vậy mà… đúng không? Đúng không?!",
+      "Chỉ một lần đó thôi. Một lần."
+    ],
+    nervous: [
+      "Sao kê hả? Để… để kế toán làm. Kế toán đâu rồi?",
+      "Bài đăng đó là tin giả nhé. Tin. Giả.",
+      "Đừng tin mọi thứ trên mạng. Trừ fanpage của mình.",
+      "Mình vẫn ăn ngủ bình thường. Rất bình thường."
+    ],
+    panic: [
+      "Theo lời khuyên của luật sư, mình xin phép không bình luận.",
+      "Mọi việc đều đúng quy trình! ĐÚNG QUY TRÌNH!",
+      "Đây là một âm mưu bôi nhọ có tổ chức.",
+      "Mình… mình cần đi 'công tác' vài hôm."
+    ]
+  };
+
+  var lastQuipAt = 0;
+  function avatarQuip() {
+    if (S.gameOver) return;
+    var now = Date.now();
+    if (now - lastQuipAt < 1200) return;
+    lastQuipAt = now;
+    META.avatarClicks++;
+
+    var pool;
+    if (S.suspicion >= 80) pool = QUIPS.panic;
+    else if (S.suspicion >= 50) pool = QUIPS.nervous;
+    else if (!isClean()) {
+      pool = QUIPS.dirtyLow.concat(S.stash >= 1e9 ? QUIPS.rich : [], S.bargains > 0 ? QUIPS.bargain : []);
+    } else {
+      pool = QUIPS.cleanLow.concat(S.goodUnlocked ? QUIPS.cleanGood : []);
+    }
+
+    var panel = document.querySelector(".avatar-panel");
+    var oldB = panel.querySelector(".speech");
+    if (oldB) oldB.remove();
+    var b = document.createElement("div");
+    b.className = "speech";
+    b.textContent = pool[Math.floor(Math.random() * pool.length)];
+    b.style.left = (10 + Math.random() * 28) + "%";
+    b.style.top = (14 + Math.random() * 14) + "%";
+    panel.appendChild(b);
+    beep(520, 0.08, "triangle", 0.05);
+    setTimeout(function () { b.remove(); }, 3500);
+    checkAchievements();
+  }
+
   // ================= Influence map =================
   // Traced from real geography: x = 44 + (lon - 102°E) * 23, y = 16 + (23.5°N - lat) * 26.5
   var VN_PATH =
@@ -2559,7 +2648,7 @@
     S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
     S.skim = Math.max(0, Math.min(90, S.skim));
-    ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits"]
+    ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"]
       .forEach(function (k) { if (bad(META[k])) META[k] = 0; });
     Object.keys(META.perks).forEach(function (k) { if (bad(META.perks[k])) delete META.perks[k]; });
   }
@@ -2581,7 +2670,7 @@
         var d = JSON.parse(raw);
         if (d && d.meta) {
           META = d.meta;
-          ["lifetimeRaised", "totalMeals", "envOpened", "crits"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
+          ["lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"].forEach(function (k) { if (typeof META[k] !== "number") META[k] = 0; });
           ["gotOffline", "muted", "music", "introSeen", "konami", "actor", "goodFound", "saoKePub"].forEach(function (k) { if (typeof META[k] !== "boolean") META[k] = false; });
           if (typeof META.numFmt !== "string") META.numFmt = "vi";
           if (!META.endings) META.endings = {};
@@ -2775,6 +2864,7 @@
   });
 
   document.getElementById("saoKeBtn").addEventListener("click", publishSaoKe);
+  document.getElementById("avatarScene").addEventListener("click", avatarQuip);
 
   document.getElementById("restartBtn").addEventListener("click", startNewRun);
 
