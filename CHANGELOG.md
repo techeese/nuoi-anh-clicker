@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-06-13 — Bé Mây's letters (iteration 8)
+- A recurring character: bé Mây, 8, from Điện Biên. Handwritten letters arrive at meal
+  milestones (1k/8k/25k/60k) while your hands stay clean — school-notebook paper, blue
+  ballpoint ink riding the ruled lines, crayon drawings, signed "— Mây".
+- Turn dirty and the letters STOP — one quiet beat ("Hộp thư trống"), the founder's quips
+  start haunting him, and the run-ending newspaper remembers ("một xấp thư viết tay…
+  vẫn còn trong ví" among the seized evidence).
+- 💌 reread chip under the founder scene; +1 achievement (Người bạn qua thư).
+- First feature designed under the frontend-design skill gate.
+
 ## 2026-06-13 — Maintenance sprint (iteration 7)
 - Balance sweep: 11/12 targets green (saint 14.7m / escape 37.7m / evil competitive at 1.30x);
   only hairline miss is the click-ratio at 1.29 vs 1.30 floor. No changes needed.

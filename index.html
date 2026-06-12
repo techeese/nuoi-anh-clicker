@@ -449,6 +449,50 @@
   .confetti { position: fixed; width: 9px; height: 9px; z-index: 300; pointer-events: none; top: -12px; animation: confFall linear forwards; }
   @keyframes confFall { to { transform: translateY(110vh) rotate(900deg); opacity: 0.7; } }
 
+  /* Bé Mây's letters — warm paper against the dark UI */
+  .letter-wrap { display: flex; flex-direction: column; align-items: center; max-width: 460px; width: 94%; }
+  .paper {
+    position: relative; width: 100%;
+    background:
+      linear-gradient(90deg, transparent 42px, rgba(224, 122, 122, 0.55) 42px, rgba(224, 122, 122, 0.55) 44px, transparent 44px),
+      repeating-linear-gradient(#fdf9ee 0, #fdf9ee 25px, #c4d9e6 26px),
+      #fdf9ee;
+    border-radius: 5px;
+    padding: 30px 26px 24px 56px;
+    transform: rotate(-1.4deg);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 0 80px rgba(255, 215, 140, 0.12);
+    animation: letterIn 0.5s cubic-bezier(0.18, 0.9, 0.32, 1.2);
+  }
+  @keyframes letterIn { from { opacity: 0; transform: translateY(34px) rotate(-5deg) scale(0.92); } }
+  .paper::before { /* tape */
+    content: ""; position: absolute; top: -10px; left: 50%; width: 90px; height: 24px;
+    transform: translateX(-50%) rotate(2deg);
+    background: rgba(255, 244, 200, 0.55); border: 1px solid rgba(180, 160, 90, 0.25);
+  }
+  .letter-ink {
+    font-family: "Chalkboard SE", "Comic Sans MS", "Segoe Print", cursive;
+    color: #3a4a8c; font-size: 1rem; line-height: 26px; white-space: pre-line;
+  }
+  .letter-date {
+    font-family: "Chalkboard SE", "Comic Sans MS", "Segoe Print", cursive;
+    color: #7b87b8; font-size: 0.78rem; text-align: right; line-height: 26px;
+  }
+  .letter-sig {
+    font-family: "Chalkboard SE", "Comic Sans MS", "Segoe Print", cursive;
+    color: #3a4a8c; font-size: 1.2rem; text-align: right; line-height: 26px; margin-top: 4px;
+  }
+  .letter-draw { display: block; margin: 6px auto 0; }
+  #letterBtn {
+    margin-top: 18px; padding: 12px 28px; font-size: 0.95rem; font-weight: 800;
+    background: var(--gold); color: #1b1500; border: none; border-radius: 10px;
+    cursor: pointer; font-family: inherit;
+  }
+  #letterChip {
+    display: none; margin: 8px auto 0; background: rgba(245, 197, 66, 0.1);
+    border: 1px solid var(--gold); color: var(--gold); border-radius: 999px;
+    padding: 4px 12px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+
   /* Founder avatar scene */
   .avatar-panel { position: relative; }
   .avatar-panel svg { width: 100%; height: auto; display: block; cursor: pointer; }
@@ -780,6 +824,7 @@
         </g>
       </svg>
       <div id="avCaption"></div>
+      <button id="letterChip">💌 Thư của Mây (0)</button>
     </div>
 
     <!-- Legacy -->
@@ -845,6 +890,19 @@
     <h2 id="eventTitle"></h2>
     <p id="eventDesc"></p>
     <div class="event-choices" id="eventChoices"></div>
+  </div>
+</div>
+
+<!-- Letter from bé Mây -->
+<div class="overlay" id="letterOverlay">
+  <div class="letter-wrap">
+    <div class="paper">
+      <div class="letter-date" id="letterDate"></div>
+      <div class="letter-ink" id="letterBody"></div>
+      <svg class="letter-draw" id="letterDraw" width="120" height="64" viewBox="0 0 120 64"></svg>
+      <div class="letter-sig" id="letterSig"></div>
+    </div>
+    <button id="letterBtn">Cất vào ví 💌</button>
   </div>
 </div>
 
@@ -933,7 +991,8 @@
       wasNear95: false, gameOver: false,
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
       halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
-      bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0
+      bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
+      letters: [], maySilenced: false
     };
     if (perkLvl("minions") > 0) s.owned.volunteer = perkLvl("minions") * 2;
     return s;
@@ -1165,6 +1224,8 @@
       check: function () { return META.saoKePub; } },
     { id: "reporter", name: "Phỏng vấn độc quyền", desc: "Gõ cửa founder 15 lần — cuối cùng ông ấy cũng chịu nói",
       check: function () { return META.avatarClicks >= 15; } },
+    { id: "mayfriend", name: "Người bạn qua thư", desc: "Nhận đủ 4 lá thư của bé Mây trong một dự án",
+      check: function () { return S.letters.length >= 4; } },
     { id: "goodfound", name: "Lá thư từ vùng cao", desc: "Khám phá con đường bí ẩn dành cho người giữ tay sạch",
       check: function () { return META.goodFound; } },
     { id: "cleanrich", name: "Giàu bằng tay sạch", desc: "Túi riêng đạt 1 tỷ₫ trong một run hoàn toàn trong sạch",
@@ -1568,6 +1629,8 @@
     S.buffs = S.buffs.filter(function (b) { return b.until > Date.now(); });
     if (S.buffs.length !== before) renderBuffs();
 
+    checkLetters();
+
     S.suspicion += suspPerSec() * dt;
     clampSusp();
     if (S.suspicion >= 95) S.wasNear95 = true;
@@ -1706,6 +1769,10 @@
     }
     var provinces = PROVINCES.filter(function (i) { return count(i.id) > 0; }).length;
     if (provinces > 0) body += " Dự án từng phủ sóng " + provinces + " tỉnh thành.";
+    if (S.letters.length >= 2) {
+      if (outcome === "saint") body += " Trong lễ chuyển giao, một cô bé tên Mây từ Điện Biên đã ôm founder rất lâu.";
+      else if (outcome === "caught") body += " Trong số tang vật có một xấp thư viết tay của một học sinh tên Mây — vẫn còn trong ví.";
+    }
 
     return '<div class="newspaper">' +
       '<div class="np-masthead">📰 NHẬT BÁO BUỔI SÁNG</div>' +
@@ -2471,6 +2538,75 @@
     document.getElementById("avCaption").textContent = cap;
   }
 
+  // ================= Bé Mây's letters =================
+  // crayon drawings: doubled wobbly strokes for wax feel
+  var DRAW_SUN = '<path d="M20 50 Q40 28 62 46 Q84 30 102 48" stroke="#5d9c59" stroke-width="3.5" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="95" cy="16" r="9" fill="none" stroke="#e8a33d" stroke-width="3.5"/>' +
+    '<path d="M95 3 v-2 M107 16 h3 M104 7 l2 -2 M104 25 l2 2 M95 29 v2" stroke="#e8a33d" stroke-width="3" stroke-linecap="round"/>' +
+    '<ellipse cx="38" cy="52" rx="11" ry="5" fill="none" stroke="#c0573f" stroke-width="3.2"/>' +
+    '<path d="M30 49 q8 -6 16 0" stroke="#c0573f" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  var DRAW_CHU = '<circle cx="60" cy="16" r="10" fill="none" stroke="#4a6bb5" stroke-width="3.2"/>' +
+    '<path d="M54 16 q2 3 4 0 M64 16 q2 3 4 0" stroke="#4a6bb5" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+    '<path d="M53 21 q7 7 14 0" stroke="#c0573f" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M60 26 v20 M60 32 l-13 8 M60 32 l13 8 M60 46 l-9 14 M60 46 l9 14" stroke="#4a6bb5" stroke-width="3.2" stroke-linecap="round"/>' +
+    '<path d="M88 52 q4 -10 8 0 q-4 8 -8 0" fill="none" stroke="#d66a9c" stroke-width="3"/>' +
+    '<path d="M92 52 v8" stroke="#5d9c59" stroke-width="2.6" stroke-linecap="round"/>';
+  var LETTERS = [
+    { meals: 1000, date: "Điện Biên, mùa gặt", draw: DRAW_SUN,
+      body: "Chú ơi, con là Mây.\nCô giáo bảo cả lớp viết thư cảm ơn chú.\nCon ăn cơm có thịt ba lần rồi. Thịt ngon lắm chú ạ.\nCon vẽ tặng chú cái bát cơm với ông mặt trời.", sig: "— Mây, 8 tuổi" },
+    { meals: 8000, date: "Điện Biên, đầu mùa mưa", draw: DRAW_CHU,
+      body: "Chú ơi, con lên cân rồi!\nMẹ bảo má con hết hóp. Cô cũng bảo con chạy nhanh hơn.\nCon vẽ chú này. Mà con chưa biết mặt chú,\nnên con vẽ chú đang cười.", sig: "— Mây" },
+    { meals: 25000, date: "Điện Biên, sắp thi học kỳ", draw: DRAW_SUN,
+      body: "Chú ơi, cô bảo con đứng nhất lớp.\nCon đọc truyện không cần đánh vần nữa.\nCon muốn sau này làm người tốt giống chú.\nChú đừng cười con nha.", sig: "— Mây, lớp 2" },
+    { meals: 60000, date: "Điện Biên, cuối năm học", draw: DRAW_CHU,
+      body: "Chú ơi, trường con có giá sách mới,\ncả bản góp gỗ làm đấy.\nThầy hiệu trưởng bảo: có người gieo thì có người gặt.\nCảm ơn chú đã không quên tụi con.", sig: "— Mây, lớp 3" }
+  ];
+
+  var letterReadIdx = -1;
+  function showLetter(idx) {
+    paused = true;
+    var L = LETTERS[idx];
+    letterReadIdx = idx;
+    document.getElementById("letterDate").textContent = L.date;
+    document.getElementById("letterBody").textContent = L.body.replace(/\\n/g, "\n");
+    document.getElementById("letterDraw").innerHTML = L.draw;
+    document.getElementById("letterSig").textContent = L.sig;
+    document.getElementById("letterOverlay").classList.add("show");
+    sEnv();
+  }
+  document.getElementById("letterBtn").addEventListener("click", function () {
+    document.getElementById("letterOverlay").classList.remove("show");
+    paused = eventOpen || apologyOpen;
+    renderLetterChip();
+  });
+  document.getElementById("letterChip").addEventListener("click", function () {
+    if (!S.letters.length) return;
+    var next = (letterReadIdx + 1) % S.letters.length;
+    showLetter(S.letters[next]);
+  });
+  function renderLetterChip() {
+    var chip = document.getElementById("letterChip");
+    chip.style.display = S.letters.length ? "block" : "none";
+    chip.textContent = "💌 Thư của Mây (" + S.letters.length + ")";
+  }
+
+  function checkLetters() {
+    if (S.gameOver || paused) return;
+    var nextIdx = S.letters.length;
+    if (nextIdx >= LETTERS.length) return;
+    if (S.meals < LETTERS[nextIdx].meals) return;
+    if (isClean()) {
+      S.letters.push(nextIdx);
+      showLetter(nextIdx);
+      setTicker("💌 Một lá thư viết tay vừa đến từ Điện Biên.");
+    } else if (S.letters.length > 0 && !S.maySilenced) {
+      // the letters stop — once, quietly
+      S.maySilenced = true;
+      toast("📪 <b>Hộp thư trống.</b><br>Đã lâu không có thư từ Điện Biên. Chắc là bưu điện chậm thôi. Chắc vậy.");
+      setTicker("📪 Không còn thư từ Điện Biên nữa.");
+    }
+  }
+
   // ================= Founder speech bubbles =================
   var QUIPS = {
     cleanLow: [
@@ -2499,6 +2635,10 @@
       "Ai cũng làm vậy mà… đúng không? Đúng không?!",
       "Chỉ một lần đó thôi. Một lần."
     ],
+    silenced: [
+      "Dạo này… không thấy thư của con bé nữa.",
+      "Chắc bưu điện trên đó chậm thôi. Chắc vậy."
+    ],
     nervous: [
       "Sao kê hả? Để… để kế toán làm. Kế toán đâu rồi?",
       "Bài đăng đó là tin giả nhé. Tin. Giả.",
@@ -2525,7 +2665,7 @@
     if (S.suspicion >= 80) pool = QUIPS.panic;
     else if (S.suspicion >= 50) pool = QUIPS.nervous;
     else if (!isClean()) {
-      pool = QUIPS.dirtyLow.concat(S.stash >= 1e9 ? QUIPS.rich : [], S.bargains > 0 ? QUIPS.bargain : []);
+      pool = QUIPS.dirtyLow.concat(S.stash >= 1e9 ? QUIPS.rich : [], S.bargains > 0 ? QUIPS.bargain : [], S.maySilenced ? QUIPS.silenced : []);
     } else {
       pool = QUIPS.cleanLow.concat(S.goodUnlocked ? QUIPS.cleanGood : []);
     }
@@ -2627,7 +2767,7 @@
     }
   }
 
-  function renderAll() { renderStats(); renderShop(); renderLegacy(); renderBuffs(); renderLedger(); }
+  function renderAll() { renderStats(); renderShop(); renderLegacy(); renderBuffs(); renderLedger(); renderLetterChip(); }
 
   // ================= Save / load =================
   var SAVE_KEY = "nuoi-anh-clicker-v4";
@@ -2646,6 +2786,8 @@
     S.buffs = S.buffs.filter(function (b) { return b && !bad(b.mult) && b.mult > 0 && !bad(b.until); });
     if (!Array.isArray(S.ledger)) S.ledger = [];
     S.ledger = S.ledger.filter(function (e) { return e && typeof e.txt === "string" && !bad(e.amt); }).slice(0, 14);
+    if (!Array.isArray(S.letters)) S.letters = [];
+    S.letters = S.letters.filter(function (i) { return Number.isInteger(i) && i >= 0 && i < 4; });
     S.suspicion = Math.max(0, Math.min(100, S.suspicion));
     S.skim = Math.max(0, Math.min(90, S.skim));
     ["connections", "runs", "lifetimeRaised", "totalMeals", "envOpened", "crits", "avatarClicks"]
@@ -2685,6 +2827,8 @@
             ["halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
             if (!Array.isArray(S.recentEvents)) S.recentEvents = [];
             if (!Array.isArray(S.ledger)) S.ledger = [];
+            if (!Array.isArray(S.letters)) S.letters = [];
+            if (typeof S.maySilenced !== "boolean") S.maySilenced = false;
             if (typeof S.goodUnlocked !== "boolean") S.goodUnlocked = false;
           }
           lastSeen = d.lastSeen || null;
