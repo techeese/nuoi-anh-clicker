@@ -2,12 +2,16 @@
 
 Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
+1. **Stash drip** — passive kickback income (schemes) is still invisible moment-to-moment;
+   a periodic grey drip toward the túi riêng readout would extend the visible-cut language.
+
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint, newspaper ending verified) — full phone-width walkthrough (shop tabs, overlays, minigame,
     endings newspaper, legacy panel) even when nothing changed; fix everything found.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- The visible cut (per-click skim floaties + shady burst palette).
 - Newspaper archive in case files (snapshot-driven frontPage + archive overlay).
 - Writing back to Mây (reply choices + reactions + ending tie-ins).
 - Lifetime records.

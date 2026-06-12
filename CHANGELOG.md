@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — The visible cut (iteration 33)
+- When skim > 0, every click now splits on screen: the main floatie shows only what the
+  charity actually receives (+net, gold), while the skimmed slice sinks below the table as a
+  grey "−cut" floatie tagged 🤫 / phí 'vận hành' / chút 'động viên' / lộc lá. At high skim
+  the sinking number is visibly BIGGER than the rising one — the satire does itself.
+- Money-burst emoji darken at skim ≥ 40% (🤫 🕶️ join the spray). Clean players see exactly
+  what they saw before. Pure cosmetics: no math changed, challenge rnd() draw count intact.
+- Hardening: earn() now uses Number.isFinite (was bare isFinite — landmine class).
+- Verified: gates green ×2, dirty save shows 42 cut-floatie sightings / clean save shows
+  zero, single-click 390px capture proves honest accounting (+10,5k vs −12,9k at 55% skim).
+
 ## 2026-06-13 — Newspaper archive in case files (iteration 32)
 - Every ending's front page is now saved with the run log: tap a 🗂️ case-file card with a 📰
   chip to reprint that run's full newspaper (headline, numbers, kế toán line, Mây's letters)
