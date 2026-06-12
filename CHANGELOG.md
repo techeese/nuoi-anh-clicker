@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-06-13 — 'Người quay đầu': the redemption beat (iteration 37)
+- New reform mechanic: S.reformTime tracks the current streak with skim at 0 AND no scheme
+  kickbacks — relapse resets it to zero. (cleanTime can't serve: it only accrues for the
+  historically clean, and redemption is precisely for those who weren't.)
+- If the journalist published her series (nbStage ≥ 2) and you've been reformed for 5+
+  minutes, she returns without a recorder and offers to write 'Người quay đầu'. Accept
+  (suspicion -12, +1 halo if the good path is open, and a pinned comment from a Điện Biên
+  parent) or decline (-4, and "số liệu của anh, em vẫn xem mỗi tháng").
+- Ending tie-ins: saint with the redemption piece gets her at the handover ceremony with
+  its final installment; relapse-then-caught gets the cruelest line in the game — "Bài
+  'Người quay đầu' năm nào được gỡ xuống trong im lặng."
+- Verified: gates ×2, reformed-player chain walk (stage=4/redeemed), relapse-reset assert,
+  caught takedown line + archived saint reprint both render.
+
 ## 2026-06-13 — Nhà báo điều tra arc (iteration 36)
 - The one-shot journalist event became a 3-stage chained arc: chị phóng viên of the
   (obviously fictional) weekly 'Soi Kỹ Cuối Tuần' contacts you → 'Kỳ 2: Đồng tiền rẽ ngang'

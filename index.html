@@ -1223,7 +1223,7 @@
       startTime: Date.now(), owned: {}, buffs: [],
       wasNear95: false, gameOver: false,
       maxSkim: 0, maxCombo: 0, apologyUsed: false, autoAcc: 0, modifier: "normal",
-      halo: 0, haloProgress: 0, cleanTime: 0, goodUnlocked: false, mealAcc: 0,
+      halo: 0, haloProgress: 0, cleanTime: 0, reformTime: 0, goodUnlocked: false, mealAcc: 0,
       bargains: 0, recentEvents: [], ledger: [], saoKeAt: 0,
       letters: [], mayReplies: [], maySilenced: false, hist: [],
       ktStage: 0, ktMode: "",
@@ -1663,6 +1663,22 @@
             return "Bạn không trả lời. Thanh trượt nhích thêm một nấc. Ở đâu đó, một cuốn sổ tay lại dày thêm một dòng." + extra;
           } }
       ] },
+    { title: "📰 'Người quay đầu'",
+      when: function () { return S.nbStage >= 2 && S.nbStage <= 3 && S.skim === 0 && kickbackPerSec() === 0 && S.reformTime >= 300; },
+      desc: "Chị phóng viên xin gặp — lần này không mang máy ghi âm. 'Em vẫn theo dõi số liệu của dự án từ hồi loạt bài. Dạo này nó sạch. Em muốn viết một bài khác: về người biết dừng lại.'",
+      choices: [
+        { label: "Nhận lời — kể cả những phần xấu hổ", hint: "Nghi ngờ -12%, và một thứ khó gọi tên",
+          fx: function () {
+            S.nbStage = 4; S.nbMode = "redeemed"; S.suspicion -= 12;
+            if (S.goodUnlocked) S.halo += 1;
+            return "Bài 'Người quay đầu' không viral bằng bất cứ kỳ điều tra nào. Nhưng bình luận được ghim dưới bài là của một phụ huynh Điện Biên: 'Cảm ơn chú đã quay lại.'";
+          } },
+        { label: "Từ chối — quá khứ nên được ngủ yên", hint: "Nghi ngờ -4%",
+          fx: function () {
+            S.nbStage = 4; S.nbMode = "declined"; S.suspicion -= 4;
+            return "Chị ấy gật đầu, không ép. 'Vậy em viết dự án khác. Nhưng số liệu của anh, em vẫn xem mỗi tháng.' Nghe vừa như lời khen, vừa như lời hứa.";
+          } }
+      ] },
     { title: "💰 Đại gia muốn tài trợ 'khủng'",
       desc: "Một doanh nhân bí ẩn muốn chuyển một khoản lớn, 'không cần hoá đơn, anh tin chú'.",
       choices: [
@@ -1956,6 +1972,11 @@
       if (S.cleanTime >= 600 && S.meals >= 2000) unlockGoodPath();
     }
 
+    // reform streak: hands off the slider AND no scheme income — relapse resets it.
+    // (cleanTime can't serve here: it only accrues for the historically-clean)
+    if (S.skim === 0 && kickbackPerSec() === 0) S.reformTime += dt;
+    else S.reformTime = 0;
+
     var before = S.buffs.length;
     S.buffs = S.buffs.filter(function (b) { return b.until > Date.now(); });
     if (S.buffs.length !== before) renderBuffs();
@@ -2150,6 +2171,9 @@
     if (outcome === "caught" && D.nbS >= 2) {
       body += " Loạt bài điều tra của tuần báo 'Soi Kỹ Cuối Tuần' được trích dẫn trong kết luận" +
         (D.nbM === "bribed2" ? " — kèm phụ lục: ảnh hai chiếc phong bì." : ".");
+      if (D.nbM === "redeemed") body += " Bài 'Người quay đầu' năm nào được gỡ xuống trong im lặng.";
+    } else if (outcome === "saint" && D.nbM === "redeemed") {
+      body += " Tác giả loạt bài điều tra năm nào cũng có mặt tại lễ chuyển giao — lần này với một bài viết mang tên 'Người quay đầu', kỳ cuối.";
     }
     if (D.L >= 2) {
       if (outcome === "saint") {
@@ -3542,7 +3566,7 @@
     // and a NaN that was JSON-serialized to null would slip straight through
     var bad = function (v) { return !Number.isFinite(v); };
     ["fund", "stash", "totalRaised", "meals", "suspicion", "skim", "clicks",
-     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt", "ktStage", "nbStage", "rngState"]
+     "maxSkim", "maxCombo", "autoAcc", "halo", "haloProgress", "cleanTime", "reformTime", "mealAcc", "bargains", "saoKeAt", "ktStage", "nbStage", "rngState"]
       .forEach(function (k) { if (bad(S[k]) || S[k] < 0) S[k] = 0; });
     if (bad(S.startTime)) S.startTime = Date.now();
     Object.keys(S.owned).forEach(function (k) { if (bad(S.owned[k]) || S.owned[k] < 0) delete S.owned[k]; });
@@ -3603,7 +3627,7 @@
             if (typeof S.autoAcc !== "number") S.autoAcc = 0;
             if (typeof S.apologyUsed !== "boolean") S.apologyUsed = false;
             if (!S.modifier) S.modifier = "normal";
-            ["halo", "haloProgress", "cleanTime", "mealAcc", "bargains", "saoKeAt"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
+            ["halo", "haloProgress", "cleanTime", "reformTime", "mealAcc", "bargains", "saoKeAt"].forEach(function (k) { if (typeof S[k] !== "number") S[k] = 0; });
             if (!Array.isArray(S.recentEvents)) S.recentEvents = [];
             if (!Array.isArray(S.ledger)) S.ledger = [];
             if (!Array.isArray(S.letters)) S.letters = [];

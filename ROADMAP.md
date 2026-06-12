@@ -4,9 +4,9 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 
 1. **Stash drip** — passive kickback income (schemes) is still invisible moment-to-moment;
    a periodic grey drip toward the túi riêng readout would extend the visible-cut language.
-2. **Nhà báo redemption beat** — if a player enters the arc dirty but finishes the run as
-   saint, the journalist could write the redemption piece (ties her arc to the good path;
-   small follow-up to it.36).
+2. **Audio: the sound of conscience** — moral-state SFX layer (clean clicks ring bright,
+   heavy-skim clicks dull and detuned; soft low thud for the sinking cut floatie). Audio is
+   the longest-untouched compass area.
 
 9. **Localization toggle** — full English mode for international players (big lift; later).
 10. **Recurring mobile audit** (last done: 2026-06-13 sprint 6, full-page + legacy + bust
@@ -15,6 +15,7 @@ Ordered; the loop takes from the top. Add freely, prune ruthlessly.
 11. ~~Performance pass~~ — audited 2026-06-13: 7 light intervals, renderShop churn negligible; no action.
 
 ## Done (see CHANGELOG.md)
+- 'Người quay đầu' redemption beat (reformTime streak + her fourth visit).
 - Nhà báo điều tra 3-stage arc (bribes photographed, finale prints the meal-math).
 - Đồng tiền đi đâu split bar (skim slider shows the 🍚/🏗/🤫 routing live).
 - The visible cut (per-click skim floaties + shady burst palette).
