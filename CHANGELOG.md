@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-13 — Maintenance sprint 4 (iteration 25)
+- Sweep: 21 green checks; only the two known eternal hairlines (saint 13-15m vs 15m floor,
+  click ratio 1.29 vs 1.30). Bot 5-min: ZERO errors while hammering the quick-bar at 2.5
+  clicks/s alongside everything else. All three layout breakpoints regression-verified
+  (390 / 1240 / 1440). Live deploy at parity (quick bar serving).
+
 ## 2026-06-13 — Desktop 3-column layout (iteration 24)
 - ≥1280px: play column + shop pinned sticky side by side, founder & legacy stacked in column
   three — the entire core game fits one viewport with zero scrolling; only the museum scrolls.
