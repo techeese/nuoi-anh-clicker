@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — Daily challenge: show what it actually does
+- The challenge rolls a random "thời cuộc" modifier that rewrites the rules, but its effect
+  lived only in a hover `title` tooltip — invisible on touch — so players started a run
+  without knowing what it changed.
+- The confirm dialog now PREVIEWS today's exact scenario (name + full effect) before you
+  commit. The modifier is deterministic from the date seed, so the preview always matches the
+  run you get (`peekChallengeMod`, proven equal to the live pick).
+- The 🎲 challenge and 📸 modifier chips are now tappable (with an ⓘ hint) to re-read the
+  effect any time — the same fix also makes every normal-run modifier legible on phones.
+- Start toast now states the effect outright instead of just the scenario name.
+
 ## 2026-06-13 — Bugfix: daily challenge was dead on mobile
 - The 🎲 Thử thách hôm nay button gated on the native blocking `confirm()`. Many mobile
   in-app browsers (Zalo / Facebook / Messenger webviews — how a lot of Vietnamese players

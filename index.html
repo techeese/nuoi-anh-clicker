@@ -290,6 +290,8 @@
     animation: envIn 0.3s ease-out;
   }
   .buff.mod { background: rgba(184, 140, 255, 0.1); border-color: var(--purple); color: var(--purple); }
+  .buff.tappable { cursor: pointer; }
+  .buff.tappable:hover, .buff.tappable:active { background: rgba(184, 140, 255, 0.24); }
 
   .skim-box { margin-top: 5px; }
   .skim-box .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
@@ -2528,12 +2530,28 @@
     ov.classList.add("show");
   }
 
+  // Today's challenge modifier is deterministic from the date seed (it's the first rnd()
+  // draw beginChallenge makes), so we can show the player exactly what today's scenario
+  // does BEFORE they commit — one mulberry32 step, no state touched.
+  function peekChallengeMod(day) {
+    var s = (dateSeed(day) + 0x6D2B79F5) | 0;
+    var t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    var v = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    return MODS[Math.floor(v * MODS.length)];
+  }
+
   function startChallenge() {
     var today = todayStr();
     if (META.lastChallengeDay === today) return;
+    var m = peekChallengeMod(today);
     uiConfirm({
       title: "🎲 Thử thách " + today,
-      body: "Run hiện tại sẽ kết thúc (không nhận quan hệ), và cả thế giới chơi cùng một kịch bản — cùng thời cuộc, cùng vận may. Bắt đầu?",
+      body: "Hôm nay cả thế giới chơi <b>cùng một kịch bản</b>:" +
+            "<div style='margin:12px 0; padding:10px 12px; border:1px solid var(--purple); border-radius:10px; background:rgba(184,140,255,0.08);'>" +
+            "<b style='color:var(--purple)'>" + m.emoji + " " + m.name + "</b><br>" +
+            "<span style='color:var(--text)'>" + m.desc + "</span></div>" +
+            "Bắt đầu sẽ <b>kết thúc dự án hiện tại</b> (không nhận quan hệ). Cùng vào không?",
       yes: "Bắt đầu", no: "Để sau",
       onYes: function () { beginChallenge(today); }
     });
@@ -2550,7 +2568,7 @@
     document.getElementById("skimPct").textContent = "0%";
     var m = curMod();
     if (S.modifier === "viral") addBuff("🚀 Khởi đầu viral x5", "income", 5, 120);
-    toast("🎲 <b>Thử thách " + today + "</b><br>" + m.emoji + " " + m.name + " — kịch bản hôm nay của cả thế giới. Chúc may mắn.");
+    toast("🎲 <b>Thử thách " + today + "</b><br>" + m.emoji + " <b>" + m.name + "</b> — " + m.desc + "<br><span style='color:var(--muted)'>Chạm vào huy hiệu 🎲 bất cứ lúc nào để xem lại hiệu ứng.</span>");
     setTicker("🎲 Chế độ thử thách: mọi người chơi hôm nay đều nhận đúng kịch bản này.");
     scheduleEvent();
     scheduleEnvelope();
@@ -3594,18 +3612,29 @@
   function renderBuffs() {
     var bar = document.getElementById("buffBar");
     bar.innerHTML = "";
+    var m = curMod();
     if (S.challenge) {
       var cc = document.createElement("span");
-      cc.className = "buff mod";
-      cc.textContent = "🎲 Thử thách " + S.challenge;
+      cc.className = "buff mod tappable";
+      cc.textContent = "🎲 Thử thách " + S.challenge + " ⓘ";
+      cc.title = "Chế độ thử thách: cả thế giới cùng kịch bản hôm nay. Chạm để xem hiệu ứng.";
+      cc.addEventListener("click", function () {
+        var mm = curMod();
+        toast("🎲 <b>Thử thách " + S.challenge + "</b><br>Cả thế giới chơi cùng kịch bản hôm nay." +
+              (mm.id !== "normal" ? "<br><br>" + mm.emoji + " <b>" + mm.name + "</b><br>" + mm.desc : ""));
+      });
       bar.appendChild(cc);
     }
-    var m = curMod();
+    // The modifier ("thời cuộc") changes the rules — its effect must be readable, not hidden
+    // in a hover title (touch has no hover), so the chip is tappable to reveal what it does.
     if (m.id !== "normal") {
       var chip = document.createElement("span");
-      chip.className = "buff mod";
+      chip.className = "buff mod tappable";
       chip.title = m.desc;
-      chip.textContent = m.emoji + " " + m.name;
+      chip.textContent = m.emoji + " " + m.name + " ⓘ";
+      chip.addEventListener("click", function () {
+        toast(m.emoji + " <b>" + m.name + "</b><br>" + m.desc);
+      });
       bar.appendChild(chip);
     }
     S.buffs.forEach(function (b) {
