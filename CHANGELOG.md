@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-13 — Bugfix: daily challenge was dead on mobile
+- The 🎲 Thử thách hôm nay button gated on the native blocking `confirm()`. Many mobile
+  in-app browsers (Zalo / Facebook / Messenger webviews — how a lot of Vietnamese players
+  open links) and some standalone PWAs silently no-op `confirm()`, returning `false`, so
+  tapping the button did NOTHING — the daily challenge was effectively missing on phones.
+- Replaced it with the game's own in-DOM `uiConfirm()` dialog (reuses the existing overlay
+  system), which works in every webview. Verified headless at 390px with `confirm()` forced
+  to the broken behavior: the dialog now appears and "Bắt đầu" actually starts the seeded run.
+- Same no-op bug hit the 🔄 reset-run and 🗑️ hard-reset buttons; both now use the dialog too.
+  Keyboard: Enter = confirm, Esc/Space = cancel. No game math touched (challenge rnd() intact).
+
 ## 2026-06-13 — Autonomous session wrap (iteration 64 = final round)
 - The improvement loop ran 64 iterations: ~28 shipped features, 12 maintenance sprints
   (all green), 1 production incident (caught and immunized via gate.sh), 0 reverts in the

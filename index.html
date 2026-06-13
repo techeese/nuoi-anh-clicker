@@ -523,6 +523,20 @@
   .event-choices button:hover { border-color: var(--blue); transform: translateX(3px); }
   .event-choices button small { display: block; color: var(--muted); font-weight: 400; margin-top: 2px; }
 
+  /* In-DOM confirm — native confirm()/prompt() are silently no-op'd inside many
+     mobile in-app browsers (Zalo/Facebook/Messenger webviews) and some standalone PWAs,
+     so the daily challenge must ask with its own dialog or it just dies on tap on phones. */
+  .overlay .card.confirm-card { border-color: var(--blue); text-align: left; padding: 24px; max-width: 420px; }
+  .overlay .card.confirm-card h2 { color: var(--blue); font-size: 1.15rem; }
+  .confirm-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .confirm-actions button {
+    flex: 1; margin-top: 0; padding: 13px 14px; font-size: 0.92rem; font-weight: 800;
+    border-radius: 10px; cursor: pointer; font-family: inherit; transition: all 0.12s; border: 1px solid var(--border);
+  }
+  .confirm-actions .cf-yes { background: var(--blue); color: #06121f; border-color: var(--blue); }
+  .confirm-actions .cf-no { background: var(--panel-2); color: var(--muted); }
+  .confirm-actions .cf-no:hover { color: var(--text); border-color: var(--gold); }
+
   /* Apology minigame */
   .ap-bar {
     position: relative; height: 34px; border-radius: 8px; overflow: hidden;
@@ -1231,6 +1245,18 @@
     </div>
     <div class="ap-hint">Mỗi dự án chỉ được dùng MỘT lần. Cả nước đang xem. Đừng run tay. (phím <b>Space</b> cũng dùng được)</div>
     <button id="apCryBtn">😭 KHÓC NGAY</button>
+  </div>
+</div>
+
+<!-- In-DOM confirm (works where native confirm() is suppressed, e.g. in-app mobile browsers) -->
+<div class="overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-label="Xác nhận">
+  <div class="card confirm-card">
+    <h2 id="confirmTitle"></h2>
+    <p id="confirmBody"></p>
+    <div class="confirm-actions">
+      <button class="cf-no" id="confirmNo">Để sau</button>
+      <button class="cf-yes" id="confirmYes">Bắt đầu</button>
+    </div>
   </div>
 </div>
 
@@ -2479,10 +2505,41 @@
     return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
   }
 
+  // In-DOM confirm: native confirm() is silently no-op'd in many mobile in-app browsers
+  // (Zalo/Facebook/Messenger webviews) and some standalone PWAs, which made the daily
+  // challenge button do nothing when tapped on a phone. This dialog always works.
+  function uiConfirm(opts) {
+    var ov = document.getElementById("confirmOverlay");
+    document.getElementById("confirmTitle").innerHTML = opts.title || "Xác nhận";
+    document.getElementById("confirmBody").innerHTML = opts.body || "";
+    var yes = document.getElementById("confirmYes");
+    var no = document.getElementById("confirmNo");
+    yes.textContent = opts.yes || "Đồng ý";
+    no.textContent = opts.no || "Để sau";
+    function close() {
+      ov.classList.remove("show");
+      yes.removeEventListener("click", onYes);
+      no.removeEventListener("click", onNo);
+    }
+    function onYes() { close(); if (opts.onYes) opts.onYes(); }
+    function onNo() { close(); if (opts.onNo) opts.onNo(); }
+    yes.addEventListener("click", onYes);
+    no.addEventListener("click", onNo);
+    ov.classList.add("show");
+  }
+
   function startChallenge() {
     var today = todayStr();
     if (META.lastChallengeDay === today) return;
-    if (!confirm("🎲 Thử thách " + today + ": run hiện tại sẽ kết thúc (không nhận quan hệ), và cả thế giới chơi cùng một kịch bản — cùng thời cuộc, cùng vận may. Bắt đầu?")) return;
+    uiConfirm({
+      title: "🎲 Thử thách " + today,
+      body: "Run hiện tại sẽ kết thúc (không nhận quan hệ), và cả thế giới chơi cùng một kịch bản — cùng thời cuộc, cùng vận may. Bắt đầu?",
+      yes: "Bắt đầu", no: "Để sau",
+      onYes: function () { beginChallenge(today); }
+    });
+  }
+
+  function beginChallenge(today) {
     META.lastChallengeDay = today;
     S = freshState();
     S.challenge = today;
@@ -4287,6 +4344,12 @@
 
   document.addEventListener("keydown", function (e) {
     konamiCheck(e);
+    var cOv = document.getElementById("confirmOverlay");
+    if (cOv.classList.contains("show")) {
+      if (e.code === "Enter") { e.preventDefault(); document.getElementById("confirmYes").click(); }
+      else if (e.code === "Escape" || e.code === "Space") { e.preventDefault(); document.getElementById("confirmNo").click(); }
+      return;
+    }
     if (e.code === "Space") {
       e.preventDefault();
       // in the apology minigame, Space = CRY (ignore held-key repeats so mashing can't misfire)
@@ -4342,15 +4405,25 @@
   document.getElementById("restartBtn").addEventListener("click", startNewRun);
 
   document.getElementById("resetRunBtn").addEventListener("click", function () {
-    if (confirm("Bắt đầu lại dự án hiện tại? (Quan hệ, đặc quyền và thành tựu được GIỮ NGUYÊN — chỉ run hiện tại bị xoá, không nhận quan hệ.)")) startNewRun();
+    uiConfirm({
+      title: "🔄 Bắt đầu lại dự án",
+      body: "Bắt đầu lại dự án hiện tại? Quan hệ, đặc quyền và thành tựu được <b>GIỮ NGUYÊN</b> — chỉ run hiện tại bị xoá, không nhận quan hệ.",
+      yes: "Làm lại", no: "Để sau",
+      onYes: startNewRun
+    });
   });
 
   document.getElementById("hardResetBtn").addEventListener("click", function () {
-    if (confirm("XOÁ TOÀN BỘ và chơi lại từ đầu như người mới?\n\nQuan hệ, đặc quyền, thành tựu, kết cục — mất hết, về con số 0. Game sẽ tải lại với đoạn intro mở đầu. Không hoàn tác được!")) {
-      wiping = true;
-      [SAVE_KEY, "nuoi-anh-clicker-v3", "nuoi-anh-clicker-v2"].forEach(function (k) { localStorage.removeItem(k); });
-      location.reload();
-    }
+    uiConfirm({
+      title: "🗑️ Xoá toàn bộ",
+      body: "XOÁ TOÀN BỘ và chơi lại từ đầu như người mới? Quan hệ, đặc quyền, thành tựu, kết cục — mất hết, về con số 0. Game sẽ tải lại với đoạn intro mở đầu. <b>Không hoàn tác được!</b>",
+      yes: "Xoá hết", no: "Giữ lại",
+      onYes: function () {
+        wiping = true;
+        [SAVE_KEY, "nuoi-anh-clicker-v3", "nuoi-anh-clicker-v2"].forEach(function (k) { localStorage.removeItem(k); });
+        location.reload();
+      }
+    });
   });
 
   document.getElementById("muteBtn").addEventListener("click", function () {
