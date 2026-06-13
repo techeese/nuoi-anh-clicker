@@ -292,6 +292,13 @@
   .buff.mod { background: rgba(184, 140, 255, 0.1); border-color: var(--purple); color: var(--purple); }
   .buff.tappable { cursor: pointer; }
   .buff.tappable:hover, .buff.tappable:active { background: rgba(184, 140, 255, 0.24); }
+  /* Persistent effect line — the active scenario's effect must stay readable, not vanish
+     with a hover tooltip or a toast (a reviewer missed it because it only showed once). */
+  .mod-effect {
+    margin-top: 6px; padding: 7px 11px; border-radius: 9px; font-size: 0.72rem; line-height: 1.45;
+    background: rgba(184, 140, 255, 0.09); border: 1px solid rgba(184, 140, 255, 0.4); color: var(--text);
+  }
+  .mod-effect b { color: var(--purple); }
 
   .skim-box { margin-top: 5px; }
   .skim-box .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
@@ -818,6 +825,7 @@
       </div>
 
       <div class="buff-bar" id="buffBar"></div>
+      <div class="mod-effect" id="modEffect" style="display:none;"></div>
 
       <div class="skim-box">
         <div class="row">
@@ -3644,6 +3652,19 @@
       c.textContent = b.name + " · " + left + "s";
       bar.appendChild(c);
     });
+    // Persistent effect line: the active scenario's effect stays on screen so it can't be
+    // missed (chips/toasts/tooltips are transient; this one never disappears).
+    var fx = document.getElementById("modEffect");
+    if (m.id !== "normal") {
+      fx.innerHTML = (S.challenge ? "🎲 <b>Thử thách " + S.challenge + "</b> · " : "") +
+                     m.emoji + " <b>" + m.name + "</b> — " + m.desc;
+      fx.style.display = "";
+    } else if (S.challenge) {
+      fx.innerHTML = "🎲 <b>Thử thách " + S.challenge + "</b> — cả thế giới chơi cùng kịch bản hôm nay.";
+      fx.style.display = "";
+    } else {
+      fx.style.display = "none";
+    }
   }
 
   // ================= Day/night cycle (real clock) =================

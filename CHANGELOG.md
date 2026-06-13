@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-13 — Challenge effect now stays on screen (was: showed once, then gone)
+- Player feedback: the scenario's effect only appeared transiently — a hover tooltip
+  (vanishes when the mouse moves) or the start toast (auto-dismisses) — so if you missed it
+  once, it was gone.
+- Added a persistent effect line under the buff bar that always shows the active "thời cuộc"
+  (and challenge badge): name + full effect, never auto-dismissing, restored on reload.
+- The tappable chips and the pre-start dialog preview stay as quick references on top of it.
+
 ## 2026-06-13 — Daily challenge: show what it actually does
 - The challenge rolls a random "thời cuộc" modifier that rewrites the rules, but its effect
   lived only in a hover `title` tooltip — invisible on touch — so players started a run
